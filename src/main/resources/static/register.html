@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SmartRent — Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+          font-family: 'Poppins', sans-serif;
+          background: #f0f4ff;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px 20px;
+        }
+
+        .card {
+          background: #fff;
+          border-radius: 24px;
+          padding: 36px 40px 32px;
+          width: 100%;
+          max-width: 500px;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+          text-align: center;
+        }
+
+        .logo { margin-bottom: 18px; }
+
+        .logo-icon {
+          width: 52px; height: 52px;
+          background: #eef0ff;
+          border-radius: 14px;
+          display: flex; align-items: center; justify-content: center;
+          margin: 0 auto 8px;
+        }
+
+        .logo-icon svg { width: 28px; height: 28px; fill: #4a6cf7; }
+
+        .logo-name { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+        .logo-name span { color: #f5a623; }
+
+        .role-tabs {
+          display: flex;
+          background: #f4f6fb;
+          border-radius: 10px;
+          padding: 3px;
+          margin-bottom: 20px;
+          gap: 3px;
+        }
+
+        .role-tab {
+          flex: 1;
+          padding: 8px;
+          border: none;
+          border-radius: 8px;
+          background: transparent;
+          color: #999;
+          font-family: 'Poppins', sans-serif;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .role-tab.active {
+          background: #fff;
+          color: #1a1a2e;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+          font-weight: 600;
+        }
+
+        .alert {
+          padding: 9px 14px;
+          border-radius: 10px;
+          font-size: 12px;
+          margin-bottom: 14px;
+          display: none;
+          text-align: left;
+        }
+        .alert.error   { background: #fff0f0; border: 1px solid #ffcccc; color: #e53935; display: block; }
+        .alert.success { background: #f0fff4; border: 1px solid #b2dfdb; color: #2e7d32; display: block; }
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 14px;
+          text-align: left;
+        }
+
+        .full { grid-column: 1 / -1; }
+        .form-grid .field.full { grid-column: 1 / -1; }
+
+        .field label {
+          display: block;
+          font-size: 12px;
+          font-weight: 500;
+          color: #555;
+          margin-bottom: 5px;
+        }
+
+        .field input {
+          width: 100%;
+          background: #f4f6fb;
+          border: 1.5px solid transparent;
+          border-radius: 50px;
+          padding: 11px 16px;
+          font-family: 'Poppins', sans-serif;
+          font-size: 13px;
+          color: #1a1a2e;
+          outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field input::placeholder { color: #bbb; }
+
+        .field input:focus {
+          border-color: #4a6cf7;
+          box-shadow: 0 0 0 3px rgba(74,108,247,0.1);
+        }
+
+        .btn {
+          width: 100%;
+          background: #4a6cf7;
+          border: none;
+          border-radius: 50px;
+          padding: 13px;
+          color: white;
+          font-family: 'Poppins', sans-serif;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+          margin-top: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+
+        .btn:hover { background: #3a5ce5; transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+        .spinner {
+          display: none;
+          width: 15px; height: 15px;
+          border: 2px solid rgba(255,255,255,0.4);
+          border-top-color: white;
+          border-radius: 50%;
+          animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .login-link { margin-top: 16px; font-size: 12px; color: #999; }
+        .login-link a { color: #4a6cf7; font-weight: 600; text-decoration: none; }
+        .login-link a:hover { text-decoration: underline; }
+
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+
+        .vendor-note {
+          background: #fff8ee;
+          border: 1px solid #ffe0a0;
+          border-radius: 10px;
+          padding: 9px 13px;
+          font-size: 11px;
+          color: #b07800;
+          text-align: left;
+          margin-bottom: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+    <div class="logo">
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+        </div>
+        <div class="logo-name">Smart<span>Rent</span></div>
+    </div>
+
+    <div class="role-tabs">
+        <button class="role-tab active" onclick="switchRole('customer', this)">Customer</button>
+        <button class="role-tab" onclick="switchRole('vendor', this)">Vendor</button>
+    </div>
+
+    <div class="alert" id="alert"></div>
+
+    <!-- CUSTOMER FORM -->
+    <div class="form-section active" id="customerForm">
+        <div class="form-grid">
+            <div class="field">
+                <label>First Name</label>
+                <input type="text" id="firstName" />
+            </div>
+            <div class="field">
+                <label>Last Name</label>
+                <input type="text" id="lastName" />
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="email"/>
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" placeholder="98XXXXXXXX"/>
+            </div>
+            <div class="field">
+                <label>Birthday</label>
+                <input type="date" id="dob"/>
+            </div>
+            <div class="field">
+                <label>Address</label>
+                <input type="text" id="address"/>
+            </div>
+            <div class="field full">
+                <label>Driving License Number</label>
+                <input type="text" id="licenseNo" placeholder="Your license number"/>
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="password"/>
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Repeat password"/>
+            </div>
+        </div>
+        <button class="btn" id="registerBtn" onclick="submitCustomer()">
+            <span id="btnText">Register</span>
+            <div class="spinner" id="spinner"></div>
+        </button>
+    </div>
+
+    <!-- VENDOR FORM -->
+    <div class="form-section" id="vendorForm">
+        <div class="vendor-note">
+            Note: Vendor accounts require admin approval before activation.
+        </div>
+        <div class="form-grid">
+            <!-- Row 1: Full Name | Company Name -->
+            <div class="field">
+                <label>Full Name</label>
+                <input type="text" id="vendorName" placeholder="Owner name"/>
+            </div>
+            <div class="field">
+                <label>Company Name</label>
+                <input type="text" id="companyName" placeholder="Company name"/>
+            </div>
+            <!-- Row 2: Email | Phone -->
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="vendorEmail" placeholder="company@example.com"/>
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="tel" id="vendorPhone" placeholder="98XXXXXXXX"/>
+            </div>
+            <!-- Row 3: Registration No | Brand Name -->
+            <div class="field">
+                <label>Registration No.</label>
+                <input type="text" id="registrationNo" placeholder="Reg. number"/>
+            </div>
+            <div class="field">
+                <label>Brand Name</label>
+                <input type="text" id="brandName" placeholder="e.g. Toyota, Honda"/>
+            </div>
+            <!-- Row 5: Password | Confirm Password -->
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="vendorPassword" placeholder="password"/>
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+                <input type="password" id="vendorConfirmPassword" placeholder="Repeat password"/>
+            </div>
+        </div>
+        <button class="btn" onclick="submitVendor()">Register as Vendor</button>
+    </div>
+
+    <div class="login-link">
+        Already have an account? <a href="login.html">Login</a>
+    </div>
+
+</div>
+
+<script>
+    function switchRole(role, el) {
+      document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('customerForm').classList.toggle('active', role === 'customer');
+      document.getElementById('vendorForm').classList.toggle('active', role === 'vendor');
+      clearAlert();
+    }
+
+    function showAlert(msg, type) {
+      const a = document.getElementById('alert');
+      a.textContent = msg;
+      a.className = 'alert ' + type;
+    }
+
+    function clearAlert() { document.getElementById('alert').className = 'alert'; }
+
+    function setLoading(val) {
+      const btn = document.getElementById('registerBtn');
+      if (!btn) return;
+      btn.disabled = val;
+      document.getElementById('btnText').style.display = val ? 'none' : 'inline';
+      document.getElementById('spinner').style.display = val ? 'block' : 'none';
+    }
+
+    function v(id) { return document.getElementById(id).value.trim(); }
+
+    async function submitCustomer() {
+      clearAlert();
+      const firstName = v('firstName'), lastName = v('lastName'),
+            email = v('email'), phone = v('phone'), dob = v('dob'),
+            address = v('address'), licenseNo = v('licenseNo'),
+            password = document.getElementById('password').value,
+            confirmPw = document.getElementById('confirmPassword').value;
+
+      if (!firstName || !lastName || !email || !phone || !dob || !licenseNo || !password || !confirmPw) {
+        showAlert('Please fill in all required fields.', 'error'); return;
+      }
+      if (password.length < 6) { showAlert('Password must be at least 6 characters.', 'error'); return; }
+      if (password !== confirmPw) { showAlert('Passwords do not match!', 'error'); return; }
+
+      setLoading(true);
+      try {
+        const res = await fetch('http://localhost:8081/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ firstName, lastName, email, password, phoneNumber: phone, address, dob, licenseNo })
+        });
+        const data = await res.text();
+        if (res.ok || res.status === 201) {
+          showAlert('Account created successfully! Redirecting to login...', 'success');
+          setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+        } else {
+          showAlert(data || 'Registration failed. Please try again.', 'error');
+        }
+      } catch (err) {
+        showAlert('Cannot connect to server. Is the backend running?', 'error');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function submitVendor() {
+      showAlert('Vendor registration coming soon!', 'error');
+    }
+</script>
+</body>
+</html>
