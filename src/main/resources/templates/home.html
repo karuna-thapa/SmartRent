@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SmartRent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/home.css"/>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/home" class="logo">
+            <img src="/images/SmartRentLogo.png" alt="SmartRent" class="logo-full-img"/>
+        </a>
+
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="/home" class="active">Home</a></li>
+                <li><a href="/vehicle-rentals">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+
+            <div class="nav-auth">
+                <a href="/login" class="btn-login">Login</a>
+                <a href="/register" class="btn-register">Register</a>
+            </div>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <p class="hero-tag">Best Vehicle Rental Service</p>
+            <h1 class="hero-title">Rent Any Vehicle<br><span>Anywhere,</span> Anytime</h1>
+            <p class="hero-desc">Cars, bikes, scooters &amp; more — find the perfect ride for every journey. Flexible pick-up &amp; drop-off, transparent pricing, no hidden fees.</p>
+            <div class="hero-btns">
+                <a href="#booking" class="btn-primary">Book Now</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Vehicles</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Locations</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><span class="stat-num">10k+</span><span class="stat-label">Happy Customers</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== BOOKING FORM ==================== -->
+<section class="booking-section" id="booking">
+    <div class="booking-container">
+        <h2 class="booking-title">Book Your Vehicle</h2>
+        <p class="booking-subtitle">Cars, bikes, scooters &amp; more — find your perfect ride</p>
+
+        <div class="booking-card">
+            <!-- Row 1: Pick-up location, Pick-up date, Drop-off date -->
+            <div class="booking-fields">
+                <div class="booking-field">
+                    <label>PICK-UP LOCATION</label>
+                    <div class="field-input">
+                        <svg class="field-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <input type="text" id="pickupLocation" placeholder="Enter pick-up location"/>
+                        <button class="clear-btn" onclick="clearField('pickupLocation')">
+                            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="booking-field">
+                    <label>PICK-UP DATE &amp; TIME</label>
+                    <div class="field-input field-split">
+                        <div class="split-left">
+                            <svg class="field-icon" viewBox="0 0 24 24"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>
+                            <input type="date" id="pickupDate"/>
+                        </div>
+                        <div class="split-divider"></div>
+                        <div class="split-right">
+                            <svg class="field-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                            <input type="time" id="pickupTime" value="12:00"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-field">
+                    <label>DROP-OFF DATE &amp; TIME</label>
+                    <div class="field-input field-split">
+                        <div class="split-left">
+                            <svg class="field-icon" viewBox="0 0 24 24"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>
+                            <input type="date" id="dropoffDate"/>
+                        </div>
+                        <div class="split-divider"></div>
+                        <div class="split-right">
+                            <svg class="field-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                            <input type="time" id="dropoffTime" value="12:00"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drop-off location: only visible when "Return to different location" is toggled ON -->
+            <div class="dropoff-location-row" id="dropoffLocationField">
+                <div class="booking-field dropoff-field-inner">
+                    <label>DROP-OFF LOCATION</label>
+                    <div class="field-input">
+                        <svg class="field-icon" viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                        <input type="text" id="dropoffLocation" placeholder="Enter drop-off location"/>
+                        <button class="clear-btn" onclick="clearField('dropoffLocation')">
+                            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="booking-bottom">
+                <div class="booking-options">
+                    <label class="toggle-label">
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="returnDiff"/>
+                            <span class="toggle-slider"></span>
+                        </div>
+                        Return to different location
+                    </label>
+                    <div class="driver-age-wrap">
+                        <label class="driver-age-label" for="driverAge">Driver's Age</label>
+                        <select id="driverAge" class="driver-age-select">
+                            <option value="25+">25+</option>
+                            <option value="18-24">18–24</option>
+                            <option value="26-35">26–35</option>
+                            <option value="36-50">36–50</option>
+                            <option value="51+">51+</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-show-vehicles" onclick="searchVehicles()">Show Vehicles</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== BRANDS ==================== -->
+<section class="brands-section">
+    <div class="section-container">
+        <div class="section-header">
+            <div>
+                <p class="section-tag">Trusted Partners</p>
+                <h2 class="section-title">Our Partner Brands</h2>
+            </div>
+            <a href="#" class="btn-view-all">View All</a>
+        </div>
+        <!-- Brand cards are loaded dynamically from the database via /api/brands.
+             Vehicle count per brand is also pulled from the database.
+             Fallback static cards shown below if API is unreachable. -->
+        <div class="brands-grid" id="brandsGrid">
+            <div class="brand-card" onclick="filterByBrand(0)">
+                <img src="/images/Honda.png" alt="Honda" class="brand-logo-img"/>
+                <p class="brand-name">Honda</p>
+                <p class="brand-count">Loading...</p>
+            </div>
+            <div class="brand-card" onclick="filterByBrand(0)">
+                <img src="/images/Ford.png" alt="Ford" class="brand-logo-img"/>
+                <p class="brand-name">Ford</p>
+                <p class="brand-count">Loading...</p>
+            </div>
+            <div class="brand-card" onclick="filterByBrand(0)">
+                <img src="/images/Yahama.png" alt="Yamaha" class="brand-logo-img"/>
+                <p class="brand-name">Yamaha</p>
+                <p class="brand-count">Loading...</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== ABOUT ==================== -->
+<section class="about-section" id="about">
+    <div class="section-container">
+        <div class="about-grid">
+            <div class="about-content">
+                <p class="section-tag">Who We Are</p>
+                <h2 class="section-title">About Us</h2>
+                <p class="about-text">SmartRent is your trusted vehicle rental platform connecting customers with top-quality cars, bikes, and scooters from verified vendors. We make renting any vehicle simple, fast, and affordable.</p>
+                <p class="about-text">Whether you need a car for a road trip, a scooter for the city, or a bike for adventure, our platform has you covered with transparent pricing, flexible booking, and 24/7 support.</p>
+                <div class="about-features">
+                    <div class="about-feature">
+                        <div class="feature-tick">&#10003;</div>
+                        <div>
+                            <p class="feature-title">Verified Vendors</p>
+                            <p class="feature-desc">All vendors are thoroughly vetted</p>
+                        </div>
+                    </div>
+                    <div class="about-feature">
+                        <div class="feature-tick">&#10003;</div>
+                        <div>
+                            <p class="feature-title">Best Prices</p>
+                            <p class="feature-desc">Competitive rates, no hidden fees</p>
+                        </div>
+                    </div>
+                    <div class="about-feature">
+                        <div class="feature-tick">&#10003;</div>
+                        <div>
+                            <p class="feature-title">All Vehicle Types</p>
+                            <p class="feature-desc">Cars, bikes, scooters &amp; more</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="/register" class="btn-primary">Learn More....</a>
+            </div>
+            <div class="about-image">
+                <div class="about-imgs-stack">
+                    <img src="/images/AboutUs1.jpg" alt="About SmartRent" class="about-stack-img"/>
+                    <img src="/images/AboutUs2.jpg" alt="About SmartRent" class="about-stack-img"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== VEHICLES ==================== -->
+<section class="vehicles-section" id="vehicles">
+    <div class="section-container">
+        <div class="section-header">
+            <div>
+                <p class="section-tag">Our Fleet</p>
+                <h2 class="section-title">Choose the Vehicle That You Need</h2>
+            </div>
+            <a href="#" class="btn-view-all">View All</a>
+        </div>
+        <!-- Vehicle cards loaded from /api/vehicles/featured (with real images if set by vendor).
+             Below are static fallback cards shown when API is unreachable. -->
+        <div class="vehicles-grid" id="vehiclesGrid">
+            <div class="vehicle-card">
+                <div class="vehicle-img">
+                    <svg viewBox="0 0 200 120" fill="none">
+                        <rect width="200" height="120" rx="12" fill="#f0f4ff"/>
+                        <rect x="15" y="55" width="170" height="50" rx="6" fill="#dde4ff"/>
+                        <path d="M25 55 L50 25 L150 25 L175 55" fill="#c5cfff"/>
+                        <circle cx="50" cy="105" r="14" fill="#4a6cf7" opacity="0.7"/>
+                        <circle cx="150" cy="105" r="14" fill="#4a6cf7" opacity="0.7"/>
+                        <rect x="60" y="27" width="80" height="28" rx="3" fill="#a0b0ff" opacity="0.5"/>
+                    </svg>
+                </div>
+                <div class="vehicle-info">
+                    <div class="vehicle-header">
+                        <h3 class="vehicle-name">Honda City</h3>
+                        <span class="vehicle-badge">Sedan</span>
+                    </div>
+                    <div class="vehicle-specs">
+                        <span>5 Seats</span>
+                        <span>Honda</span>
+                    </div>
+                    <div class="vehicle-price">
+                        <span class="price">Rs. 3,500</span>
+                        <span class="price-per">/day</span>
+                    </div>
+                    <button class="btn-book">Book Now</button>
+                </div>
+            </div>
+
+            <div class="vehicle-card">
+                <div class="vehicle-img">
+                    <svg viewBox="0 0 200 120" fill="none">
+                        <rect width="200" height="120" rx="12" fill="#fff8ee"/>
+                        <rect x="15" y="50" width="170" height="55" rx="6" fill="#ffe9c0"/>
+                        <path d="M20 50 L40 22 L160 22 L180 50" fill="#ffd080"/>
+                        <circle cx="50" cy="105" r="14" fill="#f5a623" opacity="0.7"/>
+                        <circle cx="150" cy="105" r="14" fill="#f5a623" opacity="0.7"/>
+                        <rect x="55" y="24" width="90" height="26" rx="3" fill="#ffc040" opacity="0.5"/>
+                    </svg>
+                </div>
+                <div class="vehicle-info">
+                    <div class="vehicle-header">
+                        <h3 class="vehicle-name">Ford Everest</h3>
+                        <span class="vehicle-badge badge-orange">SUV</span>
+                    </div>
+                    <div class="vehicle-specs">
+                        <span>7 Seats</span>
+                        <span>Ford</span>
+                    </div>
+                    <div class="vehicle-price">
+                        <span class="price">Rs. 6,000</span>
+                        <span class="price-per">/day</span>
+                    </div>
+                    <button class="btn-book">Book Now</button>
+                </div>
+            </div>
+
+            <div class="vehicle-card">
+                <div class="vehicle-img">
+                    <!-- Scooter illustration -->
+                    <svg viewBox="0 0 200 120" fill="none">
+                        <rect width="200" height="120" rx="12" fill="#f0fff4"/>
+                        <ellipse cx="100" cy="75" rx="55" ry="25" fill="#c8f5d8"/>
+                        <rect x="70" y="45" width="60" height="30" rx="8" fill="#90e0b0"/>
+                        <circle cx="60" cy="95" r="16" fill="#22c55e" opacity="0.7"/>
+                        <circle cx="140" cy="95" r="16" fill="#22c55e" opacity="0.7"/>
+                        <line x1="100" y1="45" x2="100" y2="28" stroke="#22c55e" stroke-width="4" opacity="0.7"/>
+                        <rect x="85" y="23" width="30" height="10" rx="4" fill="#22c55e" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="vehicle-info">
+                    <div class="vehicle-header">
+                        <h3 class="vehicle-name">Yamaha Aerox</h3>
+                        <span class="vehicle-badge badge-green">Scooter</span>
+                    </div>
+                    <div class="vehicle-specs">
+                        <span>2 Seats</span>
+                        <span>Yamaha</span>
+                    </div>
+                    <div class="vehicle-price">
+                        <span class="price">Rs. 800</span>
+                        <span class="price-per">/day</span>
+                    </div>
+                    <button class="btn-book">Book Now</button>
+                </div>
+            </div>
+
+            <div class="vehicle-card">
+                <div class="vehicle-img">
+                    <!-- Bike illustration -->
+                    <svg viewBox="0 0 200 120" fill="none">
+                        <rect width="200" height="120" rx="12" fill="#fdf4ff"/>
+                        <ellipse cx="100" cy="72" rx="50" ry="22" fill="#ead5ff"/>
+                        <rect x="72" y="48" width="56" height="26" rx="6" fill="#d0a0ff" opacity="0.7"/>
+                        <circle cx="58" cy="92" r="18" fill="#a855f7" opacity="0.7"/>
+                        <circle cx="142" cy="92" r="18" fill="#a855f7" opacity="0.7"/>
+                        <line x1="100" y1="48" x2="100" y2="30" stroke="#a855f7" stroke-width="4" opacity="0.6"/>
+                        <rect x="83" y="25" width="34" height="10" rx="4" fill="#a855f7" opacity="0.5"/>
+                        <line x1="72" y1="60" x2="58" y2="74" stroke="#a855f7" stroke-width="3" opacity="0.5"/>
+                    </svg>
+                </div>
+                <div class="vehicle-info">
+                    <div class="vehicle-header">
+                        <h3 class="vehicle-name">Honda CB300R</h3>
+                        <span class="vehicle-badge badge-purple">Bike</span>
+                    </div>
+                    <div class="vehicle-specs">
+                        <span>2 Seats</span>
+                        <span>Honda</span>
+                    </div>
+                    <div class="vehicle-price">
+                        <span class="price">Rs. 1,200</span>
+                        <span class="price-per">/day</span>
+                    </div>
+                    <button class="btn-book">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== REVIEWS ==================== -->
+<section class="reviews-section">
+    <div class="section-container">
+        <div class="section-header center">
+            <div>
+                <p class="section-tag">Testimonials</p>
+                <h2 class="section-title">Customer Reviews</h2>
+            </div>
+        </div>
+        <div class="reviews-grid" id="reviewsGrid">
+            <div class="review-card">
+                <div class="review-stars">
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                </div>
+                <p class="review-text">"Amazing service! The car was spotless, pickup was smooth, and the price was very reasonable. Will definitely use SmartRent again!"</p>
+                <div class="reviewer">
+                    <div class="reviewer-avatar" style="background: #4a6cf7;">R</div>
+                    <div>
+                        <p class="reviewer-name">Rajesh Kumar</p>
+                        <p class="reviewer-role reviewer-vehicle">Rented: Honda City</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-stars">
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#ddd"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                </div>
+                <p class="review-text">"Really convenient platform! Booking was quick and easy. The scooter was in perfect condition. Great experience overall!"</p>
+                <div class="reviewer">
+                    <div class="reviewer-avatar" style="background: #f5a623;">S</div>
+                    <div>
+                        <p class="reviewer-name">Sita Sharma</p>
+                        <p class="reviewer-role reviewer-vehicle">Rented: Yamaha Aerox</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-stars">
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>
+                </div>
+                <p class="review-text">"Top-notch service. The team was professional and the bike handled all the mountain roads perfectly. Highly recommended!"</p>
+                <div class="reviewer">
+                    <div class="reviewer-avatar" style="background: #22c55e;">A</div>
+                    <div>
+                        <p class="reviewer-name">Anil Thapa</p>
+                        <p class="reviewer-role reviewer-vehicle">Rented: Honda CB300R</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-top">
+            <a href="/home" class="logo footer-logo">
+                <div class="footer-logo-box">
+                    <img src="/images/SmartRentLogo.png" alt="SmartRent" class="logo-full-img logo-full-img-footer"/>
+                </div>
+            </a>
+            <div class="social-links">
+                <a href="#" class="social-link" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+                <a href="#" class="social-link" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </a>
+                <a href="#" class="social-link" aria-label="X (Twitter)">
+                    <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <a href="/home">Home</a>
+            <a href="/vehicle-rentals">Services</a>
+            <a href="#about">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms Of Service</a>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 | SmartRent. All Rights Reserved</p>
+        </div>
+    </div>
+</footer>
+
+<script src="/js/home.js"></script>
+</body>
+</html>
+ 

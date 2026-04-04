@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Vehicle Rentals — SmartRent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/vehicle-rentals.css"/>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/home" class="logo">
+            <img src="/images/SmartRentLogo.png" alt="SmartRent" class="logo-full-img"/>
+        </a>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/vehicle-rentals" class="active">Services</a></li>
+                <li><a href="/home#about">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="nav-auth">
+                <a href="/login" class="btn-login">Login</a>
+                <a href="/register" class="btn-register">Register</a>
+            </div>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ==================== PAGE HEADER ==================== -->
+<div class="page-header">
+    <div class="page-header-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="/home">Home</a>
+            <span class="breadcrumb-sep">›</span>
+            <a href="#">Services</a>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-current">Vehicle Rentals</span>
+        </nav>
+        <h1 class="page-title">Vehicle Rentals</h1>
+        <p class="page-subtitle">Find and book the perfect vehicle for your journey — cars, bikes, and scooters available across Nepal.</p>
+    </div>
+</div>
+
+<!-- ==================== MAIN LAYOUT ==================== -->
+<main class="rentals-layout">
+
+    <!-- ===== SIDEBAR FILTERS ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Filters</h2>
+            <button class="clear-all-btn" id="clearAllBtn">Clear All</button>
+        </div>
+
+        <!-- Search -->
+        <div class="filter-group">
+            <label class="filter-label" for="sidebarSearch">Search Vehicle</label>
+            <div class="search-input-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="sidebarSearch" class="filter-search-input" placeholder="e.g. Toyota, Honda…"/>
+            </div>
+        </div>
+
+        <!-- Category -->
+        <div class="filter-group">
+            <h3 class="filter-heading">Vehicle Category</h3>
+            <label class="checkbox-label">
+                <input type="checkbox" class="filter-cb" data-filter="category" value="Car"/>
+                <span class="cb-box"></span>
+                <span>🚗 Car</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="filter-cb" data-filter="category" value="Bike"/>
+                <span class="cb-box"></span>
+                <span>🏍️ Bike</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="filter-cb" data-filter="category" value="Scooter"/>
+                <span class="cb-box"></span>
+                <span>🛵 Scooter</span>
+            </label>
+        </div>
+
+        <!-- Brand -->
+        <div class="filter-group">
+            <h3 class="filter-heading">Brand</h3>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Toyota"/><span class="cb-box"></span><span>Toyota</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Honda"/><span class="cb-box"></span><span>Honda</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="BMW"/><span class="cb-box"></span><span>BMW</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Hyundai"/><span class="cb-box"></span><span>Hyundai</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Royal Enfield"/><span class="cb-box"></span><span>Royal Enfield</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Mercury"/><span class="cb-box"></span><span>Mercury</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Bajaj"/><span class="cb-box"></span><span>Bajaj</span></label>
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-group">
+            <h3 class="filter-heading">Price Range (NRS/day)</h3>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="0-1000"/><span class="cb-box"></span><span>0 – 1,000 NRS</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="1000-5000"/><span class="cb-box"></span><span>1,000 – 5,000 NRS</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="5000-10000"/><span class="cb-box"></span><span>5,000 – 10,000 NRS</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="10000-999999"/><span class="cb-box"></span><span>10,000+ NRS</span></label>
+        </div>
+
+        <!-- Transmission -->
+        <div class="filter-group">
+            <h3 class="filter-heading">Transmission</h3>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="transmission" value="Automatic"/><span class="cb-box"></span><span>Automatic</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="transmission" value="Manual"/><span class="cb-box"></span><span>Manual</span></label>
+        </div>
+
+        <!-- Seats -->
+        <div class="filter-group">
+            <h3 class="filter-heading">Number of Seats</h3>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="2"/><span class="cb-box"></span><span>2 Seats</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="5"/><span class="cb-box"></span><span>5 Seats</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="7"/><span class="cb-box"></span><span>7 Seats</span></label>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <section class="listings-area">
+
+        <!-- Toolbar -->
+        <div class="listings-toolbar">
+            <div class="toolbar-left">
+                <div class="result-count" id="resultCount">Available Vehicles (<span id="countNum">0</span> results)</div>
+            </div>
+            <div class="toolbar-right">
+                <div class="search-wrap">
+                    <span class="search-icon-sm">🔍</span>
+                    <input type="text" id="mainSearch" class="main-search-input" placeholder="Search vehicles…"/>
+                </div>
+                <div class="sort-wrap">
+                    <label for="sortSelect" class="sort-label">Sort:</label>
+                    <select id="sortSelect" class="sort-select">
+                        <option value="best">Best Match</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="rating">Top Rated</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Filters -->
+        <div class="active-filters" id="activeFilters" style="display:none;">
+            <span class="active-filters-label">Active Filters:</span>
+            <div class="active-filter-tags" id="activeFilterTags"></div>
+        </div>
+
+        <!-- Vehicle Grid -->
+        <div class="vehicle-grid" id="vehicleGrid"></div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="empty-icon">🚗</div>
+            <h3 class="empty-title">No vehicles found</h3>
+            <p class="empty-msg">Try adjusting your filters or search term to discover more options.</p>
+            <button class="btn-primary-sm" id="emptyResetBtn">Clear All Filters</button>
+        </div>
+
+    </section>
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+    <div class="footer-inner">
+        <p>&copy; 2025 SmartRent. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- Mobile Filter Toggle -->
+<button class="mobile-filter-toggle" id="mobileFilterToggle" aria-label="Toggle Filters">
+    <span>⚙️</span> Filters
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<script>
+// ── Vehicle Data ────────────────────────────────────────────────────────────
+const vehicles = [
+  { id:1,  name:"Toyota Hilux",       category:"Car",     brand:"Toyota",       price:8500,  transmission:"Manual",    seats:5, fuel:"Diesel",  rating:4.8, icon:"🚗" },
+  { id:2,  name:"Toyota Land Cruiser",category:"Car",     brand:"Toyota",       price:15000, transmission:"Automatic", seats:7, fuel:"Diesel",  rating:4.9, icon:"🚙" },
+  { id:3,  name:"Honda City",         category:"Car",     brand:"Honda",        price:4500,  transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.6, icon:"🚗" },
+  { id:4,  name:"Honda Jazz",         category:"Car",     brand:"Honda",        price:3500,  transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.4, icon:"🚗" },
+  { id:5,  name:"BMW 3 Series",       category:"Car",     brand:"BMW",          price:12000, transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.7, icon:"🏎️" },
+  { id:6,  name:"Hyundai Tucson",     category:"Car",     brand:"Hyundai",      price:7000,  transmission:"Automatic", seats:5, fuel:"Diesel",  rating:4.5, icon:"🚙" },
+  { id:7,  name:"Hyundai i20",        category:"Car",     brand:"Hyundai",      price:3800,  transmission:"Manual",    seats:5, fuel:"Petrol",  rating:4.3, icon:"🚗" },
+  { id:8,  name:"Royal Enfield Classic 350", category:"Bike", brand:"Royal Enfield", price:1200, transmission:"Manual", seats:2, fuel:"Petrol", rating:4.7, icon:"🏍️" },
+  { id:9,  name:"Royal Enfield Meteor", category:"Bike", brand:"Royal Enfield", price:1100, transmission:"Manual",   seats:2, fuel:"Petrol",  rating:4.6, icon:"🏍️" },
+  { id:10, name:"Mercury EV Bike",    category:"Bike",    brand:"Mercury",      price:800,   transmission:"Automatic", seats:2, fuel:"Electric",rating:4.2, icon:"⚡" },
+  { id:11, name:"Honda Activa 6G",    category:"Scooter", brand:"Honda",        price:550,   transmission:"Automatic", seats:2, fuel:"Petrol",  rating:4.4, icon:"🛵" },
+  { id:12, name:"Bajaj Chetak",       category:"Scooter", brand:"Bajaj",        price:600,   transmission:"Automatic", seats:2, fuel:"Electric",rating:4.3, icon:"🛵" },
+];
+
+// ── State ────────────────────────────────────────────────────────────────────
+const filters = { category: new Set(), brand: new Set(), price: new Set(), transmission: new Set(), seats: new Set(), search: "" };
+let sortOrder = "best";
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function stars(rating) {
+    const full = Math.floor(rating);
+    const half = rating - full >= 0.5;
+    let html = "";
+    for (let i = 0; i < 5; i++) {
+        if (i < full) html += '<span class="star full">★</span>';
+        else if (i === full && half) html += '<span class="star half">★</span>';
+        else html += '<span class="star empty">★</span>';
+    }
+    return html;
+}
+
+function fmt(n) { return n.toLocaleString("en-NP"); }
+
+function priceInRange(price, rangeStr) {
+    const [lo, hi] = rangeStr.split("-").map(Number);
+    return price >= lo && price <= hi;
+}
+
+// ── Filter & Sort ────────────────────────────────────────────────────────────
+function applyFilters() {
+    let result = [...vehicles];
+    const q = filters.search.toLowerCase().trim();
+    if (q) result = result.filter(v => v.name.toLowerCase().includes(q) || v.brand.toLowerCase().includes(q));
+    if (filters.category.size) result = result.filter(v => filters.category.has(v.category));
+    if (filters.brand.size)    result = result.filter(v => filters.brand.has(v.brand));
+    if (filters.price.size)    result = result.filter(v => [...filters.price].some(r => priceInRange(v.price, r)));
+    if (filters.transmission.size) result = result.filter(v => filters.transmission.has(v.transmission));
+    if (filters.seats.size)    result = result.filter(v => filters.seats.has(String(v.seats)));
+
+    if (sortOrder === "price-asc")  result.sort((a,b) => a.price - b.price);
+    if (sortOrder === "price-desc") result.sort((a,b) => b.price - a.price);
+    if (sortOrder === "rating")     result.sort((a,b) => b.rating - a.rating);
+
+    return result;
+}
+
+// ── Render Cards ─────────────────────────────────────────────────────────────
+function renderCards() {
+    const data = applyFilters();
+    const grid = document.getElementById("vehicleGrid");
+    const empty = document.getElementById("emptyState");
+    document.getElementById("countNum").textContent = data.length;
+
+    if (!data.length) {
+        grid.innerHTML = "";
+        empty.style.display = "flex";
+        return;
+    }
+    empty.style.display = "none";
+
+    grid.innerHTML = data.map(v => `
+        <div class="vehicle-card" data-id="${v.id}">
+            <div class="card-image">
+                <span class="vehicle-icon">${v.icon}</span>
+                <span class="brand-badge">${v.brand}</span>
+                <span class="category-tag">${v.category}</span>
+            </div>
+            <div class="card-body">
+                <h3 class="card-name">${v.name}</h3>
+                <div class="card-specs">
+                    <span class="spec-item"><span class="spec-icon">💺</span>${v.seats} Seats</span>
+                    <span class="spec-item"><span class="spec-icon">⚙️</span>${v.transmission}</span>
+                    <span class="spec-item"><span class="spec-icon">${v.fuel === 'Electric' ? '⚡' : '⛽'}</span>${v.fuel}</span>
+                </div>
+                <div class="card-rating">
+                    <div class="stars">${stars(v.rating)}</div>
+                    <span class="rating-num">${v.rating}</span>
+                </div>
+                <div class="card-footer">
+                    <div class="price-block">
+                        <span class="price-amount">NRS ${fmt(v.price)}</span>
+                        <span class="price-unit">/day</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-outline" onclick="viewDetails(${v.id})">View Details</button>
+                        <button class="btn-primary-card" onclick="bookNow(${v.id})">Book Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join("");
+}
+
+// ── Active Filter Tags ────────────────────────────────────────────────────────
+function renderActiveTags() {
+    const wrap = document.getElementById("activeFilters");
+    const tags = document.getElementById("activeFilterTags");
+    const allTags = [];
+
+    if (filters.search) allTags.push({ label: `"${filters.search}"`, key: "search", val: null });
+    filters.category.forEach(v     => allTags.push({ label: `Category: ${v}`,     key: "category",     val: v }));
+    filters.brand.forEach(v        => allTags.push({ label: `Brand: ${v}`,        key: "brand",        val: v }));
+    filters.price.forEach(v        => allTags.push({ label: `Price: ${v.replace("-999999","+")} NRS`, key: "price", val: v }));
+    filters.transmission.forEach(v => allTags.push({ label: `Trans: ${v}`,        key: "transmission", val: v }));
+    filters.seats.forEach(v        => allTags.push({ label: `${v} Seats`,         key: "seats",        val: v }));
+
+    if (!allTags.length) { wrap.style.display = "none"; return; }
+    wrap.style.display = "flex";
+    tags.innerHTML = allTags.map(t => `
+        <span class="filter-tag" data-key="${t.key}" data-val="${t.val}">
+            ${t.label} <button class="tag-remove" title="Remove">×</button>
+        </span>
+    `).join("");
+
+    tags.querySelectorAll(".tag-remove").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const tag = btn.closest(".filter-tag");
+            const key = tag.dataset.key, val = tag.dataset.val;
+            if (key === "search") {
+                filters.search = "";
+                document.getElementById("sidebarSearch").value = "";
+                document.getElementById("mainSearch").value = "";
+            } else {
+                filters[key].delete(val);
+                document.querySelector(`.filter-cb[data-filter="${key}"][value="${val}"]`).checked = false;
+            }
+            renderActiveTags();
+            renderCards();
+        });
+    });
+}
+
+// ── Event Listeners ───────────────────────────────────────────────────────────
+function syncSearch(val) {
+    filters.search = val;
+    document.getElementById("sidebarSearch").value = val;
+    document.getElementById("mainSearch").value = val;
+    renderActiveTags();
+    renderCards();
+}
+
+document.getElementById("sidebarSearch").addEventListener("input", e => syncSearch(e.target.value));
+document.getElementById("mainSearch").addEventListener("input", e => syncSearch(e.target.value));
+
+document.querySelectorAll(".filter-cb").forEach(cb => {
+    cb.addEventListener("change", () => {
+        const key = cb.dataset.filter, val = cb.value;
+        if (cb.checked) filters[key].add(val);
+        else filters[key].delete(val);
+        renderActiveTags();
+        renderCards();
+    });
+});
+
+document.getElementById("sortSelect").addEventListener("change", e => {
+    sortOrder = e.target.value;
+    renderCards();
+});
+
+function clearAll() {
+    filters.category.clear(); filters.brand.clear(); filters.price.clear();
+    filters.transmission.clear(); filters.seats.clear(); filters.search = "";
+    document.querySelectorAll(".filter-cb").forEach(cb => cb.checked = false);
+    document.getElementById("sidebarSearch").value = "";
+    document.getElementById("mainSearch").value = "";
+    document.getElementById("activeFilters").style.display = "none";
+    document.getElementById("activeFilterTags").innerHTML = "";
+    renderCards();
+}
+
+document.getElementById("clearAllBtn").addEventListener("click", clearAll);
+document.getElementById("emptyResetBtn").addEventListener("click", clearAll);
+
+// ── Mobile Sidebar ────────────────────────────────────────────────────────────
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("sidebarOverlay");
+const mobileBtn = document.getElementById("mobileFilterToggle");
+
+mobileBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("active");
+});
+overlay.addEventListener("click", () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+});
+
+// ── Hamburger ─────────────────────────────────────────────────────────────────
+document.getElementById("hamburger").addEventListener("click", () => {
+    document.querySelector(".nav-links").classList.toggle("open");
+    document.querySelector(".nav-auth").classList.toggle("open");
+});
+
+// ── Actions ───────────────────────────────────────────────────────────────────
+function viewDetails(id) { alert(`View details for vehicle #${id} — coming soon!`); }
+function bookNow(id) { alert(`Booking vehicle #${id} — coming soon!`); }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderCards();
+</script>
+</body>
+</html>

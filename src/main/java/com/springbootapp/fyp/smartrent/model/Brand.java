@@ -17,6 +17,9 @@ public class Brand {
     @Column(name = "brand_name", nullable = false, unique = true, length = 100)
     private String brandName;
 
+    @Column(name = "brand_logo_url", length = 500)
+    private String brandLogoUrl;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

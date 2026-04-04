@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SmartRent — Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/register.css"/>
+</head>
+<body>
+
+<div class="card">
+
+    <div class="logo">
+        <img src="/images/SmartRentLogo.png" alt="SmartRent" class="auth-logo-img"/>
+    </div>
+
+    <div class="role-tabs">
+        <button class="role-tab active" onclick="switchRole('customer', this)">Customer</button>
+        <button class="role-tab" onclick="switchRole('vendor', this)">Vendor</button>
+    </div>
+
+    <div class="alert" id="alert"></div>
+
+    <!-- CUSTOMER FORM -->
+    <div class="form-section active" id="customerForm">
+        <div class="form-grid">
+            <div class="field">
+                <label>First Name</label>
+                <input type="text" id="firstName" />
+            </div>
+            <div class="field">
+                <label>Last Name</label>
+                <input type="text" id="lastName" />
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="email"/>
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" placeholder="98XXXXXXXX"/>
+            </div>
+            <div class="field">
+                <label>Birthday</label>
+                <input type="date" id="dob"/>
+            </div>
+            <div class="field">
+                <label>Address</label>
+                <input type="text" id="address"/>
+            </div>
+            <div class="field full">
+                <label>Driving License Number</label>
+                <input type="text" id="licenseNo" placeholder="Your license number"/>
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="password"/>
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Repeat password"/>
+            </div>
+        </div>
+        <button class="btn" id="registerBtn" onclick="submitCustomer()">
+            <span id="btnText">Register</span>
+            <div class="spinner" id="spinner"></div>
+        </button>
+    </div>
+
+    <!-- VENDOR FORM -->
+    <div class="form-section" id="vendorForm">
+        <div class="vendor-note">
+            Note: Vendor accounts require admin approval before activation.
+        </div>
+        <div class="form-grid">
+            <div class="field">
+                <label>Full Name</label>
+                <input type="text" id="vendorName" placeholder="Owner name"/>
+            </div>
+            <div class="field">
+                <label>Company Name</label>
+                <input type="text" id="companyName" placeholder="Company name"/>
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="vendorEmail" placeholder="company@example.com"/>
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="tel" id="vendorPhone" placeholder="98XXXXXXXX"/>
+            </div>
+            <div class="field">
+                <label>Registration No.</label>
+                <input type="text" id="registrationNo" placeholder="Reg. number"/>
+            </div>
+            <div class="field">
+                <label>Brand Name</label>
+                <input type="text" id="brandName" placeholder="e.g. Toyota, Honda"/>
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="vendorPassword" placeholder="password"/>
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+                <input type="password" id="vendorConfirmPassword" placeholder="Repeat password"/>
+            </div>
+        </div>
+        <button class="btn" onclick="submitVendor()">Register as Vendor</button>
+    </div>
+
+    <div class="login-link">
+        Already have an account? <a href="/login">Login</a>
+    </div>
+
+</div>
+
+<script src="/js/register.js"></script>
+</body>
+</html>

@@ -43,6 +43,9 @@ public class Vehicle {
     @Column(name = "vehicle_no", nullable = false, unique = true, length = 50)
     private String vehicleNo;
 
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

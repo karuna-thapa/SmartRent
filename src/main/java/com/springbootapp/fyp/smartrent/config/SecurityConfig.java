@@ -35,19 +35,20 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Allow all static files
+                        // Allow page routes and static files
                         .requestMatchers(
-                                "/",
-                                "/*.html",
-                                "/**.html",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
-                                "/static/**"
+                                "/", "/home", "/login", "/register",
+                                "/vehicle-rentals",
+                                "/vendor/dashboard", "/admin/dashboard",
+                                "/home.html", "/login.html", "/register.html",
+                                "/css/**", "/js/**", "/images/**", "/static/**"
                         ).permitAll()
                         // Allow auth APIs
                         .requestMatchers("/api/auth/**").permitAll()
+                        // Public read-only APIs for home page
                         .requestMatchers("/api/vehicles/**").permitAll()
+                        .requestMatchers("/api/brands/**").permitAll()
+                        .requestMatchers("/api/reviews/**").permitAll()
                         // Role based
                         .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
                         .requestMatchers("/api/vendor/**").hasRole("VENDOR")
