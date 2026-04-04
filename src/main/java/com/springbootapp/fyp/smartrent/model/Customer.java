@@ -42,6 +42,9 @@ public class Customer {
     @Column(name = "license_no", nullable = false, length = 100)
     private String licenseNo;
 
+    @Column(name = "gender", length = 20)
+    private String gender;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

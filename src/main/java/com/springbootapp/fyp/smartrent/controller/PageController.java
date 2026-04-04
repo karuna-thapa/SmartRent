@@ -35,4 +35,19 @@ public class PageController {
     public String vehicleRentals() {
         return "vehicle-rentals";
     }
+
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
+
+    @GetMapping("/contact")
+    public String contact() {
+        return "contact";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
 }

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>About Us — SmartRent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/about.css"/>
+    <link rel="stylesheet" href="/css/navbar.css"/>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/home" class="logo">
+            <img src="/images/SmartRentLogo.png" alt="SmartRent" class="logo-full-img"/>
+        </a>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/vehicle-rentals">Services</a></li>
+                <li><a href="/about" class="active">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+            <div class="nav-auth" id="navAuth">
+                <a href="/login" class="btn-login">Login</a>
+                <a href="/register" class="btn-register">Register</a>
+            </div>
+            <div class="nav-user" id="navUser" style="display:none">
+                <div class="user-btn" id="userBtn" onclick="toggleUserDropdown()">
+                    <div class="user-initials" id="navInitials"></div>
+                    <span class="nav-user-name" id="navUserName"></span>
+                    <svg class="user-chevron" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="/profile">My Profile</a>
+                    <a href="#" onclick="navLogout(event)">Log Out</a>
+                </div>
+            </div>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+
+<!-- ==================== ABOUT US ==================== -->
+<section class="section about-section" id="about">
+    <div class="container">
+        <div class="about-story">
+            <div class="about-content">
+                <span class="section-tag">Our Story</span>
+                <h2 class="section-title">Who We Are</h2>
+                <p class="section-body">
+                    SmartRent was founded in 2021 with a simple vision: make renting a vehicle in Nepal as easy, transparent, and stress-free as possible. We saw that travellers and daily commuters alike were struggling with outdated booking processes, hidden fees, and limited choice — so we built something better.
+                </p>
+                <p class="section-body">
+                    Today we operate across Nepal's major cities and tourist routes, offering a curated fleet of cars, bikes, and scooters maintained to the highest safety standards. Whether you need a rugged 4×4 for a mountain road trip or a nimble scooter for city errands, SmartRent has you covered.
+                </p>
+                <p class="section-body">
+                    Our platform connects verified local vendors with customers, creating a trusted marketplace that benefits both sides — fair prices for renters, reliable income for vehicle owners.
+                </p>
+                <div class="about-badges">
+                    <span class="badge">Verified Vendors</span>
+                    <span class="badge">No Hidden Fees</span>
+                    <span class="badge">24 / 7 Support</span>
+                </div>
+            </div>
+            <div class="about-image">
+                <img src="/images/AboutUsPage.jpg" alt="About SmartRent"/>
+            </div>
+        </div>
+
+        <div class="about-visual">
+            <div class="visual-card primary-card">
+                <p class="visual-stat">500+</p>
+                <p class="visual-label">Vehicles Available</p>
+            </div>
+            <div class="visual-card accent-card">
+                <p class="visual-stat">50+</p>
+                <p class="visual-label">Locations Nationwide</p>
+            </div>
+            <div class="visual-card green-card">
+                <p class="visual-stat">10,000+</p>
+                <p class="visual-label">Happy Customers</p>
+            </div>
+            <div class="visual-card purple-card">
+                <p class="visual-stat">4.8 / 5</p>
+                <p class="visual-label">Average Rating</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== WHAT WE OFFER ==================== -->
+<section class="section offer-section" id="what-we-offer">
+    <div class="container">
+        <div class="section-header centered">
+            <span class="section-tag">What We Offer</span>
+            <h2 class="section-title">Everything You Need, In One Place</h2>
+            <p class="section-desc">From short city trips to long mountain adventures — we have the right vehicle and the right tools to make every journey seamless.</p>
+        </div>
+
+        <div class="offer-grid">
+
+            <div class="offer-card">
+                <h3 class="offer-title">Car Rentals</h3>
+                <p class="offer-desc">Choose from economy sedans to premium SUVs and 7-seater family vehicles. All cars come serviced, insured, and GPS-ready.</p>
+                <ul class="offer-list">
+                    <li>Automatic &amp; Manual options</li>
+                    <li>Short &amp; long-term rentals</li>
+                    <li>Airport pick-up available</li>
+                </ul>
+            </div>
+
+            <div class="offer-card">
+                <h3 class="offer-title">Bike Rentals</h3>
+                <p class="offer-desc">Adventure-ready motorcycles for mountain trails, heritage routes, or daily commuting. Royal Enfield, cruisers, and more.</p>
+                <ul class="offer-list">
+                    <li>150cc – 350cc range</li>
+                    <li>Helmets &amp; gear included</li>
+                    <li>Flexible rental periods</li>
+                </ul>
+            </div>
+
+            <div class="offer-card">
+                <h3 class="offer-title">Scooter Rentals</h3>
+                <p class="offer-desc">Lightweight, fuel-efficient scooters perfect for urban mobility. Easy to ride, easy to park — ideal for city explorers.</p>
+                <ul class="offer-list">
+                    <li>Petrol &amp; Electric models</li>
+                    <li>Hourly to monthly plans</li>
+                    <li>No license required for 50cc</li>
+                </ul>
+            </div>
+
+            <div class="offer-card">
+                <h3 class="offer-title">Easy Online Booking</h3>
+                <p class="offer-desc">Browse, filter, and book your vehicle in minutes from any device. Instant confirmation, digital receipts, no paperwork.</p>
+                <ul class="offer-list">
+                    <li>Real-time availability</li>
+                    <li>Secure online payment</li>
+                    <li>Instant booking confirmation</li>
+                </ul>
+            </div>
+
+            <div class="offer-card">
+                <h3 class="offer-title">Insurance &amp; Safety</h3>
+                <p class="offer-desc">Every rental includes basic insurance coverage. Our vehicles pass mandatory safety inspections before every listing goes live.</p>
+                <ul class="offer-list">
+                    <li>Third-party insurance included</li>
+                    <li>Regular maintenance checks</li>
+                    <li>Roadside assistance</li>
+                </ul>
+            </div>
+
+            <div class="offer-card">
+                <h3 class="offer-title">Vendor Partnership</h3>
+                <p class="offer-desc">Own a vehicle? List it on SmartRent and earn steady income. We handle bookings, payments, and customer communication for you.</p>
+                <ul class="offer-list">
+                    <li>Free vendor registration</li>
+                    <li>Dashboard for earnings tracking</li>
+                    <li>Dedicated vendor support</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ==================== WHY CHOOSE US ==================== -->
+<section class="section why-section" id="why-choose-us">
+    <div class="container">
+        <div class="section-header centered">
+            <span class="section-tag">Why Choose Us</span>
+            <h2 class="section-title">The SmartRent Difference</h2>
+            <p class="section-desc">Thousands of customers choose SmartRent every month. Here's why.</p>
+        </div>
+
+        <div class="why-grid">
+
+            <div class="why-card">
+                <h3 class="why-title">Transparent Pricing</h3>
+                <p class="why-desc">What you see is what you pay. No hidden charges, no surprise fees at pick-up. All prices include taxes and basic insurance.</p>
+            </div>
+
+            <div class="why-card">
+                <h3 class="why-title">Verified Fleet</h3>
+                <p class="why-desc">Every vehicle on our platform is inspected, documented, and verified before listing. You always know exactly what you're renting.</p>
+            </div>
+
+            <div class="why-card">
+                <h3 class="why-title">Instant Confirmation</h3>
+                <p class="why-desc">Book in under 3 minutes and receive instant confirmation by email and SMS. No waiting, no back-and-forth calls.</p>
+            </div>
+
+            <div class="why-card">
+                <h3 class="why-title">Wide Coverage</h3>
+                <p class="why-desc">Available across Kathmandu, Pokhara, Chitwan, Lumbini, and expanding to new cities every quarter.</p>
+            </div>
+
+            <div class="why-card">
+                <h3 class="why-title">Flexible Duration</h3>
+                <p class="why-desc">Rent for an hour, a day, a week, or a month. Plans adapt to your schedule, not the other way around.</p>
+            </div>
+
+            <div class="why-card">
+                <h3 class="why-title">24 / 7 Support</h3>
+                <p class="why-desc">Our customer support team is available around the clock via chat, email, and phone — before, during, and after your rental.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ==================== TEAM ==================== -->
+<section class="section team-section">
+    <div class="container">
+        <div class="section-header centered">
+            <span class="section-tag">Our Team</span>
+            <h2 class="section-title">The People Behind SmartRent</h2>
+            <p class="section-desc">A passionate team dedicated to transforming vehicle rental in Nepal.</p>
+        </div>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar" style="background: linear-gradient(135deg, #4a6cf7, #7c3aed);">
+                    <span>KT</span>
+                </div>
+                <h3 class="team-name">Karuna Thapa Magar</h3>
+                <p class="team-role">CEO</p>
+                <p class="team-bio">Visionary leader driving SmartRent's mission to make vehicle rental accessible, transparent, and effortless across Nepal.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+                    <span>SB</span>
+                </div>
+                <h3 class="team-name">Sadikshya Budhathoki</h3>
+                <p class="team-role">Co-Founder</p>
+                <p class="team-bio">Passionate entrepreneur and strategist who helped shape SmartRent from the ground up, focused on growth and customer experience.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box">
+            <div class="cta-text">
+                <h2 class="cta-title">Ready to Hit the Road?</h2>
+                <p class="cta-sub">Browse our full fleet and book your perfect vehicle in minutes.</p>
+            </div>
+            <div class="cta-actions">
+                <a href="/vehicle-rentals" class="btn-primary">Browse Vehicles</a>
+                <a href="/register" class="btn-outline-white">Join Free</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-top">
+            <a href="/home" class="logo footer-logo">
+                <div class="footer-logo-box">
+                    <img src="/images/SmartRentLogo.png" alt="SmartRent" class="logo-full-img logo-full-img-footer"/>
+                </div>
+            </a>
+            <div class="social-links">
+                <a href="#" class="social-link" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+                <a href="#" class="social-link" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </a>
+                <a href="#" class="social-link" aria-label="X (Twitter)">
+                    <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+            </div>
+        </div>
+        <div class="footer-nav">
+            <a href="/home">Home</a>
+            <a href="/vehicle-rentals">Services</a>
+            <a href="/about" class="active">About Us</a>
+            <a href="/contact">Contact Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms Of Service</a>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 | SmartRent. All Rights Reserved</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+document.getElementById("hamburger").addEventListener("click", () => {
+    document.querySelector(".nav-right").classList.toggle("open");
+});
+</script>
+<script src="/js/navbar.js"></script>
+</body>
+</html>

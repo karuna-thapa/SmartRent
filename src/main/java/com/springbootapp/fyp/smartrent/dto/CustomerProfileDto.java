@@ -4,16 +4,15 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class CustomerDto {
-
+public class CustomerProfileDto {
+    private Integer customerId;
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private String phoneNumber;
     private LocalDate dob;
     private String address;
-    private String licenseNo;
     private String profileImage;
+    private String licenseNo;
     private String gender;
 }

@@ -38,7 +38,7 @@ public class SecurityConfig {
                         // Allow page routes and static files
                         .requestMatchers(
                                 "/", "/home", "/login", "/register",
-                                "/vehicle-rentals",
+                                "/vehicle-rentals", "/about", "/contact", "/profile",
                                 "/vendor/dashboard", "/admin/dashboard",
                                 "/home.html", "/login.html", "/register.html",
                                 "/css/**", "/js/**", "/images/**", "/static/**"

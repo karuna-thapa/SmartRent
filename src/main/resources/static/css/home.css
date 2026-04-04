@@ -958,6 +958,7 @@ svg { fill: currentColor; }
 }
 
 .btn-book {
+    display: block;
     width: 100%;
     background: var(--primary);
     color: white;
@@ -969,6 +970,9 @@ svg { fill: currentColor; }
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
 }
 
 .btn-book:hover {

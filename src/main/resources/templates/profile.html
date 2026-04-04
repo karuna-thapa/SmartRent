@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Profile — SmartRent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/profile.css"/>
+    <link rel="stylesheet" href="/css/navbar.css"/>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/home" class="logo">
+            <img src="/images/SmartRentLogo.png" alt="SmartRent" class="logo-full-img"/>
+        </a>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/vehicle-rentals">Services</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+            <div class="nav-auth" id="navAuth">
+                <a href="/login" class="btn-login">Login</a>
+                <a href="/register" class="btn-register">Register</a>
+            </div>
+            <div class="nav-user" id="navUser" style="display:none">
+                <div class="user-btn" id="userBtn" onclick="toggleUserDropdown()">
+                    <div class="user-initials" id="navInitials"></div>
+                    <span class="nav-user-name" id="navUserName"></span>
+                    <svg class="user-chevron" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="/profile">My Profile</a>
+                    <a href="#" onclick="navLogout(event)">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ==================== PROFILE PAGE ==================== -->
+<div class="profile-page">
+
+    <!-- Tabs -->
+    <div class="profile-tabs">
+        <button class="tab-btn active" onclick="switchTab('myProfile', this)">My Profile</button>
+        <button class="tab-btn" onclick="switchTab('history', this)">History</button>
+    </div>
+
+    <!-- My Profile Tab -->
+    <div id="myProfile" class="tab-panel active">
+        <div class="profile-card" id="profileCard">
+
+            <!-- Photos -->
+            <div class="photo-row">
+                <div class="photo-box">
+                    <div class="photo-circle" id="photoCircle" title="Upload photo">
+                        <div class="photo-initials" id="photoInitials"></div>
+                        <div class="photo-upload-icon">
+                            <svg viewBox="0 0 24 24" fill="white"><path d="M12 16.5l-4-4h3V8h2v4.5h3l-4 4zM20 6h-8l-2-2H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
+                        </div>
+                    </div>
+                    <span class="photo-label">Upload Photo</span>
+                </div>
+                <div class="photo-box">
+                    <div class="photo-rect" id="licensePhotoBox" title="License photo">
+                        <div class="photo-rect-placeholder">
+                            <svg viewBox="0 0 24 24" fill="#b0bcf7"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h8v2H6z"/></svg>
+                            <span>License Photo</span>
+                        </div>
+                    </div>
+                    <span class="photo-label">License Photo</span>
+                </div>
+            </div>
+
+            <!-- Fields -->
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="field-value" id="displayFullName"></div>
+                    <input type="text" id="inputFirstName" placeholder="First name"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Address</label>
+                    <div class="field-value" id="displayAddress"></div>
+                    <input type="text" id="inputAddress" placeholder="Enter address"/>
+                </div>
+
+                <div class="form-group readonly">
+                    <label>Email</label>
+                    <div class="field-value" id="displayEmail"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <div class="field-value" id="displayPhone"></div>
+                    <input type="tel" id="inputPhone" placeholder="Enter phone number"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Birthday</label>
+                    <div class="field-value" id="displayDob"></div>
+                    <input type="date" id="inputDob"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <div class="field-value" id="displayGender"></div>
+                    <select id="inputGender">
+                        <option value="">Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-row">
+                <button class="btn-edit-profile" onclick="enableEditing()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    Edit Profile
+                </button>
+                <button class="btn-save-profile" onclick="saveProfile()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4zm-5 16a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3-10H5V5h10v4z"/></svg>
+                    Save Changes
+                </button>
+                <button class="btn-cancel-edit" onclick="cancelEditing()">Cancel</button>
+                <button class="btn-delete" onclick="confirmDelete()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-8h2v7H9v-7zm4 0h2v7h-2v-7zM15.5 4l-1-1h-5l-1 1H5v2h14V4h-3.5z"/></svg>
+                    Delete Account
+                </button>
+                <a href="/home" class="btn-home">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                    Back to Home
+                </a>
+                <button class="btn-logout" onclick="doLogout()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4C2.9 3 2 3.9 2 5v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                    Log Out
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- History Tab -->
+    <div id="history" class="tab-panel">
+        <div class="profile-card">
+            <div class="history-empty">
+                <svg viewBox="0 0 24 24" fill="#b0bcf7"><path d="M13 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3zm-1 5v5l4 2.5-.75 1.23L11 14V8h1z"/></svg>
+                <p>No rental history yet</p>
+                <small>Your completed rentals will appear here.</small>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="/js/navbar.js"></script>
+<script src="/js/profile.js"></script>
+</body>
+</html>

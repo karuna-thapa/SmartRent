@@ -6,6 +6,7 @@
     <title>Vehicle Rentals — SmartRent</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="/css/vehicle-rentals.css"/>
+    <link rel="stylesheet" href="/css/navbar.css"/>
 </head>
 <body>
 
@@ -19,12 +20,23 @@
             <ul class="nav-links">
                 <li><a href="/home">Home</a></li>
                 <li><a href="/vehicle-rentals" class="active">Services</a></li>
-                <li><a href="/home#about">About</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
             </ul>
-            <div class="nav-auth">
+            <div class="nav-auth" id="navAuth">
                 <a href="/login" class="btn-login">Login</a>
                 <a href="/register" class="btn-register">Register</a>
+            </div>
+            <div class="nav-user" id="navUser" style="display:none">
+                <div class="user-btn" id="userBtn" onclick="toggleUserDropdown()">
+                    <div class="user-initials" id="navInitials"></div>
+                    <span class="nav-user-name" id="navUserName"></span>
+                    <svg class="user-chevron" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="/profile">My Profile</a>
+                    <a href="#" onclick="navLogout(event)">Log Out</a>
+                </div>
             </div>
         </div>
         <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -33,20 +45,6 @@
     </div>
 </nav>
 
-<!-- ==================== PAGE HEADER ==================== -->
-<div class="page-header">
-    <div class="page-header-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="/home">Home</a>
-            <span class="breadcrumb-sep">›</span>
-            <a href="#">Services</a>
-            <span class="breadcrumb-sep">›</span>
-            <span class="breadcrumb-current">Vehicle Rentals</span>
-        </nav>
-        <h1 class="page-title">Vehicle Rentals</h1>
-        <p class="page-subtitle">Find and book the perfect vehicle for your journey — cars, bikes, and scooters available across Nepal.</p>
-    </div>
-</div>
 
 <!-- ==================== MAIN LAYOUT ==================== -->
 <main class="rentals-layout">
@@ -386,6 +384,7 @@ overlay.addEventListener("click", () => {
 document.getElementById("hamburger").addEventListener("click", () => {
     document.querySelector(".nav-links").classList.toggle("open");
     document.querySelector(".nav-auth").classList.toggle("open");
+    document.getElementById("navUser")?.classList.toggle("open");
 });
 
 // ── Actions ───────────────────────────────────────────────────────────────────
@@ -395,5 +394,6 @@ function bookNow(id) { alert(`Booking vehicle #${id} — coming soon!`); }
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderCards();
 </script>
+<script src="/js/navbar.js"></script>
 </body>
 </html>
