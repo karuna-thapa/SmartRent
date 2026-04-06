@@ -1,4 +1,4 @@
-package com.springbootapp.fyp.smartrent.service;
+ package com.springbootapp.fyp.smartrent.service;
 
 import com.springbootapp.fyp.smartrent.dto.VehicleResponseDto;
 import com.springbootapp.fyp.smartrent.model.Vehicle;

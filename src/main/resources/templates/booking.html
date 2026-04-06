@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Book Vehicle — SmartRent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/booking.css"/>
+    <link rel="stylesheet" href="/css/navbar.css"/>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/home" class="logo">
+            <img src="/images/SmartRentLogo.png" alt="SmartRent" class="logo-full-img"/>
+        </a>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/vehicle-rentals" class="active">Services</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+            <div class="nav-auth" id="navAuth">
+                <a href="/login" class="btn-login">Login</a>
+                <a href="/register" class="btn-register">Register</a>
+            </div>
+            <div class="nav-user" id="navUser" style="display:none">
+                <div class="user-btn" id="userBtn" onclick="toggleUserDropdown()">
+                    <div class="user-initials" id="navInitials"></div>
+                    <span class="nav-user-name" id="navUserName"></span>
+                    <svg class="user-chevron" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="/profile">My Profile</a>
+                    <a href="#" onclick="navLogout(event)">Log Out</a>
+                </div>
+            </div>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ==================== BOOKING CONTENT ==================== -->
+<main class="booking-page">
+    <h1>Book Your Vehicle</h1>
+
+    <!-- Vehicle Info -->
+    <div class="vehicle-info-card" id="vehicleInfoCard">
+        <div class="vehicle-image-box" id="vIcon">🚗</div>
+        <div class="vehicle-info-body">
+            <div class="vehicle-badges">
+                <span class="badge badge-category" id="vCategory"></span>
+                <span class="badge badge-brand" id="vBrand"></span>
+            </div>
+            <h2 id="vName">Loading…</h2>
+            <div class="vehicle-specs-row" id="vSpecs"></div>
+            <p class="vehicle-desc" id="vDesc"></p>
+            <div class="price-tag" id="vPrice"></div>
+        </div>
+    </div>
+
+    <!-- Date Pickers -->
+    <div class="date-picker-row">
+        <div class="date-picker-box">
+            <label for="pickupDate">📅 Pickup Day</label>
+            <input type="date" id="pickupDate" onchange="updateSummary()"/>
+        </div>
+        <div class="date-picker-box">
+            <label for="dropoffDate">📅 Dropoff Day</label>
+            <input type="date" id="dropoffDate" onchange="updateSummary()"/>
+        </div>
+    </div>
+    <p class="date-error" id="dateError">Dropoff date must be after pickup date.</p>
+
+    <!-- Booking Summary -->
+    <div class="summary-card">
+        <div class="summary-header">Booking Summary</div>
+        <table class="summary-table">
+            <tbody>
+                <tr>
+                    <td class="label-col">Vehicle</td>
+                    <td id="sVehicle">—</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Price per Day</td>
+                    <td id="sPricePerDay">—</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Number of Days</td>
+                    <td id="sNumDays">—</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Subtotal</td>
+                    <td id="sSubtotal">—</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Service Fee (5%)</td>
+                    <td id="sServiceFee">—</td>
+                </tr>
+                <tr class="grand-total-row">
+                    <td>Grand Total</td>
+                    <td id="sGrandTotal">—</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Proceed Button -->
+    <button class="proceed-btn" id="proceedBtn" onclick="proceedToBooking()" disabled>
+        Proceed to Booking
+    </button>
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-social">
+            <span title="Instagram">📸</span>
+            <span title="Facebook">📘</span>
+            <span title="X / Twitter">🐦</span>
+        </div>
+        <div class="footer-links">
+            <a href="/home">Home</a>
+            <a href="/vehicle-rentals">Services</a>
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms Of Services</a>
+        </div>
+        <p class="footer-copy">&copy;2026 | SmartRent. All Rights Reserved</p>
+    </div>
+</footer>
+
+<script>
+// ── Vehicle Data (keep in sync with vehicle-rentals.html) ────────────────────
+const vehicles = [
+  { id:1,  name:"Toyota Hilux",       category:"Car",     brand:"Toyota",       price:8500,  transmission:"Manual",    seats:5, fuel:"Diesel",  rating:4.8, icon:"🚗", desc:"A rugged and reliable pickup truck perfect for both city drives and off-road adventures. Equipped with a powerful diesel engine, spacious cabin, and proven durability across Nepal's diverse terrain." },
+  { id:2,  name:"Toyota Land Cruiser",category:"Car",     brand:"Toyota",       price:15000, transmission:"Automatic", seats:7, fuel:"Diesel",  rating:4.9, icon:"🚙", desc:"The ultimate 7-seater SUV delivering unmatched comfort and off-road capability. Features premium leather interior, advanced safety systems, and a powerful diesel engine ideal for long journeys and mountain roads." },
+  { id:3,  name:"Honda City",         category:"Car",     brand:"Honda",        price:4500,  transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.6, icon:"🚗", desc:"A stylish and fuel-efficient sedan that blends performance with comfort. Its spacious cabin, smooth automatic transmission, and responsive petrol engine make it an excellent choice for city commutes and highway trips." },
+  { id:4,  name:"Honda Jazz",         category:"Car",     brand:"Honda",        price:3500,  transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.4, icon:"🚗", desc:"A versatile compact hatchback with exceptional interior space and flexibility. The Honda Jazz offers a comfortable ride, smart storage solutions, and great fuel economy — ideal for everyday use." },
+  { id:5,  name:"BMW 3 Series",       category:"Car",     brand:"BMW",          price:12000, transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.7, icon:"🏎️", desc:"Experience luxury and performance at its finest. The BMW 3 Series delivers a dynamic driving experience with a refined interior, cutting-edge technology, and a powerful petrol engine that sets it apart from the rest." },
+  { id:6,  name:"Hyundai Tucson",     category:"Car",     brand:"Hyundai",      price:7000,  transmission:"Automatic", seats:5, fuel:"Diesel",  rating:4.5, icon:"🚙", desc:"A modern and comfortable mid-size SUV with a bold design and a well-equipped interior. The Tucson's diesel engine provides strong performance and fuel efficiency, making it great for both city and long-distance travel." },
+  { id:7,  name:"Hyundai i20",        category:"Car",     brand:"Hyundai",      price:3800,  transmission:"Manual",    seats:5, fuel:"Petrol",  rating:4.3, icon:"🚗", desc:"A practical and stylish hatchback with a punchy petrol engine and modern features. The i20 is easy to drive in traffic, affordable to run, and comes with a comfortable 5-seat cabin." },
+  { id:8,  name:"Royal Enfield Classic 350", category:"Bike", brand:"Royal Enfield", price:1200, transmission:"Manual", seats:2, fuel:"Petrol", rating:4.7, icon:"🏍️", desc:"An iconic motorcycle that combines timeless style with dependable performance. The Classic 350 is perfect for scenic road trips and heritage routes, offering a smooth ride and a distinctive exhaust note that's hard to forget." },
+  { id:9,  name:"Royal Enfield Meteor", category:"Bike", brand:"Royal Enfield", price:1100, transmission:"Manual",   seats:2, fuel:"Petrol",  rating:4.6, icon:"🏍️", desc:"A modern cruiser built for effortless touring. The Meteor 350 delivers a relaxed riding posture, a refined engine, and premium touches that make every ride feel like an adventure." },
+  { id:10, name:"Mercury EV Bike",    category:"Bike",    brand:"Mercury",      price:800,   transmission:"Automatic", seats:2, fuel:"Electric",rating:4.2, icon:"⚡", desc:"A zero-emission electric bike designed for eco-conscious riders. Silent, smooth, and cost-effective, the Mercury EV Bike is perfect for daily commutes and short trips while keeping your carbon footprint minimal." },
+  { id:11, name:"Honda Activa 6G",    category:"Scooter", brand:"Honda",        price:550,   transmission:"Automatic", seats:2, fuel:"Petrol",  rating:4.4, icon:"🛵", desc:"Nepal's favourite scooter, known for its reliability and ease of use. The Activa 6G features a fuel-injected engine, LED lighting, and a practical design that makes navigating city streets effortless." },
+  { id:12, name:"Bajaj Chetak",       category:"Scooter", brand:"Bajaj",        price:600,   transmission:"Automatic", seats:2, fuel:"Electric",rating:4.3, icon:"🛵", desc:"A premium electric scooter that blends retro styling with modern technology. The Chetak offers a quiet, smooth ride with zero emissions, making it the perfect eco-friendly choice for urban commuters." },
+];
+
+function fmt(n) { return n.toLocaleString("en-NP"); }
+
+// ── Load vehicle from URL param ───────────────────────────────────────────────
+const params   = new URLSearchParams(window.location.search);
+const vehicleId = parseInt(params.get("vehicleId"));
+const vehicle  = vehicles.find(v => v.id === vehicleId);
+
+if (!vehicle) {
+    document.querySelector(".booking-page").innerHTML =
+        '<div style="text-align:center;padding:4rem 1rem;">' +
+        '<p style="font-size:1.1rem;color:#64748b;">Vehicle not found. ' +
+        '<a href="/vehicle-rentals" style="color:var(--primary)">Browse all vehicles</a>.</p></div>';
+} else {
+    // Populate vehicle info
+    document.getElementById("vIcon").textContent     = vehicle.icon;
+    document.getElementById("vCategory").textContent = vehicle.category;
+    document.getElementById("vBrand").textContent    = vehicle.brand;
+    document.getElementById("vName").textContent     = vehicle.name;
+    document.getElementById("vDesc").textContent     = vehicle.desc;
+    document.getElementById("vPrice").innerHTML =
+        `NRS ${fmt(vehicle.price)} <span>/ day</span>`;
+    document.getElementById("sVehicle").textContent     = vehicle.name;
+    document.getElementById("sPricePerDay").textContent = `NRS ${fmt(vehicle.price)}`;
+
+    const fuelIcon = vehicle.fuel === "Electric" ? "⚡" : "⛽";
+    document.getElementById("vSpecs").innerHTML = `
+        <span class="spec-pill">💺 ${vehicle.seats} Seats</span>
+        <span class="spec-pill">⚙️ ${vehicle.transmission}</span>
+        <span class="spec-pill">${fuelIcon} ${vehicle.fuel}</span>
+    `;
+
+    // Set min date for pickup to today
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("pickupDate").min  = today;
+    document.getElementById("dropoffDate").min = today;
+}
+
+// ── Summary calculation ───────────────────────────────────────────────────────
+function updateSummary() {
+    if (!vehicle) return;
+
+    const pickupVal  = document.getElementById("pickupDate").value;
+    const dropoffVal = document.getElementById("dropoffDate").value;
+    const errEl      = document.getElementById("dateError");
+    const btn        = document.getElementById("proceedBtn");
+
+    // Reset
+    ["sNumDays","sSubtotal","sServiceFee","sGrandTotal"].forEach(id => {
+        document.getElementById(id).textContent = "—";
+    });
+    errEl.style.display = "none";
+    btn.disabled = true;
+
+    if (!pickupVal || !dropoffVal) return;
+
+    const pickup  = new Date(pickupVal);
+    const dropoff = new Date(dropoffVal);
+
+    if (dropoff <= pickup) {
+        errEl.style.display = "block";
+        return;
+    }
+
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const days     = Math.round((dropoff - pickup) / msPerDay);
+    const subtotal = days * vehicle.price;
+    const fee      = Math.round(subtotal * 0.05);
+    const total    = subtotal + fee;
+
+    document.getElementById("sNumDays").textContent    = `${days} day${days > 1 ? "s" : ""}`;
+    document.getElementById("sSubtotal").textContent   = `NRS ${fmt(subtotal)}`;
+    document.getElementById("sServiceFee").textContent = `NRS ${fmt(fee)}`;
+    document.getElementById("sGrandTotal").textContent = `NRS ${fmt(total)}`;
+
+    btn.disabled = false;
+}
+
+// ── Proceed ───────────────────────────────────────────────────────────────────
+function proceedToBooking() {
+    const pickup  = document.getElementById("pickupDate").value;
+    const dropoff = document.getElementById("dropoffDate").value;
+    alert(`Booking confirmed!\n\nVehicle: ${vehicle.name}\nPickup: ${pickup}\nDropoff: ${dropoff}\n\nFull payment integration coming soon.`);
+}
+
+// ── Hamburger ─────────────────────────────────────────────────────────────────
+document.getElementById("hamburger").addEventListener("click", () => {
+    document.querySelector(".nav-links").classList.toggle("open");
+    document.querySelector(".nav-auth").classList.toggle("open");
+    document.getElementById("navUser")?.classList.toggle("open");
+});
+</script>
+<script src="/js/navbar.js"></script>
+</body>
+</html>

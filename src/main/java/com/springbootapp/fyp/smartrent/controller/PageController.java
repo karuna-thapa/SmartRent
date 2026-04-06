@@ -50,4 +50,9 @@ public class PageController {
     public String profile() {
         return "profile";
     }
+
+    @GetMapping("/booking")
+    public String booking() {
+        return "booking";
+    }
 }
