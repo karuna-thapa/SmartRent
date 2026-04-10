@@ -33,6 +33,17 @@ public class Vendor {
     @Column(name = "company_name", length = 150)
     private String companyName;
 
+    // Required for vendor login — add column: ALTER TABLE vendor ADD COLUMN password VARCHAR(255) NOT NULL DEFAULT '';
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
+
+    // Required for approval workflow — add column: ALTER TABLE vendor ADD COLUMN status ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING';
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING'")
+    private Status status = Status.PENDING;
+
+    public enum Status { PENDING, APPROVED, REJECTED }
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

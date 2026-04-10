@@ -4,131 +4,1190 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SmartRent — Vendor Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="/css/home.css"/>
-    <style>
-        body { background: #0f0f1a; color: #e0e0e0; font-family: 'Poppins', sans-serif; margin: 0; }
-        .dashboard-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
-        .dashboard-header h1 { font-size: 1.8rem; font-weight: 700; color: #fff; }
-        .dashboard-header h1 span { color: #4a6cf7; }
-        .welcome-msg { color: #aaa; font-size: 0.95rem; margin-top: 4px; }
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .card { background: #1a1a2e; border: 1px solid rgba(74,108,247,0.2); border-radius: 12px; padding: 24px; }
-        .card-label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        .card-value { font-size: 2rem; font-weight: 700; color: #4a6cf7; margin: 8px 0 4px; }
-        .card-sub { font-size: 0.82rem; color: #666; }
-        .section-title { font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 16px; }
-        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 40px; }
-        .action-btn { background: rgba(74,108,247,0.1); border: 1px solid rgba(74,108,247,0.3); border-radius: 10px;
-                      padding: 18px 16px; text-align: center; cursor: pointer; transition: all 0.2s; color: #c8d0ff; font-size: 0.9rem; font-weight: 500; }
-        .action-btn:hover { background: rgba(74,108,247,0.25); border-color: #4a6cf7; color: #fff; }
-        .action-btn svg { display: block; margin: 0 auto 8px; }
-        .logout-btn { background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); color: #ff6b6b;
-                      padding: 9px 22px; border-radius: 8px; font-size: 0.88rem; font-weight: 500; cursor: pointer;
-                      font-family: 'Poppins', sans-serif; transition: all 0.2s; }
-        .logout-btn:hover { background: rgba(255,80,80,0.25); border-color: #ff6b6b; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/admin-dashboard.css"/>
+    <link rel="stylesheet" href="/css/vendor-vehicles.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="nav-container">
-        <a href="/home" class="logo">
-            <img src="/images/SmartRentLogo.png" alt="SmartRent" class="logo-full-img"/>
-        </a>
-        <ul class="nav-links">
-            <li><a href="/vendor/dashboard" class="active">Dashboard</a></li>
-            <li><a href="#">My Vehicles</a></li>
-            <li><a href="#">Bookings</a></li>
-            <li><a href="#">Reviews</a></li>
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon">SR</div>
+        <span>Smart Rent</span>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li>
+                <a href="#" id="navDashboard" onclick="showSection('dashboard',this)">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#" id="navVehicles" onclick="showSection('vehicles',this)">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/>
+                        <rect x="9" y="11" width="14" height="10" rx="2"/>
+                    </svg>
+                    My Vehicles
+                </a>
+            </li>
+            <li>
+                <a href="#" id="navBookings" onclick="showSection('bookings',this)">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M3 3h18M3 9h18M3 15h18M3 21h18"/>
+                    </svg>
+                    Bookings
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    Reviews
+                </a>
+            </li>
+            <li>
+                <a href="#" id="navProfile" onclick="showSection('profile',this)">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    My Profile
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="2" y="5" width="20" height="14" rx="2"/>
+                        <path d="M2 10h20"/>
+                    </svg>
+                    Payments
+                </a>
+            </li>
         </ul>
-        <div class="nav-auth">
-            <span id="navName" style="color:#c8d0ff; font-size:0.9rem; margin-right:12px;"></span>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-    </div>
-</nav>
+    </nav>
 
-<div class="dashboard-wrapper">
-    <div class="dashboard-header">
-        <div>
-            <h1>Vendor <span>Dashboard</span></h1>
-            <p class="welcome-msg" id="welcomeMsg">Welcome back!</p>
-        </div>
+    <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Log out
+        </button>
     </div>
+</aside>
 
-    <div class="cards-grid">
-        <div class="card">
-            <div class="card-label">Total Vehicles</div>
-            <div class="card-value">—</div>
-            <div class="card-sub">Listed on SmartRent</div>
-        </div>
-        <div class="card">
-            <div class="card-label">Active Bookings</div>
-            <div class="card-value">—</div>
-            <div class="card-sub">Currently rented out</div>
-        </div>
-        <div class="card">
-            <div class="card-label">Total Reviews</div>
-            <div class="card-value">—</div>
-            <div class="card-sub">From customers</div>
-        </div>
-        <div class="card">
-            <div class="card-label">Revenue</div>
-            <div class="card-value">—</div>
-            <div class="card-sub">This month</div>
-        </div>
-    </div>
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
 
-    <p class="section-title">Quick Actions</p>
-    <div class="action-grid">
-        <div class="action-btn">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M12 5v14M5 12h14"/>
-            </svg>
-            Add Vehicle
+    <!-- Top Bar -->
+    <header class="topbar">
+        <div class="topbar-welcome">
+            <h2 id="topbarWelcome">Welcome back!</h2>
         </div>
-        <div class="action-btn">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-            </svg>
-            View Bookings
+        <div class="topbar-right">
+            <div class="topbar-admin">
+                <div class="admin-avatar">
+                    <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <span id="vendorName">Vendor</span>
+            </div>
         </div>
-        <div class="action-btn">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-            </svg>
-            My Profile
+    </header>
+
+    <!-- ===== DASHBOARD SECTION ===== -->
+    <div class="page-body" id="sectionDashboard">
+
+        <!-- Stat Cards -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/>
+                        <rect x="9" y="11" width="14" height="10" rx="2"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">My Vehicles</div>
+                    <div class="stat-value" id="statVehicles">—</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M3 3h18M3 9h18M3 15h18M3 21h18"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Active Bookings</div>
+                    <div class="stat-value" id="statBookings">—</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Total Reviews</div>
+                    <div class="stat-value" id="statReviews">—</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <line x1="12" y1="20" x2="12" y2="10"/>
+                        <line x1="18" y1="20" x2="18" y2="4"/>
+                        <line x1="6" y1="20" x2="6" y2="16"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Revenue</div>
+                    <div class="stat-value" id="statRevenue">—</div>
+                </div>
+            </div>
         </div>
-        <div class="action-btn">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M11.5 21A9.5 9.5 0 1 0 21 11.5"/><path d="M12 7v5l3 3"/>
-            </svg>
-            Rental History
+
+        <!-- Action Buttons -->
+        <div class="actions-row">
+            <button class="btn-action primary" onclick="showSection('vehicles', document.getElementById('navVehicles')); openAddModal()">
+                + Add Vehicle
+            </button>
+            <button class="btn-action" onclick="showSection('vehicles', document.getElementById('navVehicles'))">View My Vehicles</button>
+            <button class="btn-action">My Profile</button>
+        </div>
+
+        <!-- Revenue Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">Monthly Revenue</div>
+                    <div class="chart-big-value" id="chartBigValue">NRS 0</div>
+                </div>
+                <div class="chart-period-tabs">
+                    <button class="period-tab active" onclick="switchPeriod('monthly', this)">Monthly</button>
+                    <button class="period-tab" onclick="switchPeriod('quarterly', this)">Quarterly</button>
+                    <button class="period-tab" onclick="switchPeriod('yearly', this)">Yearly</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Bookings Table -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <h3>Recent Bookings</h3>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Vehicle</th>
+                            <th>Customer</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#2001</td><td>Toyota Hilux</td><td>Aarav Sharma</td>
+                            <td>2026-04-01</td><td>2026-04-05</td><td>4 days</td>
+                            <td>NRS 34,000</td>
+                            <td><span class="status-badge confirmed">Confirmed</span></td>
+                            <td><button class="btn-view">View</button></td>
+                        </tr>
+                        <tr>
+                            <td>#2002</td><td>Honda City</td><td>Priya Thapa</td>
+                            <td>2026-04-03</td><td>2026-04-06</td><td>3 days</td>
+                            <td>NRS 13,500</td>
+                            <td><span class="status-badge pending">Pending</span></td>
+                            <td><button class="btn-view">View</button></td>
+                        </tr>
+                        <tr>
+                            <td>#2003</td><td>Royal Enfield Classic</td><td>Bikash Gurung</td>
+                            <td>2026-03-28</td><td>2026-04-02</td><td>5 days</td>
+                            <td>NRS 6,000</td>
+                            <td><span class="status-badge completed">Completed</span></td>
+                            <td><button class="btn-view">View</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /sectionDashboard -->
+
+    <!-- ===== MY VEHICLES SECTION ===== -->
+    <div class="page-body" id="sectionVehicles" style="display:none;">
+
+        <div class="vv-section-header">
+            <div>
+                <h2 class="vv-section-title">My Vehicles</h2>
+                <p class="vv-section-sub">Manage your fleet — add, edit, or update availability</p>
+            </div>
+            <button class="btn-action primary" onclick="openAddModal()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Add New Vehicle
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="vv-filter-row">
+            <div class="vv-brand-tag" id="vendorBrandTag" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px;font-size:0.85rem;color:#4338ca;font-weight:500;white-space:nowrap;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <span id="vendorBrandLabel">Loading brand...</span>
+            </div>
+            <select id="filterCategory" onchange="loadVehicles()" class="vv-select">
+                <option value="">All Categories</option>
+            </select>
+            <select id="filterStatus" onchange="loadVehicles()" class="vv-select">
+                <option value="">All Status</option>
+                <option value="available">Available</option>
+                <option value="not_available">Not Available</option>
+            </select>
+            <button class="btn-action" onclick="loadVehicles()" style="padding:9px 16px;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Refresh
+            </button>
+        </div>
+
+        <!-- Vehicles Table -->
+        <div class="table-card" style="margin-top:0;">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Vehicle Name</th>
+                            <th>Brand</th>
+                            <th>Category</th>
+                            <th>Vehicle No.</th>
+                            <th>Seats</th>
+                            <th>Price / Day</th>
+                            <th>Availability</th>
+                            <th>Approval</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vehiclesTableBody">
+                        <tr id="vehiclesLoadingRow">
+                            <td colspan="10" style="text-align:center;padding:40px;color:#9ca3af;">Loading vehicles...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionVehicles -->
+
+    <!-- ===== BOOKINGS SECTION ===== -->
+    <div class="page-body" id="sectionBookings" style="display:none;">
+
+        <div class="vv-section-header">
+            <div>
+                <h2 class="vv-section-title">Bookings</h2>
+                <p class="vv-section-sub">View and monitor all bookings for your vehicles</p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="vv-filter-row">
+            <select id="bkFilterVehicle" onchange="loadBookings()" class="vv-select">
+                <option value="">All Vehicles</option>
+            </select>
+            <input type="date" id="bkFilterFrom" onchange="loadBookings()" class="vv-date-input" placeholder="From date" title="Start date from"/>
+            <input type="date" id="bkFilterTo"   onchange="loadBookings()" class="vv-date-input" placeholder="To date"   title="Start date to"/>
+            <select id="bkFilterStatus" onchange="loadBookings()" class="vv-select">
+                <option value="">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="CONFIRMED">Confirmed</option>
+                <option value="CANCELLED">Cancelled</option>
+            </select>
+            <button class="btn-action" onclick="loadBookings()" style="padding:9px 16px;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Refresh
+            </button>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="table-card" style="margin-top:0;">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                        <tr id="bookingsLoadingRow">
+                            <td colspan="9" style="text-align:center;padding:40px;color:#9ca3af;">Loading bookings...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionBookings -->
+
+    <!-- ===== PROFILE SECTION ===== -->
+    <div class="page-body" id="sectionProfile" style="display:none;">
+
+        <div class="vv-section-header">
+            <div>
+                <h2 class="vv-section-title">My Profile</h2>
+                <p class="vv-section-sub">Manage your business information and account settings</p>
+            </div>
+        </div>
+
+        <!-- Business Info Card -->
+        <div class="vp-card">
+            <div class="vp-card-header">
+                <h3>Business Information</h3>
+                <span id="profileStatusBadge" class="vp-status-badge">—</span>
+            </div>
+            <div class="vp-card-body">
+                <div class="vp-form-grid">
+                    <div class="vp-form-group">
+                        <label>Vendor Name <span class="req">*</span></label>
+                        <input type="text" id="pfVendorName" placeholder="Your name"/>
+                    </div>
+                    <div class="vp-form-group">
+                        <label>Company Name</label>
+                        <input type="text" id="pfCompanyName" placeholder="Company / business name"/>
+                    </div>
+                    <div class="vp-form-group">
+                        <label>Email</label>
+                        <input type="email" id="pfEmail" readonly/>
+                    </div>
+                    <div class="vp-form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="pfPhone" placeholder="e.g. 9800000000"/>
+                    </div>
+                    <div class="vp-form-group">
+                        <label>Registration No.</label>
+                        <input type="text" id="pfRegNo" readonly/>
+                    </div>
+                    <div class="vp-form-group">
+                        <label>Brand</label>
+                        <input type="text" id="pfBrand" readonly/>
+                    </div>
+                </div>
+                <div id="profileInfoMsg" style="display:none;" class="vp-info-note"></div>
+                <div class="vp-form-actions">
+                    <button class="btn-action" onclick="loadProfile()">Reset</button>
+                    <button class="btn-action primary" onclick="saveProfile()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Card -->
+        <div class="vp-card">
+            <div class="vp-card-header">
+                <h3>Change Password</h3>
+            </div>
+            <div class="vp-card-body">
+                <div class="vp-form-grid">
+                    <div class="vp-form-group vp-span-2">
+                        <label>Current Password <span class="req">*</span></label>
+                        <input type="password" id="pfCurrentPw" placeholder="Enter current password" autocomplete="current-password"/>
+                    </div>
+                    <div class="vp-form-group">
+                        <label>New Password <span class="req">*</span></label>
+                        <input type="password" id="pfNewPw" placeholder="Min. 6 characters" autocomplete="new-password"/>
+                    </div>
+                    <div class="vp-form-group">
+                        <label>Confirm New Password <span class="req">*</span></label>
+                        <input type="password" id="pfConfirmPw" placeholder="Repeat new password" autocomplete="new-password"/>
+                    </div>
+                </div>
+                <div id="pwMsg" style="display:none;" class="vp-info-note"></div>
+                <div class="vp-form-actions">
+                    <button class="btn-action primary" onclick="changePassword()">Update Password</button>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /sectionProfile -->
+
+</div><!-- /main-content -->
+
+<!-- ===== BOOKING DETAIL MODAL ===== -->
+<div class="vv-modal-overlay" id="bookingDetailOverlay" onclick="closeBookingDetailOnOverlay(event)">
+    <div class="vv-modal" style="width:560px;">
+        <div class="vv-modal-header">
+            <h3>Booking Details</h3>
+            <button class="vv-modal-close" onclick="closeBookingDetail()">✕</button>
+        </div>
+        <div class="vv-modal-body" id="bookingDetailBody">
         </div>
     </div>
 </div>
 
-<script>
-    (function() {
-        const role = localStorage.getItem('role');
-        const token = localStorage.getItem('token');
-        if (!token || role !== 'vendor') {
-            window.location.href = '/login';
-            return;
-        }
-        const name = localStorage.getItem('firstName');
-        if (name) {
-            document.getElementById('navName').textContent = name;
-            document.getElementById('welcomeMsg').textContent = 'Welcome back, ' + name + '!';
-        }
-    })();
+<!-- ===== ADD / EDIT VEHICLE MODAL ===== -->
+<div class="vv-modal-overlay" id="vehicleModalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="vv-modal">
+        <div class="vv-modal-header">
+            <h3 id="vehicleModalTitle">Add New Vehicle</h3>
+            <button class="vv-modal-close" onclick="closeVehicleModal()">✕</button>
+        </div>
+        <div class="vv-modal-body">
+            <form id="vehicleForm" onsubmit="submitVehicleForm(event)" enctype="multipart/form-data">
+                <input type="hidden" id="editVehicleId"/>
 
-    function logout() {
-        localStorage.clear();
+                <div class="vv-form-grid">
+                    <div class="vv-form-group">
+                        <label>Vehicle Name <span class="req">*</span></label>
+                        <input type="text" id="fVehicleName" placeholder="e.g. Toyota Hilux" required/>
+                    </div>
+                    <div class="vv-form-group">
+                        <label>Vehicle Number <span class="req">*</span></label>
+                        <input type="text" id="fVehicleNo" placeholder="e.g. BA 1 KA 1234" required/>
+                    </div>
+                    <div class="vv-form-group">
+                        <label>Brand</label>
+                        <input type="hidden" id="fBrand"/>
+                        <div id="fBrandDisplay" style="padding:9px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;font-size:0.9rem;color:#374151;font-weight:500;">—</div>
+                    </div>
+                    <div class="vv-form-group">
+                        <label>Category <span class="req">*</span></label>
+                        <select id="fCategory" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                    <div class="vv-form-group">
+                        <label>Seat Capacity <span class="req">*</span></label>
+                        <input type="number" id="fSeats" placeholder="e.g. 5" min="1" max="60" required/>
+                    </div>
+                    <div class="vv-form-group">
+                        <label>Daily Rental Price (NPR) <span class="req">*</span></label>
+                        <input type="number" id="fPrice" placeholder="e.g. 5000" min="1" step="0.01" required/>
+                    </div>
+                    <div class="vv-form-group vv-span-2" id="fStatusGroup" style="display:none;">
+                        <label>Availability Status</label>
+                        <select id="fStatus">
+                            <option value="available">Available</option>
+                            <option value="not_available">Not Available</option>
+                        </select>
+                    </div>
+                    <div class="vv-form-group vv-span-2">
+                        <label>Description</label>
+                        <textarea id="fDescription" rows="3" placeholder="Describe your vehicle (features, condition, etc.)"></textarea>
+                    </div>
+                    <div class="vv-form-group vv-span-2">
+                        <label>Vehicle Images</label>
+                        <div class="vv-upload-area" id="uploadArea" onclick="document.getElementById('fImages').click()">
+                            <svg width="32" height="32" fill="none" stroke="#9ca3af" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            <p>Click to upload images</p>
+                            <span>PNG, JPG, WEBP up to 10MB each</span>
+                        </div>
+                        <input type="file" id="fImages" multiple accept="image/*" style="display:none;" onchange="previewImages(event)"/>
+                        <div class="vv-image-preview" id="imagePreview"></div>
+                    </div>
+                </div>
+
+                <div id="vehicleFormError" class="vv-form-error" style="display:none;"></div>
+
+                <div class="vv-modal-actions">
+                    <button type="button" class="btn-action" onclick="closeVehicleModal()">Cancel</button>
+                    <button type="submit" class="btn-action primary" id="vehicleSubmitBtn">
+                        <span id="vehicleSubmitLabel">Submit for Approval</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div id="vendorToast" class="admin-toast"></div>
+
+<script>
+// ── Auth guard ────────────────────────────────────────────────────────────
+(function () {
+    const token = localStorage.getItem('token');
+    const role  = localStorage.getItem('role');
+    if (!token || role !== 'vendor') {
         window.location.href = '/login';
+        return;
     }
+    const name = localStorage.getItem('firstName');
+    if (name) {
+        document.getElementById('vendorName').textContent = name;
+        document.getElementById('topbarWelcome').textContent = 'Welcome back, ' + name + '!';
+    }
+})();
+
+const TOKEN = () => localStorage.getItem('token');
+
+function logout() {
+    localStorage.clear();
+    window.location.href = '/login';
+}
+
+// ── Section switching ─────────────────────────────────────────────────────
+function showSection(name, linkEl) {
+    ['dashboard','vehicles','bookings','profile'].forEach(s => {
+        const el = document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1));
+        if (el) el.style.display = (s === name) ? '' : 'none';
+    });
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+    if (linkEl) linkEl.classList.add('active');
+
+    if (name === 'vehicles') loadVehicles();
+    if (name === 'bookings') loadBookings();
+    if (name === 'profile')  loadProfile();
+}
+
+// Set default active
+document.getElementById('navDashboard').classList.add('active');
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+function showToast(msg, type) {
+    const t = document.getElementById('vendorToast');
+    t.textContent = msg;
+    t.className = 'admin-toast ' + (type === 'success' ? 'toast-approve' : 'toast-reject');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Load Vendor Brand & Categories ───────────────────────────────────────
+let vendorBrandId = null, vendorBrandName = '—', allCategories = [];
+
+async function loadDropdowns() {
+    const [meRes, cRes] = await Promise.all([
+        fetch('/api/vendor/me', { headers: { 'Authorization': 'Bearer ' + TOKEN() } }),
+        fetch('/api/categories')
+    ]);
+
+    if (meRes.ok) {
+        const me = await meRes.json();
+        vendorBrandId   = me.brandId;
+        vendorBrandName = me.brandName || '—';
+        document.getElementById('vendorBrandLabel').textContent = vendorBrandName;
+        document.getElementById('fBrand').value = vendorBrandId || '';
+        document.getElementById('fBrandDisplay').textContent = vendorBrandName;
+    }
+
+    allCategories = cRes.ok ? await cRes.json() : [];
+    populateSelect('filterCategory', allCategories, c => c.vehicleCategoryId, c => c.vehicleCategoryName);
+    populateSelect('fCategory',      allCategories, c => c.vehicleCategoryId, c => c.vehicleCategoryName);
+
+    // Populate vehicle filter in bookings tab once vehicles are loaded
+    await loadMyVehiclesForFilter();
+}
+
+function populateSelect(id, items, valFn, labelFn) {
+    const sel = document.getElementById(id);
+    const keep = sel.options[0]; // keep "All …" placeholder
+    sel.innerHTML = '';
+    sel.appendChild(keep);
+    items.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = valFn(item);
+        opt.textContent = labelFn(item);
+        sel.appendChild(opt);
+    });
+}
+
+// ── Load Vendor Vehicles ──────────────────────────────────────────────────
+let myVehicles = [];
+
+async function loadVehicles() {
+    const categoryId = document.getElementById('filterCategory').value;
+    const status     = document.getElementById('filterStatus').value;
+
+    let url = '/api/vendor/vehicles?';
+    if (categoryId) url += `categoryId=${categoryId}&`;
+    if (status)     url += `status=${status}&`;
+
+    const tbody = document.getElementById('vehiclesTableBody');
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:#9ca3af;">Loading...</td></tr>';
+
+    try {
+        const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + TOKEN() } });
+        if (!res.ok) throw new Error('Failed to load vehicles');
+        myVehicles = await res.json();
+        renderVehiclesTable(myVehicles);
+        document.getElementById('statVehicles').textContent = myVehicles.length;
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:#ef4444;">${e.message}</td></tr>`;
+    }
+}
+
+function approvalBadge(status) {
+    const map = {
+        PENDING:  'class="vv-badge pending"',
+        APPROVED: 'class="vv-badge approved"',
+        REJECTED: 'class="vv-badge rejected"'
+    };
+    return `<span ${map[status] || ''}>${status || '—'}</span>`;
+}
+
+function availBadge(status, active) {
+    if (!active) return '<span class="vv-badge inactive">Inactive</span>';
+    if (status === 'available') return '<span class="vv-badge avail">Available</span>';
+    return '<span class="vv-badge unavail">Not Available</span>';
+}
+
+function renderVehiclesTable(vehicles) {
+    const tbody = document.getElementById('vehiclesTableBody');
+    if (!vehicles.length) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:#9ca3af;">No vehicles found. Add your first vehicle!</td></tr>';
+        return;
+    }
+    tbody.innerHTML = vehicles.map(v => `
+        <tr>
+            <td>
+                ${v.imageUrl
+                    ? `<img src="${v.imageUrl}" class="vv-thumb" alt="${v.vehicleName}"/>`
+                    : `<div class="vv-thumb-placeholder"><svg width="20" height="20" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`
+                }
+            </td>
+            <td style="font-weight:600;">${v.vehicleName}</td>
+            <td>${v.brandName || '—'}</td>
+            <td>${v.categoryName || '—'}</td>
+            <td><code style="font-size:0.78rem;">${v.vehicleNo}</code></td>
+            <td>${v.seatsCapacity || '—'}</td>
+            <td>NPR ${Number(v.rentalPrice).toLocaleString('en-NP')}</td>
+            <td>${availBadge(v.status, v.active)}</td>
+            <td>${approvalBadge(v.approvalStatus)}</td>
+            <td>
+                <div class="vv-action-btns">
+                    <button class="vv-btn-edit" onclick="openEditModal(${v.vehicleId})">Edit</button>
+                    ${v.active
+                        ? `<button class="vv-btn-deactivate" onclick="deactivateVehicle(${v.vehicleId})">Deactivate</button>`
+                        : `<button class="vv-btn-reactivate" onclick="reactivateVehicle(${v.vehicleId})">Reactivate</button>`
+                    }
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ── Add Vehicle Modal ─────────────────────────────────────────────────────
+function openAddModal() {
+    document.getElementById('vehicleModalTitle').textContent = 'Add New Vehicle';
+    document.getElementById('vehicleSubmitLabel').textContent = 'Submit for Approval';
+    document.getElementById('editVehicleId').value = '';
+    document.getElementById('vehicleForm').reset();
+    document.getElementById('imagePreview').innerHTML = '';
+    document.getElementById('fStatusGroup').style.display = 'none';
+    document.getElementById('vehicleFormError').style.display = 'none';
+    // Restore vendor's brand (reset() clears hidden input)
+    document.getElementById('fBrand').value = vendorBrandId || '';
+    document.getElementById('fBrandDisplay').textContent = vendorBrandName;
+    document.getElementById('vehicleModalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function openEditModal(vehicleId) {
+    const v = myVehicles.find(x => x.vehicleId === vehicleId);
+    if (!v) return;
+
+    document.getElementById('vehicleModalTitle').textContent = 'Edit Vehicle';
+    document.getElementById('vehicleSubmitLabel').textContent = 'Save Changes';
+    document.getElementById('editVehicleId').value = vehicleId;
+    document.getElementById('fVehicleName').value = v.vehicleName || '';
+    document.getElementById('fVehicleNo').value   = v.vehicleNo || '';
+    document.getElementById('fSeats').value       = v.seatsCapacity || '';
+    document.getElementById('fPrice').value       = v.rentalPrice || '';
+    document.getElementById('fDescription').value = v.description || '';
+    document.getElementById('fBrand').value        = vendorBrandId || '';
+    document.getElementById('fBrandDisplay').textContent = vendorBrandName;
+    document.getElementById('fCategory').value    = v.categoryId || '';
+    document.getElementById('fStatus').value      = v.status || 'available';
+    document.getElementById('fStatusGroup').style.display = '';
+    document.getElementById('vehicleFormError').style.display = 'none';
+
+    // Show current images
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    if (v.imageUrls && v.imageUrls.length) {
+        v.imageUrls.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.className = 'vv-preview-img';
+            img.title = 'Current image (upload new to replace)';
+            preview.appendChild(img);
+        });
+    }
+
+    document.getElementById('vehicleModalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVehicleModal() {
+    document.getElementById('vehicleModalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function closeModalOnOverlay(e) {
+    if (e.target === document.getElementById('vehicleModalOverlay')) closeVehicleModal();
+}
+
+function previewImages(event) {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    Array.from(event.target.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'vv-preview-img';
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ── Submit Vehicle Form ───────────────────────────────────────────────────
+async function submitVehicleForm(e) {
+    e.preventDefault();
+    const errEl  = document.getElementById('vehicleFormError');
+    const btn    = document.getElementById('vehicleSubmitBtn');
+    const editId = document.getElementById('editVehicleId').value;
+    const isEdit = !!editId;
+
+    btn.disabled = true;
+    errEl.style.display = 'none';
+
+    const fd = new FormData();
+    fd.append('vehicleName',       document.getElementById('fVehicleName').value.trim());
+    fd.append('vehicleNo',         document.getElementById('fVehicleNo').value.trim());
+    fd.append('brandId',           document.getElementById('fBrand').value);
+    fd.append('vehicleCategoryId', document.getElementById('fCategory').value);
+    fd.append('seatsCapacity',     document.getElementById('fSeats').value);
+    fd.append('rentalPrice',       document.getElementById('fPrice').value);
+    fd.append('description',       document.getElementById('fDescription').value.trim());
+    if (isEdit) {
+        fd.append('status', document.getElementById('fStatus').value);
+    }
+
+    const files = document.getElementById('fImages').files;
+    for (const file of files) fd.append('images', file);
+
+    const url    = isEdit ? `/api/vendor/vehicles/${editId}` : '/api/vendor/vehicles';
+    const method = isEdit ? 'PUT' : 'POST';
+
+    try {
+        const res = await fetch(url, {
+            method,
+            headers: { 'Authorization': 'Bearer ' + TOKEN() },
+            body: fd
+        });
+        const data = await res.text();
+        if (!res.ok) throw new Error(data);
+
+        closeVehicleModal();
+        showToast(
+            isEdit
+                ? '✔ Vehicle updated successfully.'
+                : '✔ Vehicle submitted! Awaiting admin approval.',
+            'success'
+        );
+        loadVehicles();
+    } catch (err) {
+        errEl.textContent = err.message;
+        errEl.style.display = 'block';
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+// ── Deactivate / Reactivate ───────────────────────────────────────────────
+async function deactivateVehicle(id) {
+    if (!confirm('Mark this vehicle as Inactive? It will be removed from listings.')) return;
+    try {
+        const res = await fetch(`/api/vendor/vehicles/${id}/deactivate`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        const msg = await res.text();
+        if (!res.ok) throw new Error(msg);
+        showToast('Vehicle deactivated.', 'success');
+        loadVehicles();
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
+}
+
+async function reactivateVehicle(id) {
+    if (!confirm('Reactivate this vehicle? It will be sent for re-approval.')) return;
+    try {
+        const res = await fetch(`/api/vendor/vehicles/${id}/reactivate`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        const msg = await res.text();
+        if (!res.ok) throw new Error(msg);
+        showToast('Vehicle reactivated and sent for approval.', 'success');
+        loadVehicles();
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
+}
+
+// ── Revenue Chart ─────────────────────────────────────────────────────────
+const revenueData = {
+    monthly:   { labels: ['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'], values: [4200,5800,3900,8500,7100,6400,5300,4600,5900,7800,6200,5100] },
+    quarterly: { labels: ['Q1 2025','Q2 2025','Q3 2025','Q4 2025'], values: [13900,19400,18800,18300] },
+    yearly:    { labels: ['2021','2022','2023','2024','2025','2026'], values: [38000,51000,64000,72000,88000,27000] }
+};
+
+function fmtFull(n) { return 'NRS ' + n.toLocaleString('en-NP'); }
+function getPeakIndex(v) { return v.indexOf(Math.max(...v)); }
+function buildColors(v,p) { return v.map((_,i)=>i===p?'#4a6cf7':'#e8ecf4'); }
+function buildHoverColors(v,p) { return v.map((_,i)=>i===p?'#3a5ce5':'#d0d6e8'); }
+
+let revenueChart;
+
+const darkTooltipPlugin = {
+    id:'darkTooltip',
+    afterDraw(chart){
+        const{ctx,tooltip}=chart;
+        if(!tooltip||tooltip.opacity===0)return;
+        const{caretX,caretY,body}=tooltip;
+        if(!body||!body.length)return;
+        const text=body[0].lines[0];
+        const pad={x:12,y:8};
+        ctx.save();ctx.font='600 12px Poppins,sans-serif';
+        const tw=ctx.measureText(text).width;
+        const bw=tw+pad.x*2,bh=32,bx=caretX-bw/2,by=caretY-bh-14,r=8;
+        ctx.beginPath();ctx.moveTo(bx+r,by);ctx.lineTo(bx+bw-r,by);ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);ctx.lineTo(bx+bw,by+bh-r);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);ctx.lineTo(caretX+7,by+bh);ctx.lineTo(caretX,by+bh+8);ctx.lineTo(caretX-7,by+bh);ctx.lineTo(bx+r,by+bh);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);ctx.lineTo(bx,by+r);ctx.quadraticCurveTo(bx,by,bx+r,by);ctx.closePath();
+        ctx.fillStyle='#1e293b';ctx.fill();
+        ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,caretX,by+bh/2);ctx.restore();
+    }
+};
+
+function initChart(period) {
+    const d=revenueData[period];
+    const peakIdx=getPeakIndex(d.values);
+    const peakVal=d.values[peakIdx];
+    document.getElementById('chartBigValue').textContent=fmtFull(peakVal);
+    const ctx=document.getElementById('revenueChart').getContext('2d');
+    if(revenueChart)revenueChart.destroy();
+    revenueChart=new Chart(ctx,{type:'bar',plugins:[darkTooltipPlugin],data:{labels:d.labels,datasets:[{label:'Revenue',data:d.values,backgroundColor:buildColors(d.values,peakIdx),hoverBackgroundColor:buildHoverColors(d.values,peakIdx),borderRadius:8,borderSkipped:false,barPercentage:0.55,categoryPercentage:0.75}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:500,easing:'easeOutQuart'},plugins:{legend:{display:false},tooltip:{enabled:false,external:()=>{},callbacks:{label:ctx=>fmtFull(ctx.parsed.y)}}},onHover(event,elements){if(!elements.length)return;document.getElementById('chartBigValue').textContent=fmtFull(d.values[elements[0].index]);},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{family:'Poppins',size:11},color:'#9ca3af',padding:6}},y:{display:false,grid:{display:false}}}}});
+    document.getElementById('revenueChart').onmouseleave=()=>{document.getElementById('chartBigValue').textContent=fmtFull(peakVal);};
+}
+
+function switchPeriod(period, btn) {
+    document.querySelectorAll('.period-tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    initChart(period);
+}
+
+initChart('monthly');
+loadDropdowns();
+
+// ── Booking vehicle filter population ────────────────────────────────────
+async function loadMyVehiclesForFilter() {
+    try {
+        const res = await fetch('/api/vendor/vehicles', {
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        if (!res.ok) return;
+        const vehicles = await res.json();
+        const sel = document.getElementById('bkFilterVehicle');
+        const keep = sel.options[0];
+        sel.innerHTML = '';
+        sel.appendChild(keep);
+        vehicles.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.vehicleId;
+            opt.textContent = v.vehicleName;
+            sel.appendChild(opt);
+        });
+    } catch (_) {}
+}
+
+// ── Load Bookings ─────────────────────────────────────────────────────────
+let allBookings = [];
+
+async function loadBookings() {
+    const vehicleId = document.getElementById('bkFilterVehicle').value;
+    const dateFrom  = document.getElementById('bkFilterFrom').value;
+    const dateTo    = document.getElementById('bkFilterTo').value;
+    const status    = document.getElementById('bkFilterStatus').value;
+
+    let url = '/api/vendor/bookings?';
+    if (vehicleId) url += `vehicleId=${vehicleId}&`;
+    if (dateFrom)  url += `dateFrom=${dateFrom}&`;
+    if (dateTo)    url += `dateTo=${dateTo}&`;
+    if (status)    url += `status=${status}&`;
+
+    const tbody = document.getElementById('bookingsTableBody');
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#9ca3af;">Loading...</td></tr>';
+
+    try {
+        const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + TOKEN() } });
+        if (!res.ok) throw new Error('Failed to load bookings');
+        allBookings = await res.json();
+        renderBookingsTable(allBookings);
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:#ef4444;">${e.message}</td></tr>`;
+    }
+}
+
+function bkStatusBadge(status) {
+    const cls = { PENDING: 'pending', CONFIRMED: 'confirmed', CANCELLED: 'cancelled' };
+    return `<span class="bk-badge ${cls[status] || ''}">${status || '—'}</span>`;
+}
+
+function renderBookingsTable(bookings) {
+    const tbody = document.getElementById('bookingsTableBody');
+    if (!bookings.length) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#9ca3af;">No bookings found.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = bookings.map(b => `
+        <tr>
+            <td style="font-weight:600;color:#6b7280;font-size:0.78rem;">#${b.bookingId}</td>
+            <td>
+                <div style="font-weight:600;font-size:0.85rem;">${b.customerName || '—'}</div>
+                <div style="font-size:0.72rem;color:#6b7280;">${b.customerEmail || ''}</div>
+            </td>
+            <td>
+                <div style="font-weight:600;font-size:0.85rem;">${b.vehicleName || '—'}</div>
+                <div style="font-size:0.72rem;color:#6b7280;">${b.vehicleNo || ''}</div>
+            </td>
+            <td>${b.startDate || '—'}</td>
+            <td>${b.endDate   || '—'}</td>
+            <td>${b.durationDays != null ? b.durationDays + ' day' + (b.durationDays !== 1 ? 's' : '') : '—'}</td>
+            <td style="font-weight:600;">NPR ${b.totalPrice != null ? Number(b.totalPrice).toLocaleString('en-NP') : '—'}</td>
+            <td>${bkStatusBadge(b.bookingStatus)}</td>
+            <td>
+                <button class="vv-btn-edit" onclick="openBookingDetail(${b.bookingId})">Details</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ── Booking Detail Modal ──────────────────────────────────────────────────
+function openBookingDetail(bookingId) {
+    const b = allBookings.find(x => x.bookingId === bookingId);
+    if (!b) return;
+
+    const body = document.getElementById('bookingDetailBody');
+    body.innerHTML = `
+        <p class="bk-section-title">Booking Info</p>
+        <div class="bk-detail-grid">
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Booking ID</span>
+                <span class="bk-detail-value">#${b.bookingId}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Status</span>
+                <span class="bk-detail-value">${bkStatusBadge(b.bookingStatus)}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Start Date</span>
+                <span class="bk-detail-value">${b.startDate || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">End Date</span>
+                <span class="bk-detail-value">${b.endDate || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Duration</span>
+                <span class="bk-detail-value">${b.durationDays != null ? b.durationDays + ' day(s)' : '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Total Amount</span>
+                <span class="bk-detail-value" style="color:var(--primary);font-weight:700;">NPR ${b.totalPrice != null ? Number(b.totalPrice).toLocaleString('en-NP') : '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Duration Type</span>
+                <span class="bk-detail-value">${b.rentalDurationType || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Booked On</span>
+                <span class="bk-detail-value">${b.createdAt ? b.createdAt.slice(0,10) : '—'}</span>
+            </div>
+        </div>
+
+        <p class="bk-section-title">Vehicle</p>
+        <div class="bk-detail-grid">
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Vehicle</span>
+                <span class="bk-detail-value">${b.vehicleName || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Vehicle No.</span>
+                <span class="bk-detail-value">${b.vehicleNo || '—'}</span>
+            </div>
+        </div>
+
+        <p class="bk-section-title">Customer</p>
+        <div class="bk-detail-grid">
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Name</span>
+                <span class="bk-detail-value">${b.customerName || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Email</span>
+                <span class="bk-detail-value">${b.customerEmail || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Phone</span>
+                <span class="bk-detail-value">${b.customerPhone || '—'}</span>
+            </div>
+        </div>
+    `;
+    document.getElementById('bookingDetailOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBookingDetail() {
+    document.getElementById('bookingDetailOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+function closeBookingDetailOnOverlay(e) {
+    if (e.target === document.getElementById('bookingDetailOverlay')) closeBookingDetail();
+}
+
+// ── Vendor Profile ────────────────────────────────────────────────────────
+async function loadProfile() {
+    try {
+        const res = await fetch('/api/vendor/me', {
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        if (!res.ok) throw new Error('Failed to load profile');
+        const p = await res.json();
+
+        document.getElementById('pfVendorName').value  = p.vendorName  || '';
+        document.getElementById('pfCompanyName').value = p.companyName || '';
+        document.getElementById('pfEmail').value       = p.email       || '';
+        document.getElementById('pfPhone').value       = p.phoneNumber || '';
+        document.getElementById('pfRegNo').value       = p.registrationNo || '';
+        document.getElementById('pfBrand').value       = p.brandName   || '';
+
+        const badge = document.getElementById('profileStatusBadge');
+        const st = (p.status || '').toLowerCase();
+        badge.textContent = p.status || '—';
+        badge.className   = 'vp-status-badge ' + st;
+
+        hideProfileMsg();
+    } catch (e) {
+        showProfileMsg(e.message, true);
+    }
+}
+
+async function saveProfile() {
+    const vendorName  = document.getElementById('pfVendorName').value.trim();
+    const companyName = document.getElementById('pfCompanyName').value.trim();
+    const phoneNumber = document.getElementById('pfPhone').value.trim();
+
+    if (!vendorName) { showProfileMsg('Vendor name is required.', true); return; }
+
+    try {
+        const res = await fetch('/api/vendor/profile', {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ vendorName, companyName, phoneNumber })
+        });
+        if (!res.ok) { const t = await res.text(); throw new Error(t); }
+        const updated = await res.json();
+        // Refresh topbar name
+        document.getElementById('vendorName').textContent = updated.vendorName || '';
+        showProfileMsg('Profile updated successfully.', false);
+    } catch (e) {
+        showProfileMsg(e.message, true);
+    }
+}
+
+async function changePassword() {
+    const currentPassword = document.getElementById('pfCurrentPw').value;
+    const newPassword     = document.getElementById('pfNewPw').value;
+    const confirmPw       = document.getElementById('pfConfirmPw').value;
+
+    if (!currentPassword || !newPassword || !confirmPw) {
+        showPwMsg('All fields are required.', true); return;
+    }
+    if (newPassword.length < 6) {
+        showPwMsg('New password must be at least 6 characters.', true); return;
+    }
+    if (newPassword !== confirmPw) {
+        showPwMsg('New passwords do not match.', true); return;
+    }
+
+    try {
+        const res = await fetch('/api/vendor/password', {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+        const msg = await res.text();
+        if (!res.ok) throw new Error(msg);
+        document.getElementById('pfCurrentPw').value = '';
+        document.getElementById('pfNewPw').value     = '';
+        document.getElementById('pfConfirmPw').value = '';
+        showPwMsg('Password updated successfully.', false);
+    } catch (e) {
+        showPwMsg(e.message, true);
+    }
+}
+
+function showProfileMsg(msg, isError) {
+    const el = document.getElementById('profileInfoMsg');
+    el.textContent = msg;
+    el.style.display = '';
+    el.style.color = isError ? '#dc2626' : '#16a34a';
+}
+function hideProfileMsg() {
+    document.getElementById('profileInfoMsg').style.display = 'none';
+}
+function showPwMsg(msg, isError) {
+    const el = document.getElementById('pwMsg');
+    el.textContent = msg;
+    el.style.display = '';
+    el.style.color = isError ? '#dc2626' : '#16a34a';
+}
 </script>
 </body>
 </html>

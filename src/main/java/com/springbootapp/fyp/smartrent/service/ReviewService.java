@@ -1,8 +1,13 @@
 package com.springbootapp.fyp.smartrent.service;
 
+import com.springbootapp.fyp.smartrent.dto.ReviewRequestDto;
 import com.springbootapp.fyp.smartrent.dto.ReviewResponseDto;
+import com.springbootapp.fyp.smartrent.model.Customer;
 import com.springbootapp.fyp.smartrent.model.Review;
+import com.springbootapp.fyp.smartrent.model.Vehicle;
+import com.springbootapp.fyp.smartrent.repository.CustomerRepository;
 import com.springbootapp.fyp.smartrent.repository.ReviewRepository;
+import com.springbootapp.fyp.smartrent.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +20,43 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
     // Get 6 most recent reviews for home page
     public List<ReviewResponseDto> getRecentReviews() {
         return reviewRepository.findTop6ByOrderByCreatedAtDesc()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    // Get all reviews for a specific vehicle
+    public List<ReviewResponseDto> getReviewsByVehicle(Integer vehicleId) {
+        return reviewRepository.findByVehicle_VehicleId(vehicleId)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // Submit a new review from an authenticated customer
+    public ReviewResponseDto submitReview(ReviewRequestDto request, String customerEmail) {
+        Customer customer = customerRepository.findByEmail(customerEmail)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        Vehicle vehicle = vehicleRepository.findById(request.getVehicleId())
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+        Review review = new Review();
+        review.setCustomer(customer);
+        review.setVehicle(vehicle);
+        review.setRating(request.getRating());
+        review.setComment(request.getComment());
+
+        return toDto(reviewRepository.save(review));
     }
 
     private ReviewResponseDto toDto(Review r) {

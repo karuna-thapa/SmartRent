@@ -27,39 +27,39 @@
         <div class="form-grid">
             <div class="field">
                 <label>First Name</label>
-                <input type="text" id="firstName" />
+                <input type="text" id="firstName" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Last Name</label>
-                <input type="text" id="lastName" />
+                <input type="text" id="lastName" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Email</label>
-                <input type="email" id="email"/>
+                <input type="email" id="email" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Phone Number</label>
-                <input type="tel" id="phone" placeholder="98XXXXXXXX"/>
+                <input type="tel" id="phone" placeholder="98XXXXXXXX" autocomplete="off"/>
             </div>
             <div class="field">
-                <label>Birthday</label>
-                <input type="date" id="dob"/>
+                <label>Birthday <span class="dob-hint">(must be 18+)</span></label>
+                <input type="date" id="dob" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Address</label>
-                <input type="text" id="address"/>
+                <input type="text" id="address" autocomplete="off"/>
             </div>
             <div class="field full">
                 <label>Driving License Number</label>
-                <input type="text" id="licenseNo" placeholder="Your license number"/>
+                <input type="text" id="licenseNo" placeholder="Your license number" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Password</label>
-                <input type="password" id="password" placeholder="password"/>
+                <input type="password" id="password" placeholder="password" autocomplete="new-password"/>
             </div>
             <div class="field">
                 <label>Confirm Password</label>
-                <input type="password" id="confirmPassword" placeholder="Repeat password"/>
+                <input type="password" id="confirmPassword" placeholder="Repeat password" autocomplete="new-password"/>
             </div>
         </div>
         <button class="btn" id="registerBtn" onclick="submitCustomer()">
@@ -71,43 +71,48 @@
     <!-- VENDOR FORM -->
     <div class="form-section" id="vendorForm">
         <div class="vendor-note">
-            Note: Vendor accounts require admin approval before activation.
+            ⏳ Vendor accounts require admin approval before activation.
         </div>
         <div class="form-grid">
             <div class="field">
                 <label>Full Name</label>
-                <input type="text" id="vendorName" placeholder="Owner name"/>
+                <input type="text" id="vendorName" placeholder="Owner / contact name" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Company Name</label>
-                <input type="text" id="companyName" placeholder="Company name"/>
+                <input type="text" id="companyName" placeholder="Registered company name" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Email</label>
-                <input type="email" id="vendorEmail" placeholder="company@example.com"/>
+                <input type="email" id="vendorEmail" placeholder="company@example.com" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Phone Number</label>
-                <input type="tel" id="vendorPhone" placeholder="98XXXXXXXX"/>
+                <input type="tel" id="vendorPhone" placeholder="98XXXXXXXX" autocomplete="off"/>
             </div>
             <div class="field">
                 <label>Registration No.</label>
-                <input type="text" id="registrationNo" placeholder="Reg. number"/>
+                <input type="text" id="registrationNo" placeholder="Business reg. number" autocomplete="off"/>
             </div>
             <div class="field">
-                <label>Brand Name</label>
-                <input type="text" id="brandName" placeholder="e.g. Toyota, Honda"/>
+                <label>Brand</label>
+                <select id="brandName" class="field-select">
+                    <option value="">— Select a brand —</option>
+                </select>
             </div>
             <div class="field">
                 <label>Password</label>
-                <input type="password" id="vendorPassword" placeholder="password"/>
+                <input type="password" id="vendorPassword" placeholder="min. 6 characters" autocomplete="new-password"/>
             </div>
             <div class="field">
                 <label>Confirm Password</label>
-                <input type="password" id="vendorConfirmPassword" placeholder="Repeat password"/>
+                <input type="password" id="vendorConfirmPassword" placeholder="Repeat password" autocomplete="new-password"/>
             </div>
         </div>
-        <button class="btn" onclick="submitVendor()">Register as Vendor</button>
+        <button class="btn" id="vendorRegisterBtn" onclick="submitVendor()">
+            <span id="vendorBtnText">Register as Vendor</span>
+            <div class="spinner" id="vendorSpinner"></div>
+        </button>
     </div>
 
     <div class="login-link">

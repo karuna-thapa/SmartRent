@@ -47,7 +47,13 @@
 
 <!-- ==================== BOOKING CONTENT ==================== -->
 <main class="booking-page">
-    <h1>Book Your Vehicle</h1>
+    <div class="booking-page-header">
+        <button class="back-btn" onclick="history.back()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Back
+        </button>
+        <h1>Book Your Vehicle</h1>
+    </div>
 
     <!-- Vehicle Info -->
     <div class="vehicle-info-card" id="vehicleInfoCard">
@@ -63,6 +69,47 @@
             <div class="price-tag" id="vPrice"></div>
         </div>
     </div>
+
+    <!-- Location Pickers -->
+    <div class="date-picker-row">
+        <div class="date-picker-box">
+            <label for="pickupLocation">📍 Pickup Location</label>
+            <select id="pickupLocation" onchange="updateSummary()">
+                <option value="">— Select location —</option>
+                <option>Pokhara, Lakeside</option>
+                <option>Pokhara, Bus Park</option>
+                <option>Pokhara, Prithvi Chowk</option>
+                <option>Pokhara, Airport</option>
+                <option>Pokhara, Mahendrapul</option>
+                <option>Pokhara, Bagar</option>
+                <option>Pokhara, New Road</option>
+                <option>Kathmandu, Thamel</option>
+                <option>Kathmandu, New Bus Park</option>
+                <option>Kathmandu, Airport</option>
+                <option>Chitwan, Bharatpur</option>
+                <option>Lumbini, Bhairahawa</option>
+            </select>
+        </div>
+        <div class="date-picker-box">
+            <label for="dropoffLocation">📍 Drop-off Location</label>
+            <select id="dropoffLocation" onchange="updateSummary()">
+                <option value="">— Select location —</option>
+                <option>Pokhara, Lakeside</option>
+                <option>Pokhara, Bus Park</option>
+                <option>Pokhara, Prithvi Chowk</option>
+                <option>Pokhara, Airport</option>
+                <option>Pokhara, Mahendrapul</option>
+                <option>Pokhara, Bagar</option>
+                <option>Pokhara, New Road</option>
+                <option>Kathmandu, Thamel</option>
+                <option>Kathmandu, New Bus Park</option>
+                <option>Kathmandu, Airport</option>
+                <option>Chitwan, Bharatpur</option>
+                <option>Lumbini, Bhairahawa</option>
+            </select>
+        </div>
+    </div>
+    <p class="location-error" id="locationError">Please select both pickup and drop-off locations.</p>
 
     <!-- Date Pickers -->
     <div class="date-picker-row">
@@ -85,6 +132,14 @@
                 <tr>
                     <td class="label-col">Vehicle</td>
                     <td id="sVehicle">—</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Pickup Location</td>
+                    <td id="sPickupLocation">—</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Drop-off Location</td>
+                    <td id="sDropoffLocation">—</td>
                 </tr>
                 <tr>
                     <td class="label-col">Price per Day</td>
@@ -194,17 +249,30 @@ if (!vehicle) {
 function updateSummary() {
     if (!vehicle) return;
 
+    const pickupLoc  = document.getElementById("pickupLocation").value;
+    const dropoffLoc = document.getElementById("dropoffLocation").value;
     const pickupVal  = document.getElementById("pickupDate").value;
     const dropoffVal = document.getElementById("dropoffDate").value;
-    const errEl      = document.getElementById("dateError");
+    const locErrEl   = document.getElementById("locationError");
+    const dateErrEl  = document.getElementById("dateError");
     const btn        = document.getElementById("proceedBtn");
 
-    // Reset
+    // Reset computed fields
     ["sNumDays","sSubtotal","sServiceFee","sGrandTotal"].forEach(id => {
         document.getElementById(id).textContent = "—";
     });
-    errEl.style.display = "none";
+    locErrEl.style.display  = "none";
+    dateErrEl.style.display = "none";
     btn.disabled = true;
+
+    // Update location summary rows immediately
+    document.getElementById("sPickupLocation").textContent  = pickupLoc  || "—";
+    document.getElementById("sDropoffLocation").textContent = dropoffLoc || "—";
+
+    if (!pickupLoc || !dropoffLoc) {
+        if (pickupVal && dropoffVal) locErrEl.style.display = "block";
+        return;
+    }
 
     if (!pickupVal || !dropoffVal) return;
 
@@ -212,7 +280,7 @@ function updateSummary() {
     const dropoff = new Date(dropoffVal);
 
     if (dropoff <= pickup) {
-        errEl.style.display = "block";
+        dateErrEl.style.display = "block";
         return;
     }
 
@@ -232,9 +300,11 @@ function updateSummary() {
 
 // ── Proceed ───────────────────────────────────────────────────────────────────
 function proceedToBooking() {
-    const pickup  = document.getElementById("pickupDate").value;
-    const dropoff = document.getElementById("dropoffDate").value;
-    alert(`Booking confirmed!\n\nVehicle: ${vehicle.name}\nPickup: ${pickup}\nDropoff: ${dropoff}\n\nFull payment integration coming soon.`);
+    const pickupLoc  = document.getElementById("pickupLocation").value;
+    const dropoffLoc = document.getElementById("dropoffLocation").value;
+    const pickup     = document.getElementById("pickupDate").value;
+    const dropoff    = document.getElementById("dropoffDate").value;
+    alert(`Booking confirmed!\n\nVehicle: ${vehicle.name}\nPickup Location: ${pickupLoc}\nDrop-off Location: ${dropoffLoc}\nPickup Date: ${pickup}\nDrop-off Date: ${dropoff}\n\nFull payment integration coming soon.`);
 }
 
 // ── Hamburger ─────────────────────────────────────────────────────────────────

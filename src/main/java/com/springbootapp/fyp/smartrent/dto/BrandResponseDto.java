@@ -10,5 +10,4 @@ public class BrandResponseDto {
     private Integer brandId;
     private String brandName;
     private long vehicleCount;
-    private String brandLogoUrl;
 }

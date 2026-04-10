@@ -25,8 +25,7 @@ public class BrandService {
                 .map(brand -> new BrandResponseDto(
                         brand.getBrandId(),
                         brand.getBrandName(),
-                        vehicleRepository.countByBrand_BrandId(brand.getBrandId()),
-                        brand.getBrandLogoUrl()
+                        vehicleRepository.countByBrand_BrandId(brand.getBrandId())
                 ))
                 .collect(Collectors.toList());
     }

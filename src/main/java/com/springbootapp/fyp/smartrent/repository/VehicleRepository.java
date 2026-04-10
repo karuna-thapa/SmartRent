@@ -24,9 +24,32 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
     long countByBrand_BrandId(Integer brandId);
 
-    @Query("SELECT v FROM Vehicle v WHERE v.status = 'available' " +
+    // Public search: only active + approved vehicles
+    @Query("SELECT v FROM Vehicle v WHERE v.active = true AND v.approvalStatus = 'APPROVED' " +
            "AND (:brandId IS NULL OR v.brand.brandId = :brandId) " +
            "AND (:categoryId IS NULL OR v.vehicleCategory.vehicleCategoryId = :categoryId)")
     List<Vehicle> searchAvailable(@Param("brandId") Integer brandId,
                                   @Param("categoryId") Integer categoryId);
+
+    // Public listing: active + approved only
+    @Query("SELECT v FROM Vehicle v WHERE v.active = true AND v.approvalStatus = 'APPROVED'")
+    List<Vehicle> findActiveApproved();
+
+    @Query("SELECT v FROM Vehicle v WHERE v.active = true AND v.approvalStatus = 'APPROVED'")
+    List<Vehicle> findActiveApproved(Pageable pageable);
+
+    // Vendor: get own vehicles with optional filters
+    @Query("SELECT v FROM Vehicle v WHERE v.vendor.email = :email " +
+           "AND (:brandId IS NULL OR v.brand.brandId = :brandId) " +
+           "AND (:categoryId IS NULL OR v.vehicleCategory.vehicleCategoryId = :categoryId) " +
+           "AND (:status IS NULL OR v.status = :status)")
+    List<Vehicle> findVendorVehicles(@Param("email") String email,
+                                     @Param("brandId") Integer brandId,
+                                     @Param("categoryId") Integer categoryId,
+                                     @Param("status") Vehicle.Status status);
+
+    // Admin: get pending approval vehicles
+    List<Vehicle> findByApprovalStatusAndActiveTrue(Vehicle.ApprovalStatus approvalStatus);
+
+    long countByApprovalStatus(Vehicle.ApprovalStatus approvalStatus);
 }

@@ -1,41 +1,47 @@
- package com.springbootapp.fyp.smartrent.service;
+package com.springbootapp.fyp.smartrent.service;
 
+import com.springbootapp.fyp.smartrent.dto.VehicleRequestDto;
 import com.springbootapp.fyp.smartrent.dto.VehicleResponseDto;
-import com.springbootapp.fyp.smartrent.model.Vehicle;
-import com.springbootapp.fyp.smartrent.repository.VehicleRepository;
+import com.springbootapp.fyp.smartrent.model.*;
+import com.springbootapp.fyp.smartrent.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class VehicleService {
 
-    @Autowired
-    private VehicleRepository vehicleRepository;
+    @Autowired private VehicleRepository vehicleRepository;
+    @Autowired private VehicleImageRepository vehicleImageRepository;
+    @Autowired private VendorRepository vendorRepository;
+    @Autowired private BrandRepository brandRepository;
+    @Autowired private VehicleCategoryRepository vehicleCategoryRepository;
+    @Autowired private BookingRepository bookingRepository;
+    @Autowired private FileStorageService fileStorageService;
 
-    // Get all available vehicles
+    // ── Public APIs ─────────────────────────────────────────────────────────
+
     public List<VehicleResponseDto> getAvailableVehicles() {
-        return vehicleRepository.findByStatus(Vehicle.Status.available)
+        return vehicleRepository.findActiveApproved()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    // Get top 4 available vehicles for home page
     public List<VehicleResponseDto> getFeaturedVehicles() {
-        return vehicleRepository.findByStatus(
-                        Vehicle.Status.available,
-                        PageRequest.of(0, 4)
-                )
+        return vehicleRepository.findActiveApproved(PageRequest.of(0, 4))
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    // Search available vehicles by optional brand and category filters
     public List<VehicleResponseDto> searchVehicles(Integer brandId, Integer categoryId) {
         return vehicleRepository.searchAvailable(brandId, categoryId)
                 .stream()
@@ -43,19 +49,209 @@ public class VehicleService {
                 .collect(Collectors.toList());
     }
 
-    private VehicleResponseDto toDto(Vehicle v) {
+    // ── Vendor APIs ─────────────────────────────────────────────────────────
+
+    public List<VehicleResponseDto> getVendorVehicles(String vendorEmail,
+                                                       Integer brandId,
+                                                       Integer categoryId,
+                                                       String statusStr) {
+        Vehicle.Status status = null;
+        if (statusStr != null && !statusStr.isBlank()) {
+            try { status = Vehicle.Status.valueOf(statusStr); } catch (IllegalArgumentException ignored) {}
+        }
+        return vehicleRepository.findVendorVehicles(vendorEmail, brandId, categoryId, status)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public VehicleResponseDto addVehicle(VehicleRequestDto dto,
+                                          List<MultipartFile> images,
+                                          String vendorEmail) throws IOException {
+        Vendor vendor = vendorRepository.findByEmail(vendorEmail)
+                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+        Brand brand = brandRepository.findById(dto.getBrandId())
+                .orElseThrow(() -> new RuntimeException("Brand not found"));
+
+        VehicleCategory category = vehicleCategoryRepository.findById(dto.getVehicleCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        Vehicle vehicle = new Vehicle();
+        vehicle.setVendor(vendor);
+        vehicle.setBrand(brand);
+        vehicle.setVehicleCategory(category);
+        vehicle.setVehicleName(dto.getVehicleName());
+        vehicle.setVehicleNo(dto.getVehicleNo());
+        vehicle.setSeatsCapacity(dto.getSeatsCapacity());
+        vehicle.setRentalPrice(dto.getRentalPrice());
+        vehicle.setDescription(dto.getDescription());
+        vehicle.setStatus(Vehicle.Status.available);
+        vehicle.setActive(true);
+        vehicle.setApprovalStatus(Vehicle.ApprovalStatus.PENDING);
+
+        Vehicle saved = vehicleRepository.save(vehicle);
+        saveImages(saved, images);
+
+        return toDto(saved);
+    }
+
+    @Transactional
+    public VehicleResponseDto updateVehicle(Integer vehicleId,
+                                             VehicleRequestDto dto,
+                                             List<MultipartFile> newImages,
+                                             String vendorEmail) throws IOException {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+        if (!vehicle.getVendor().getEmail().equals(vendorEmail)) {
+            throw new RuntimeException("Access denied: you do not own this vehicle");
+        }
+
+        if (dto.getBrandId() != null) {
+            Brand brand = brandRepository.findById(dto.getBrandId())
+                    .orElseThrow(() -> new RuntimeException("Brand not found"));
+            vehicle.setBrand(brand);
+        }
+        if (dto.getVehicleCategoryId() != null) {
+            VehicleCategory category = vehicleCategoryRepository.findById(dto.getVehicleCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+            vehicle.setVehicleCategory(category);
+        }
+        if (dto.getVehicleName() != null) vehicle.setVehicleName(dto.getVehicleName());
+        if (dto.getVehicleNo() != null)   vehicle.setVehicleNo(dto.getVehicleNo());
+        if (dto.getSeatsCapacity() != null) vehicle.setSeatsCapacity(dto.getSeatsCapacity());
+        if (dto.getRentalPrice() != null) vehicle.setRentalPrice(dto.getRentalPrice());
+        if (dto.getDescription() != null) vehicle.setDescription(dto.getDescription());
+        if (dto.getStatus() != null) {
+            try { vehicle.setStatus(Vehicle.Status.valueOf(dto.getStatus())); }
+            catch (IllegalArgumentException ignored) {}
+        }
+
+        // If previously rejected, reset to PENDING so admin can re-review
+        if (vehicle.getApprovalStatus() == Vehicle.ApprovalStatus.REJECTED) {
+            vehicle.setApprovalStatus(Vehicle.ApprovalStatus.PENDING);
+        }
+
+        Vehicle saved = vehicleRepository.save(vehicle);
+
+        // Replace images only if new ones are provided
+        if (newImages != null && newImages.stream().anyMatch(f -> !f.isEmpty())) {
+            List<VehicleImage> existing = vehicleImageRepository.findByVehicle_VehicleId(vehicleId);
+            for (VehicleImage img : existing) {
+                fileStorageService.deleteFile(img.getImageUrl());
+            }
+            vehicleImageRepository.deleteByVehicleId(vehicleId);
+            saveImages(saved, newImages);
+        }
+
+        return toDto(saved);
+    }
+
+    @Transactional
+    public void deactivateVehicle(Integer vehicleId, String vendorEmail) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+        if (!vehicle.getVendor().getEmail().equals(vendorEmail)) {
+            throw new RuntimeException("Access denied: you do not own this vehicle");
+        }
+        if (bookingRepository.hasActiveBookings(vehicleId)) {
+            throw new RuntimeException("Cannot deactivate: vehicle has active bookings");
+        }
+
+        vehicle.setActive(false);
+        vehicleRepository.save(vehicle);
+    }
+
+    @Transactional
+    public void reactivateVehicle(Integer vehicleId, String vendorEmail) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+        if (!vehicle.getVendor().getEmail().equals(vendorEmail)) {
+            throw new RuntimeException("Access denied: you do not own this vehicle");
+        }
+
+        vehicle.setActive(true);
+        vehicleRepository.save(vehicle);
+    }
+
+    // ── Admin APIs ──────────────────────────────────────────────────────────
+
+    public List<VehicleResponseDto> getPendingVehicles() {
+        return vehicleRepository.findByApprovalStatusAndActiveTrue(Vehicle.ApprovalStatus.PENDING)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void approveVehicle(Integer vehicleId) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        vehicle.setApprovalStatus(Vehicle.ApprovalStatus.APPROVED);
+        vehicleRepository.save(vehicle);
+    }
+
+    @Transactional
+    public void rejectVehicle(Integer vehicleId) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        vehicle.setApprovalStatus(Vehicle.ApprovalStatus.REJECTED);
+        vehicleRepository.save(vehicle);
+    }
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
+
+    private void saveImages(Vehicle vehicle, List<MultipartFile> images) throws IOException {
+        if (images == null) return;
+        for (MultipartFile file : images) {
+            if (file == null || file.isEmpty()) continue;
+            String url = fileStorageService.storeVehicleImage(file);
+            if (url != null) {
+                VehicleImage img = new VehicleImage();
+                img.setVehicle(vehicle);
+                img.setImageUrl(url);
+                vehicleImageRepository.save(img);
+            }
+        }
+    }
+
+    VehicleResponseDto toDto(Vehicle v) {
         VehicleResponseDto dto = new VehicleResponseDto();
         dto.setVehicleId(v.getVehicleId());
         dto.setVehicleName(v.getVehicleName());
         dto.setRentalPrice(v.getRentalPrice());
-        dto.setStatus(v.getStatus().name());
+        dto.setStatus(v.getStatus() != null ? v.getStatus().name() : null);
+        dto.setApprovalStatus(v.getApprovalStatus() != null ? v.getApprovalStatus().name() : null);
+        dto.setActive(v.getActive());
         dto.setSeatsCapacity(v.getSeatsCapacity());
         dto.setVehicleNo(v.getVehicleNo());
-        dto.setBrandName(v.getBrand() != null ? v.getBrand().getBrandName() : null);
-        dto.setCategoryName(v.getVehicleCategory() != null
-                ? v.getVehicleCategory().getVehicleCategoryName() : null);
-        dto.setVendorName(v.getVendor() != null ? v.getVendor().getVendorName() : null);
-        dto.setImageUrl(v.getImageUrl());
+        dto.setDescription(v.getDescription());
+        dto.setCreatedAt(v.getCreatedAt());
+
+        if (v.getBrand() != null) {
+            dto.setBrandId(v.getBrand().getBrandId());
+            dto.setBrandName(v.getBrand().getBrandName());
+        }
+        if (v.getVehicleCategory() != null) {
+            dto.setCategoryId(v.getVehicleCategory().getVehicleCategoryId());
+            dto.setCategoryName(v.getVehicleCategory().getVehicleCategoryName());
+        }
+        if (v.getVendor() != null) {
+            dto.setVendorId(v.getVendor().getVendorId());
+            dto.setVendorName(v.getVendor().getVendorName());
+        }
+
+        List<String> urls = vehicleImageRepository.findByVehicle_VehicleId(v.getVehicleId())
+                .stream()
+                .map(VehicleImage::getImageUrl)
+                .collect(Collectors.toList());
+        dto.setImageUrls(urls);
+        dto.setImageUrl(urls.isEmpty() ? null : urls.get(0));
+
         return dto;
     }
 }

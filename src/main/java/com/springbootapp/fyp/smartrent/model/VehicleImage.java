@@ -6,21 +6,25 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "brand")
-public class Brand {
+@Table(name = "vehicle_image")
+public class VehicleImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brand_id")
-    private Integer brandId;
+    @Column(name = "vehicle_image_id")
+    private Integer vehicleImageId;
 
-    @Column(name = "brand_name", nullable = false, unique = true, length = 100)
-    private String brandName;
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
 
-    @Column(name = "created_at")
+    @Column(name = "image_url", nullable = false, length = 255)
+    private String imageUrl;
+
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @PrePersist

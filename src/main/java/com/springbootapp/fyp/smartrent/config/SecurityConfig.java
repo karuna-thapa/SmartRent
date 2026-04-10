@@ -44,16 +44,21 @@ public class SecurityConfig {
                                 "/home.html", "/login.html", "/register.html",
                                 "/css/**", "/js/**", "/images/**", "/static/**"
                         ).permitAll()
-                        // Allow auth APIs
+                        // Allow auth APIs (includes /api/auth/register-vendor)
                         .requestMatchers("/api/auth/**").permitAll()
                         // Public read-only APIs for home page
                         .requestMatchers("/api/vehicles/**").permitAll()
                         .requestMatchers("/api/brands/**").permitAll()
                         .requestMatchers("/api/reviews/**").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
+                        // Uploaded files (vehicle images)
+                        .requestMatchers("/uploads/**").permitAll()
                         // Role based
                         .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
                         .requestMatchers("/api/vendor/**").hasRole("VENDOR")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // Vendor approval actions are admin-only
+                        .requestMatchers("/api/admin/vendors/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

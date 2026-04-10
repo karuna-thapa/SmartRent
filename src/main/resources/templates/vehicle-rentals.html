@@ -218,6 +218,40 @@
                 <button class="modal-btn-close" onclick="closeModal()">Close</button>
                 <button class="modal-btn-book" id="mBookBtn">Book Now</button>
             </div>
+
+            <!-- ── Customer Reviews ── -->
+            <div class="modal-reviews-section">
+                <div class="reviews-section-header">
+                    <h3 class="reviews-section-title">Customer Reviews</h3>
+                    <span class="reviews-section-count" id="mReviewsCount"></span>
+                </div>
+
+                <div id="mReviewsList"></div>
+
+                <!-- Write a Review (logged-in users) -->
+                <div id="mWriteReview" style="display:none;">
+                    <div class="write-review-box">
+                        <h4 class="write-review-title">Write a Review</h4>
+                        <div class="star-rating-input" id="starRatingInput">
+                            <span class="star-btn" data-val="1">★</span>
+                            <span class="star-btn" data-val="2">★</span>
+                            <span class="star-btn" data-val="3">★</span>
+                            <span class="star-btn" data-val="4">★</span>
+                            <span class="star-btn" data-val="5">★</span>
+                        </div>
+                        <textarea id="reviewComment" class="review-textarea" rows="3" placeholder="Share your experience with this vehicle…"></textarea>
+                        <button class="btn-submit-review" onclick="submitReview()">Submit Review</button>
+                        <div id="reviewMsg" class="review-msg"></div>
+                    </div>
+                </div>
+
+                <!-- Login prompt for guests -->
+                <div id="mLoginPrompt" style="display:none;">
+                    <p class="login-prompt-text">
+                        <a href="/login">Log in</a> to write a review for this vehicle.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -436,26 +470,136 @@ document.getElementById("hamburger").addEventListener("click", () => {
 });
 
 // ── Vehicle Details Modal ─────────────────────────────────────────────────────
+let currentVehicleId = null;
+let selectedRating = 0;
+
 function viewDetails(id) {
     const v = vehicles.find(x => x.id === id);
     if (!v) return;
+    currentVehicleId = id;
 
-    document.getElementById("mIcon").textContent       = v.icon;
-    document.getElementById("mCategory").textContent   = v.category;
-    document.getElementById("mBrand").textContent      = v.brand;
-    document.getElementById("mName").textContent       = v.name;
-    document.getElementById("mStars").innerHTML        = stars(v.rating);
-    document.getElementById("mRating").textContent     = `${v.rating} / 5`;
-    document.getElementById("mDesc").textContent       = v.desc;
-    document.getElementById("mSeats").textContent      = `${v.seats} Seats`;
+    document.getElementById("mIcon").textContent         = v.icon;
+    document.getElementById("mCategory").textContent     = v.category;
+    document.getElementById("mBrand").textContent        = v.brand;
+    document.getElementById("mName").textContent         = v.name;
+    document.getElementById("mStars").innerHTML          = stars(v.rating);
+    document.getElementById("mRating").textContent       = `${v.rating} / 5`;
+    document.getElementById("mDesc").textContent         = v.desc;
+    document.getElementById("mSeats").textContent        = `${v.seats} Seats`;
     document.getElementById("mTransmission").textContent = v.transmission;
-    document.getElementById("mFuelIcon").textContent   = v.fuel === "Electric" ? "⚡" : "⛽";
-    document.getElementById("mFuel").textContent       = v.fuel;
-    document.getElementById("mPrice").textContent      = `NRS ${fmt(v.price)}`;
-    document.getElementById("mBookBtn").onclick        = () => { closeModal(); bookNow(v.id); };
+    document.getElementById("mFuelIcon").textContent     = v.fuel === "Electric" ? "⚡" : "⛽";
+    document.getElementById("mFuel").textContent         = v.fuel;
+    document.getElementById("mPrice").textContent        = `NRS ${fmt(v.price)}`;
+    document.getElementById("mBookBtn").onclick          = () => { closeModal(); bookNow(v.id); };
+
+    // Reset review form
+    selectedRating = 0;
+    document.getElementById("reviewComment").value = "";
+    document.getElementById("reviewMsg").textContent = "";
+    highlightStars(0);
+
+    // Show/hide write-review vs login prompt
+    const token = localStorage.getItem("token");
+    document.getElementById("mWriteReview").style.display  = token ? "block" : "none";
+    document.getElementById("mLoginPrompt").style.display  = token ? "none"  : "block";
 
     document.getElementById("vehicleModal").classList.add("open");
     document.body.style.overflow = "hidden";
+
+    loadVehicleReviews(id);
+}
+
+function loadVehicleReviews(vehicleId) {
+    const list = document.getElementById("mReviewsList");
+    const countEl = document.getElementById("mReviewsCount");
+    list.innerHTML = '<div class="reviews-loading">Loading reviews…</div>';
+
+    fetch(`/api/reviews/vehicle/${vehicleId}`)
+        .then(r => r.json())
+        .then(reviews => {
+            countEl.textContent = reviews.length > 0 ? `${reviews.length} review${reviews.length > 1 ? "s" : ""}` : "";
+            if (!reviews.length) {
+                list.innerHTML = '<div class="reviews-empty">No reviews yet. Be the first to review!</div>';
+                return;
+            }
+            list.innerHTML = reviews.map(r => buildReviewCard(r)).join("");
+        })
+        .catch(() => {
+            list.innerHTML = '<div class="reviews-empty">Could not load reviews.</div>';
+        });
+}
+
+function buildReviewCard(r) {
+    const initials = r.customerName
+        ? r.customerName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)
+        : "?";
+    const dateStr = r.createdAt
+        ? new Date(r.createdAt).toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" })
+        : "";
+    let starHtml = "";
+    for (let i = 1; i <= 5; i++) {
+        starHtml += `<span class="star ${i <= r.rating ? "full" : "empty"}">★</span>`;
+    }
+    return `
+        <div class="review-card">
+            <div class="review-card-header">
+                <div class="review-avatar">${initials}</div>
+                <div class="review-meta">
+                    <span class="review-author">${r.customerName || "Anonymous"}</span>
+                    <span class="review-date">${dateStr}</span>
+                </div>
+                <div class="review-stars stars">${starHtml}</div>
+            </div>
+            ${r.comment ? `<p class="review-comment">${r.comment}</p>` : ""}
+        </div>`;
+}
+
+// ── Star Rating Input ─────────────────────────────────────────────────────────
+function highlightStars(val) {
+    document.querySelectorAll(".star-btn").forEach(s => {
+        s.classList.toggle("selected", parseInt(s.dataset.val) <= val);
+    });
+}
+
+document.querySelectorAll(".star-btn").forEach(s => {
+    s.addEventListener("mouseover", () => highlightStars(parseInt(s.dataset.val)));
+    s.addEventListener("mouseout",  () => highlightStars(selectedRating));
+    s.addEventListener("click",     () => { selectedRating = parseInt(s.dataset.val); highlightStars(selectedRating); });
+});
+
+// ── Submit Review ─────────────────────────────────────────────────────────────
+function submitReview() {
+    const msgEl = document.getElementById("reviewMsg");
+    if (!selectedRating) { msgEl.textContent = "Please select a star rating."; msgEl.className = "review-msg error"; return; }
+    const comment = document.getElementById("reviewComment").value.trim();
+    const token = localStorage.getItem("token");
+    if (!token) { window.location.href = "/login"; return; }
+
+    const btn = document.querySelector(".btn-submit-review");
+    btn.disabled = true;
+    btn.textContent = "Submitting…";
+
+    fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        body: JSON.stringify({ vehicleId: currentVehicleId, rating: selectedRating, comment })
+    })
+    .then(async res => {
+        if (res.status === 201) {
+            msgEl.textContent = "Review submitted! Thank you.";
+            msgEl.className = "review-msg success";
+            selectedRating = 0;
+            highlightStars(0);
+            document.getElementById("reviewComment").value = "";
+            loadVehicleReviews(currentVehicleId);
+        } else {
+            const text = await res.text();
+            msgEl.textContent = text || "Failed to submit review.";
+            msgEl.className = "review-msg error";
+        }
+    })
+    .catch(() => { msgEl.textContent = "Network error. Please try again."; msgEl.className = "review-msg error"; })
+    .finally(() => { btn.disabled = false; btn.textContent = "Submit Review"; });
 }
 
 function closeModal() {

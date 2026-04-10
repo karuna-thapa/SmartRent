@@ -113,16 +113,173 @@
         <div class="topbar-welcome">
             <h2>Welcome back Admin!</h2>
         </div>
-        <div class="topbar-admin">
-            <div class="admin-avatar">
-                <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
+        <div class="topbar-right">
+            <!-- Vendor Request Bell -->
+            <div class="notif-wrapper">
+                <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()" aria-label="Vendor Requests">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    <span class="notif-badge" id="notifBadge">0</span>
+                </button>
+
+                <!-- Notification Panel -->
+                <div class="notif-panel" id="notifPanel">
+                    <div class="notif-panel-header">
+                        <h4>Vendor Requests</h4>
+                        <span class="notif-count" id="notifCount">0 pending</span>
+                    </div>
+                    <div class="notif-list" id="notifList"></div>
+                    <div class="notif-empty" id="notifEmpty" style="display:none;">
+                        <svg width="36" height="36" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                        <p>No pending vendor requests</p>
+                    </div>
+                </div>
             </div>
-            <span id="adminName">Admin</span>
+
+            <!-- Vehicle Approval Bell -->
+            <div class="notif-wrapper">
+                <button class="notif-btn" id="vehNotifBtn" onclick="toggleVehPanel()" aria-label="Vehicle Approvals">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/>
+                        <rect x="9" y="11" width="14" height="10" rx="2"/>
+                    </svg>
+                    <span class="notif-badge" id="vehNotifBadge" style="display:none;">0</span>
+                </button>
+
+                <!-- Vehicle Approval Panel -->
+                <div class="notif-panel" id="vehPanel" style="width:380px;">
+                    <div class="notif-panel-header">
+                        <h4>Vehicle Approvals</h4>
+                        <span class="notif-count" id="vehNotifCount">0 pending</span>
+                    </div>
+                    <div class="notif-list" id="vehNotifList"></div>
+                    <div class="notif-empty" id="vehNotifEmpty" style="display:none;">
+                        <svg width="36" height="36" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/>
+                            <rect x="9" y="11" width="14" height="10" rx="2"/>
+                        </svg>
+                        <p>No pending vehicle approvals</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Info -->
+            <div class="topbar-admin">
+                <div class="admin-avatar">
+                    <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <span id="adminName">Admin</span>
+            </div>
         </div>
     </header>
+
+    <!-- ===== VENDOR DETAIL MODAL ===== -->
+    <div class="vendor-modal-overlay" id="vendorModalOverlay" onclick="closeVendorModal(event)">
+        <div class="vendor-modal" id="vendorModal">
+            <div class="vendor-modal-header">
+                <h3>Vendor Details</h3>
+                <button class="vendor-modal-close" onclick="closeVendorModalBtn()">✕</button>
+            </div>
+            <div class="vendor-modal-body">
+                <div class="vendor-avatar-row">
+                    <div class="vendor-big-avatar" id="vmAvatar"></div>
+                    <div>
+                        <div class="vendor-modal-name" id="vmName"></div>
+                        <div class="vendor-modal-date" id="vmDate"></div>
+                    </div>
+                </div>
+                <div class="vendor-fields-grid">
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Company Name</span>
+                        <span class="vendor-field-value" id="vmCompany"></span>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Email Address</span>
+                        <span class="vendor-field-value" id="vmEmail"></span>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Phone Number</span>
+                        <span class="vendor-field-value" id="vmPhone"></span>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Registration No.</span>
+                        <span class="vendor-field-value" id="vmRegNo"></span>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Brand</span>
+                        <span class="vendor-field-value" id="vmBrand"></span>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Requested On</span>
+                        <span class="vendor-field-value" id="vmDate2"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="vendor-modal-actions">
+                <button class="vbtn-reject" id="vmRejectBtn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Reject
+                </button>
+                <button class="vbtn-approve" id="vmApproveBtn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    Approve
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== VEHICLE DETAIL MODAL ===== -->
+    <div class="vendor-modal-overlay" id="vehicleApprovalOverlay" onclick="closeVehicleApprovalModal(event)">
+        <div class="vendor-modal" id="vehicleApprovalModal" style="width:560px;">
+            <div class="vendor-modal-header">
+                <h3>Vehicle Approval</h3>
+                <button class="vendor-modal-close" onclick="closeVehicleApprovalModalBtn()">✕</button>
+            </div>
+            <div class="vendor-modal-body">
+                <div style="display:flex;gap:16px;margin-bottom:20px;align-items:flex-start;">
+                    <img id="vaImage" src="" alt="" style="width:100px;height:76px;object-fit:cover;border-radius:8px;border:1px solid #e5e9f0;display:none;flex-shrink:0;"/>
+                    <div id="vaNoImage" style="width:100px;height:76px;background:#f1f5f9;border-radius:8px;border:1px solid #e5e9f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="24" height="24" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size:1.05rem;font-weight:700;color:#2d2d4e;" id="vaName"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;" id="vaVendor"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;" id="vaDate"></div>
+                    </div>
+                </div>
+                <div class="vendor-fields-grid">
+                    <div class="vendor-field"><span class="vendor-field-label">Brand</span><span class="vendor-field-value" id="vaBrand"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Category</span><span class="vendor-field-value" id="vaCategory"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Vehicle No.</span><span class="vendor-field-value" id="vaNo"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Seat Capacity</span><span class="vendor-field-value" id="vaSeats"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Daily Price (NPR)</span><span class="vendor-field-value" id="vaPrice"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Submitted On</span><span class="vendor-field-value" id="vaDate2"></span></div>
+                    <div class="vendor-field" style="grid-column:span 2;" id="vaDescField">
+                        <span class="vendor-field-label">Description</span>
+                        <span class="vendor-field-value" id="vaDesc"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="vendor-modal-actions">
+                <button class="vbtn-reject" id="vaRejectBtn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Reject
+                </button>
+                <button class="vbtn-approve" id="vaApproveBtn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    Approve
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Page Body -->
     <div class="page-body">
@@ -195,10 +352,14 @@
         <!-- Revenue Chart -->
         <div class="chart-card">
             <div class="chart-header">
-                <h3>Total Revenue</h3>
-                <div class="chart-legend">
-                    <span><span class="legend-dot grey"></span>Revenue</span>
-                    <span><span class="legend-dot dark"></span>Operating Profit Mar</span>
+                <div>
+                    <div class="chart-title">Monthly Revenue</div>
+                    <div class="chart-big-value" id="chartBigValue">NRS 0</div>
+                </div>
+                <div class="chart-period-tabs">
+                    <button class="period-tab active" data-period="monthly" onclick="switchPeriod('monthly',this)">Monthly</button>
+                    <button class="period-tab" data-period="quarterly" onclick="switchPeriod('quarterly',this)">Quarterly</button>
+                    <button class="period-tab" data-period="yearly" onclick="switchPeriod('yearly',this)">Yearly</button>
                 </div>
             </div>
             <div class="chart-container">
@@ -287,6 +448,34 @@
             </div>
         </div>
 
+        <!-- Pending Vehicle Approvals Table -->
+        <div class="table-card" style="margin-top:28px;">
+            <div class="table-card-header" style="display:flex;align-items:center;justify-content:space-between;">
+                <h3>Pending Vehicle Approvals</h3>
+                <span id="vehPendingCount" style="font-size:0.75rem;font-weight:600;color:#ca8a04;background:#fef9c3;padding:3px 10px;border-radius:20px;">0 pending</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Vehicle Name</th>
+                            <th>Vendor</th>
+                            <th>Brand</th>
+                            <th>Category</th>
+                            <th>Vehicle No.</th>
+                            <th>Price / Day</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingVehiclesBody">
+                        <tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div><!-- /page-body -->
 </div><!-- /main-content -->
 
@@ -310,59 +499,497 @@
         window.location.href = '/login';
     }
 
-    // Revenue Chart
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-            datasets: [
-                {
-                    label: 'Revenue',
-                    data: [62, 58, 65, 68, 55, 72, 80, 70, 62, 30, 55, 50],
-                    backgroundColor: 'rgba(209,213,219,0.7)',
-                    borderRadius: 4,
-                    order: 2
-                },
-                {
-                    label: 'Operating Profit Mar',
-                    data: [60, 55, 63, 66, 52, 68, 78, 66, 60, 28, 52, 48],
-                    type: 'line',
-                    borderColor: '#374151',
-                    backgroundColor: '#374151',
-                    borderWidth: 2,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#374151',
-                    tension: 0.3,
-                    fill: false,
-                    order: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: { font: { family: 'Poppins', size: 11 }, color: '#9ca3af' }
-                },
-                y: {
-                    min: 0,
-                    max: 100,
-                    ticks: {
-                        stepSize: 25,
-                        font: { family: 'Poppins', size: 11 },
-                        color: '#9ca3af'
-                    },
-                    grid: { color: '#f1f5f9' }
-                }
+    // ── Vendor Request State ──────────────────────────────────────────────────
+    let pendingVendors = [];   // filled from API
+
+    function initials(name) {
+        if (!name) return '?';
+        const parts = name.trim().split(' ');
+        return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+    }
+
+    function fmtDate(iso) {
+        if (!iso) return '—';
+        return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    // ── Fetch pending vendors from backend ────────────────────────────────────
+    async function loadPendingVendors() {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('/api/admin/vendors/pending', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (res.ok) {
+                pendingVendors = await res.json();
             }
+        } catch (_) { pendingVendors = []; }
+        renderNotifList();
+        updateBadge();
+    }
+
+    // ── Notification Panel ────────────────────────────────────────────────────
+    function updateBadge() {
+        const count = pendingVendors.length;
+        const badge   = document.getElementById('notifBadge');
+        const countEl = document.getElementById('notifCount');
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+        countEl.textContent = count > 0 ? `${count} pending` : 'No pending requests';
+    }
+
+    function renderNotifList() {
+        const list  = document.getElementById('notifList');
+        const empty = document.getElementById('notifEmpty');
+
+        if (!pendingVendors.length) {
+            list.innerHTML = '';
+            empty.style.display = 'flex';
+            return;
+        }
+        empty.style.display = 'none';
+        list.innerHTML = pendingVendors.map(v => `
+            <div class="notif-item" id="notif-${v.vendorId}">
+                <div class="notif-item-avatar">${initials(v.vendorName)}</div>
+                <div class="notif-item-body">
+                    <div class="notif-item-name">${v.vendorName}</div>
+                    <div class="notif-item-sub">${v.companyName || '—'}</div>
+                    <div class="notif-item-time">Requested ${fmtDate(v.createdAt)}</div>
+                </div>
+                <button class="notif-view-btn" onclick="openVendorModal(${v.vendorId})">View</button>
+            </div>
+        `).join('');
+    }
+
+    function toggleNotifPanel() {
+        document.getElementById('notifPanel').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const wrapper = document.getElementById('notifBtn').closest('.notif-wrapper');
+        if (!wrapper.contains(e.target)) {
+            document.getElementById('notifPanel').classList.remove('open');
         }
     });
+
+    // ── Vendor Detail Modal ───────────────────────────────────────────────────
+    let activeVendorId = null;
+
+    function openVendorModal(id) {
+        const vendor = pendingVendors.find(v => v.vendorId === id);
+        if (!vendor) return;
+        activeVendorId = id;
+
+        document.getElementById('vmAvatar').textContent  = initials(vendor.vendorName);
+        document.getElementById('vmName').textContent    = vendor.vendorName;
+        document.getElementById('vmDate').textContent    = `Requested on ${fmtDate(vendor.createdAt)}`;
+        document.getElementById('vmCompany').textContent = vendor.companyName || '—';
+        document.getElementById('vmEmail').textContent   = vendor.email || '—';
+        document.getElementById('vmPhone').textContent   = vendor.phoneNumber || '—';
+        document.getElementById('vmRegNo').textContent   = vendor.registrationNo || '—';
+        document.getElementById('vmBrand').textContent   = vendor.brandName || '—';
+        document.getElementById('vmDate2').textContent   = fmtDate(vendor.createdAt);
+
+        document.getElementById('vmApproveBtn').onclick = () => handleDecision(id, 'approve');
+        document.getElementById('vmRejectBtn').onclick  = () => handleDecision(id, 'reject');
+
+        document.getElementById('vendorModalOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('notifPanel').classList.remove('open');
+    }
+
+    function closeVendorModalBtn() {
+        document.getElementById('vendorModalOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+        activeVendorId = null;
+    }
+
+    function closeVendorModal(e) {
+        if (e.target === document.getElementById('vendorModalOverlay')) closeVendorModalBtn();
+    }
+
+    async function handleDecision(id, action) {
+        const token  = localStorage.getItem('token');
+        const vendor = pendingVendors.find(v => v.vendorId === id);
+        const endpoint = action === 'approve' ? 'approve' : 'reject';
+
+        try {
+            const res = await fetch(`/api/admin/vendors/${id}/${endpoint}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (res.ok) {
+                pendingVendors = pendingVendors.filter(v => v.vendorId !== id);
+                closeVendorModalBtn();
+                renderNotifList();
+                updateBadge();
+                showToast(
+                    action === 'approve'
+                        ? `✔ ${vendor.vendorName} has been approved as a vendor.`
+                        : `✖ ${vendor.vendorName}'s request has been rejected.`,
+                    action
+                );
+            } else {
+                showToast('Action failed. Please try again.', 'reject');
+            }
+        } catch (_) {
+            showToast('Cannot connect to server.', 'reject');
+        }
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    function showToast(msg, type) {
+        let toast = document.getElementById('adminToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'adminToast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = msg;
+        toast.className = 'admin-toast ' + (type === 'approve' ? 'toast-approve' : 'toast-reject');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    loadPendingVendors();
+    loadPendingVehicles();
+
+    // ── Vehicle Approval State ────────────────────────────────────────────────
+    let pendingVehicles = [];
+
+    async function loadPendingVehicles() {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('/api/admin/vehicles/pending', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (res.ok) pendingVehicles = await res.json();
+        } catch (_) { pendingVehicles = []; }
+        renderPendingVehiclesTable();
+        renderVehNotifList();
+        updateVehBadge();
+    }
+
+    function updateVehBadge() {
+        const count = pendingVehicles.length;
+        const badge   = document.getElementById('vehNotifBadge');
+        const countEl = document.getElementById('vehNotifCount');
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+        countEl.textContent = count > 0 ? `${count} pending` : 'No pending';
+        document.getElementById('vehPendingCount').textContent = `${count} pending`;
+    }
+
+    function renderVehNotifList() {
+        const list  = document.getElementById('vehNotifList');
+        const empty = document.getElementById('vehNotifEmpty');
+        if (!pendingVehicles.length) {
+            list.innerHTML = '';
+            empty.style.display = 'flex';
+            return;
+        }
+        empty.style.display = 'none';
+        list.innerHTML = pendingVehicles.map(v => `
+            <div class="notif-item" id="vehNotif-${v.vehicleId}">
+                <div class="notif-item-avatar" style="border-radius:6px;background:#eef0ff;color:#4a6cf7;overflow:hidden;">
+                    ${v.imageUrl ? `<img src="${v.imageUrl}" style="width:100%;height:100%;object-fit:cover;"/>` : '&#128663;'}
+                </div>
+                <div class="notif-item-body">
+                    <div class="notif-item-name">${v.vehicleName}</div>
+                    <div class="notif-item-sub">${v.vendorName || '—'} &bull; ${v.brandName || '—'}</div>
+                    <div class="notif-item-time">NPR ${Number(v.rentalPrice).toLocaleString('en-NP')}/day</div>
+                </div>
+                <button class="notif-view-btn" onclick="openVehicleApprovalModal(${v.vehicleId})">View</button>
+            </div>
+        `).join('');
+    }
+
+    function toggleVehPanel() {
+        document.getElementById('vehPanel').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const vehWrapper = document.getElementById('vehNotifBtn').closest('.notif-wrapper');
+        if (!vehWrapper.contains(e.target)) {
+            document.getElementById('vehPanel').classList.remove('open');
+        }
+    });
+
+    function renderPendingVehiclesTable() {
+        const tbody = document.getElementById('pendingVehiclesBody');
+        if (!pendingVehicles.length) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">No vehicles pending approval.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = pendingVehicles.map(v => `
+            <tr>
+                <td>
+                    ${v.imageUrl
+                        ? `<img src="${v.imageUrl}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;"/>`
+                        : `<div style="width:52px;height:40px;background:#f1f5f9;border-radius:6px;border:1px solid #e5e9f0;display:flex;align-items:center;justify-content:center;">&#128663;</div>`
+                    }
+                </td>
+                <td style="font-weight:600;">${v.vehicleName}</td>
+                <td>${v.vendorName || '—'}</td>
+                <td>${v.brandName || '—'}</td>
+                <td>${v.categoryName || '—'}</td>
+                <td><code style="font-size:0.78rem;">${v.vehicleNo}</code></td>
+                <td>NPR ${Number(v.rentalPrice).toLocaleString('en-NP')}</td>
+                <td>${fmtDate(v.createdAt)}</td>
+                <td>
+                    <div style="display:flex;gap:6px;">
+                        <button class="btn-view" onclick="openVehicleApprovalModal(${v.vehicleId})">Review</button>
+                        <button onclick="handleVehicleDecision(${v.vehicleId},'approve')" style="padding:5px 10px;font-size:0.73rem;font-weight:600;border:none;border-radius:6px;background:#dcfce7;color:#16a34a;cursor:pointer;font-family:Poppins,sans-serif;">Approve</button>
+                        <button onclick="handleVehicleDecision(${v.vehicleId},'reject')" style="padding:5px 10px;font-size:0.73rem;font-weight:600;border:none;border-radius:6px;background:#fee2e2;color:#dc2626;cursor:pointer;font-family:Poppins,sans-serif;">Reject</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // ── Vehicle Detail Modal ──────────────────────────────────────────────────
+    let activeVehicleId = null;
+
+    function openVehicleApprovalModal(id) {
+        const v = pendingVehicles.find(x => x.vehicleId === id);
+        if (!v) return;
+        activeVehicleId = id;
+
+        if (v.imageUrl) {
+            document.getElementById('vaImage').src = v.imageUrl;
+            document.getElementById('vaImage').style.display = '';
+            document.getElementById('vaNoImage').style.display = 'none';
+        } else {
+            document.getElementById('vaImage').style.display = 'none';
+            document.getElementById('vaNoImage').style.display = '';
+        }
+
+        document.getElementById('vaName').textContent     = v.vehicleName;
+        document.getElementById('vaVendor').textContent   = 'Vendor: ' + (v.vendorName || '—');
+        document.getElementById('vaBrand').textContent    = v.brandName || '—';
+        document.getElementById('vaCategory').textContent = v.categoryName || '—';
+        document.getElementById('vaNo').textContent       = v.vehicleNo;
+        document.getElementById('vaSeats').textContent    = v.seatsCapacity ? v.seatsCapacity + ' seats' : '—';
+        document.getElementById('vaPrice').textContent    = 'NPR ' + Number(v.rentalPrice).toLocaleString('en-NP');
+        document.getElementById('vaDate').textContent     = 'Submitted ' + fmtDate(v.createdAt);
+        document.getElementById('vaDate2').textContent    = fmtDate(v.createdAt);
+        document.getElementById('vaDesc').textContent     = v.description || '(No description provided)';
+
+        document.getElementById('vaApproveBtn').onclick = () => handleVehicleDecision(id, 'approve');
+        document.getElementById('vaRejectBtn').onclick  = () => handleVehicleDecision(id, 'reject');
+
+        document.getElementById('vehicleApprovalOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('vehPanel').classList.remove('open');
+    }
+
+    function closeVehicleApprovalModalBtn() {
+        document.getElementById('vehicleApprovalOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+        activeVehicleId = null;
+    }
+
+    function closeVehicleApprovalModal(e) {
+        if (e.target === document.getElementById('vehicleApprovalOverlay')) closeVehicleApprovalModalBtn();
+    }
+
+    async function handleVehicleDecision(id, action) {
+        const token   = localStorage.getItem('token');
+        const vehicle = pendingVehicles.find(v => v.vehicleId === id);
+        const endpoint = action === 'approve' ? 'approve' : 'reject';
+
+        try {
+            const res = await fetch(`/api/admin/vehicles/${id}/${endpoint}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (res.ok) {
+                pendingVehicles = pendingVehicles.filter(v => v.vehicleId !== id);
+                closeVehicleApprovalModalBtn();
+                renderPendingVehiclesTable();
+                renderVehNotifList();
+                updateVehBadge();
+                showToast(
+                    action === 'approve'
+                        ? `✔ "${vehicle.vehicleName}" has been approved and is now live.`
+                        : `✖ "${vehicle.vehicleName}" has been rejected.`,
+                    action
+                );
+            } else {
+                showToast('Action failed. Please try again.', 'reject');
+            }
+        } catch (_) {
+            showToast('Cannot connect to server.', 'reject');
+        }
+    }
+
+    // ── Revenue Chart ─────────────────────────────────────────────────────────
+    const revenueData = {
+        monthly: {
+            labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+            values: [8200, 9500, 6800, 15000, 11200, 10400, 9800, 7600, 8900, 12300, 10100, 9200]
+        },
+        quarterly: {
+            labels: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025'],
+            values: [24500, 31300, 29600, 28800]
+        },
+        yearly: {
+            labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
+            values: [72000, 89000, 104000, 118000, 135000, 42000]
+        }
+    };
+
+    function fmtRevenue(n) {
+        if (n >= 1000) return 'NRS ' + (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + 'K';
+        return 'NRS ' + n.toLocaleString('en-NP');
+    }
+
+    function fmtFull(n) {
+        return 'NRS ' + n.toLocaleString('en-NP');
+    }
+
+    // Find index of the peak value to highlight in blue
+    function getPeakIndex(values) {
+        return values.indexOf(Math.max(...values));
+    }
+
+    function buildColors(values, peakIdx) {
+        return values.map((_, i) => i === peakIdx ? '#4a6cf7' : '#e8ecf4');
+    }
+
+    function buildHoverColors(values, peakIdx) {
+        return values.map((_, i) => i === peakIdx ? '#3a5ce5' : '#d0d6e8');
+    }
+
+    let currentPeriod = 'monthly';
+    let revenueChart;
+
+    // Custom dark tooltip plugin
+    const darkTooltipPlugin = {
+        id: 'darkTooltip',
+        afterDraw(chart) {
+            const { ctx, tooltip } = chart;
+            if (!tooltip || tooltip.opacity === 0) return;
+            const { caretX, caretY, body, title } = tooltip;
+            if (!body || !body.length) return;
+
+            const text = body[0].lines[0];
+            const padding = { x: 12, y: 8 };
+            ctx.save();
+            ctx.font = '600 12px Poppins, sans-serif';
+            const textW = ctx.measureText(text).width;
+            const boxW = textW + padding.x * 2;
+            const boxH = 32;
+            const bx = caretX - boxW / 2;
+            const by = caretY - boxH - 14;
+            const r = 8;
+
+            // Box
+            ctx.beginPath();
+            ctx.moveTo(bx + r, by);
+            ctx.lineTo(bx + boxW - r, by);
+            ctx.quadraticCurveTo(bx + boxW, by, bx + boxW, by + r);
+            ctx.lineTo(bx + boxW, by + boxH - r);
+            ctx.quadraticCurveTo(bx + boxW, by + boxH, bx + boxW - r, by + boxH);
+            // Caret
+            ctx.lineTo(caretX + 7, by + boxH);
+            ctx.lineTo(caretX, by + boxH + 8);
+            ctx.lineTo(caretX - 7, by + boxH);
+            ctx.lineTo(bx + r, by + boxH);
+            ctx.quadraticCurveTo(bx, by + boxH, bx, by + boxH - r);
+            ctx.lineTo(bx, by + r);
+            ctx.quadraticCurveTo(bx, by, bx + r, by);
+            ctx.closePath();
+            ctx.fillStyle = '#1e293b';
+            ctx.fill();
+
+            // Text
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, caretX, by + boxH / 2);
+            ctx.restore();
+        }
+    };
+
+    function initChart(period) {
+        const d = revenueData[period];
+        const peakIdx = getPeakIndex(d.values);
+        const peakVal = d.values[peakIdx];
+        document.getElementById('chartBigValue').textContent = fmtFull(peakVal);
+
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+
+        if (revenueChart) revenueChart.destroy();
+
+        revenueChart = new Chart(ctx, {
+            type: 'bar',
+            plugins: [darkTooltipPlugin],
+            data: {
+                labels: d.labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: d.values,
+                    backgroundColor: buildColors(d.values, peakIdx),
+                    hoverBackgroundColor: buildHoverColors(d.values, peakIdx),
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    barPercentage: 0.55,
+                    categoryPercentage: 0.75
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 500, easing: 'easeOutQuart' },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: false,        // use custom plugin above
+                        external: () => {},
+                        callbacks: {
+                            label: (ctx) => fmtFull(ctx.parsed.y)
+                        }
+                    }
+                },
+                onHover(event, elements) {
+                    if (!elements.length) return;
+                    const val = d.values[elements[0].index];
+                    document.getElementById('chartBigValue').textContent = fmtFull(val);
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: {
+                            font: { family: 'Poppins', size: 11 },
+                            color: '#9ca3af',
+                            padding: 6
+                        }
+                    },
+                    y: {
+                        display: false,
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Restore big value on mouse leave
+        document.getElementById('revenueChart').onmouseleave = () => {
+            document.getElementById('chartBigValue').textContent = fmtFull(peakVal);
+        };
+    }
+
+    function switchPeriod(period, btn) {
+        document.querySelectorAll('.period-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPeriod = period;
+        initChart(period);
+    }
+
+    initChart('monthly');
 </script>
 </body>
 </html>

@@ -43,8 +43,17 @@ public class Vehicle {
     @Column(name = "vehicle_no", nullable = false, unique = true, length = 50)
     private String vehicleNo;
 
-    @Column(name = "image_url", length = 500)
-    private String imageUrl;
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "active")
+    private Boolean active = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "approval_status", columnDefinition = "ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING'")
+    private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
+
+    public enum ApprovalStatus { PENDING, APPROVED, REJECTED }
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
