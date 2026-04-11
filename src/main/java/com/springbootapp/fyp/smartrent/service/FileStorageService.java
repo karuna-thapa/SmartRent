@@ -38,6 +38,30 @@ public class FileStorageService {
         return "/uploads/vehicles/" + filename;
     }
 
+    public String storeProfileImage(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) return null;
+        Path uploadPath = Paths.get(uploadDir, "profiles");
+        if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+        String original = StringUtils.cleanPath(
+                file.getOriginalFilename() != null ? file.getOriginalFilename() : "image");
+        String ext = original.contains(".") ? original.substring(original.lastIndexOf(".")) : "";
+        String filename = UUID.randomUUID() + ext;
+        Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+        return "/uploads/profiles/" + filename;
+    }
+
+    public String storeLicenseImage(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) return null;
+        Path uploadPath = Paths.get(uploadDir, "licenses");
+        if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+        String original = StringUtils.cleanPath(
+                file.getOriginalFilename() != null ? file.getOriginalFilename() : "image");
+        String ext = original.contains(".") ? original.substring(original.lastIndexOf(".")) : "";
+        String filename = UUID.randomUUID() + ext;
+        Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+        return "/uploads/licenses/" + filename;
+    }
+
     public void deleteFile(String fileUrl) {
         if (fileUrl == null || fileUrl.isBlank()) return;
         try {

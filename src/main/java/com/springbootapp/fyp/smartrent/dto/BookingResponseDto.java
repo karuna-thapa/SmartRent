@@ -18,6 +18,7 @@ public class BookingResponseDto {
     private String  customerName;
     private String  customerEmail;
     private String  customerPhone;
+    private String  customerLicenseImage;
 
     // Vehicle
     private Integer vehicleId;
@@ -44,6 +45,7 @@ public class BookingResponseDto {
             dto.setCustomerName(b.getCustomer().getFirstName() + " " + b.getCustomer().getLastName());
             dto.setCustomerEmail(b.getCustomer().getEmail());
             dto.setCustomerPhone(b.getCustomer().getPhoneNumber());
+            dto.setCustomerLicenseImage(b.getCustomer().getLicenseImage());
         }
 
         if (b.getVehicle() != null) {

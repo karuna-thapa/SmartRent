@@ -13,6 +13,6 @@ public class CustomerProfileDto {
     private LocalDate dob;
     private String address;
     private String profileImage;
+    private String licenseImage;
     private String licenseNo;
-    private String gender;
 }

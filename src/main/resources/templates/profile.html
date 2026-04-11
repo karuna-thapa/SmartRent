@@ -58,72 +58,117 @@
     <div id="myProfile" class="tab-panel active">
         <div class="profile-card" id="profileCard">
 
-            <!-- Photos -->
-            <div class="photo-row">
-                <div class="photo-box">
-                    <div class="photo-circle" id="photoCircle" title="Upload photo">
-                        <div class="photo-initials" id="photoInitials"></div>
-                        <div class="photo-upload-icon">
-                            <svg viewBox="0 0 24 24" fill="white"><path d="M12 16.5l-4-4h3V8h2v4.5h3l-4 4zM20 6h-8l-2-2H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
-                        </div>
+            <!-- Hidden file inputs -->
+            <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)"/>
+            <input type="file" id="licensePhotoInput" accept="image/*" style="display:none" onchange="handleLicensePhotoChange(event)"/>
+
+            <!-- Centered Profile Photo -->
+            <div class="photo-center">
+                <div class="photo-circle" id="photoCircle" onclick="document.getElementById('profilePhotoInput').click()" style="cursor:pointer;">
+                    <div class="photo-camera-icon">
+                        <svg viewBox="0 0 24 24" fill="#aaa"><path d="M9 3L7.17 5H4C2.9 5 2 5.9 2 7v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L13 3H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg>
                     </div>
-                    <span class="photo-label">Upload Photo</span>
                 </div>
-                <div class="photo-box">
-                    <div class="photo-rect" id="licensePhotoBox" title="License photo">
-                        <div class="photo-rect-placeholder">
-                            <svg viewBox="0 0 24 24" fill="#b0bcf7"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h8v2H6z"/></svg>
-                            <span>License Photo</span>
-                        </div>
-                    </div>
-                    <span class="photo-label">License Photo</span>
-                </div>
+                <span class="photo-label">Profile Photo</span>
             </div>
 
-            <!-- Fields -->
-            <div class="form-grid">
+            <!-- Profile Body: Fields (left) + License (right) -->
+            <div class="profile-body">
 
-                <div class="form-group">
-                    <label>Username</label>
-                    <div class="field-value" id="displayFullName"></div>
-                    <input type="text" id="inputFirstName" placeholder="First name"/>
+                <!-- Form Fields -->
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <div class="field-value" id="displayFullName"></div>
+                        <input type="text" id="inputFirstName" placeholder="Full name"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address</label>
+                        <div class="field-value" id="displayAddress"></div>
+                        <input type="text" id="inputAddress" placeholder="Enter address"/>
+                    </div>
+
+                    <div class="form-group readonly">
+                        <label>Email</label>
+                        <div class="field-value" id="displayEmail"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="field-value" id="displayPhone"></div>
+                        <input type="tel" id="inputPhone" placeholder="Enter phone number"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Birthday</label>
+                        <div class="field-value" id="displayDob"></div>
+                        <input type="date" id="inputDob"/>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label>Address</label>
-                    <div class="field-value" id="displayAddress"></div>
-                    <input type="text" id="inputAddress" placeholder="Enter address"/>
+                <!-- License Photo (right) -->
+                <div class="license-panel">
+                    <span class="license-heading">License Photo</span>
+                    <div class="photo-rect" id="licensePhotoBox" title="Click to upload license" onclick="document.getElementById('licensePhotoInput').click()" style="cursor:pointer;">
+                        <div class="photo-rect-placeholder" id="licensePlaceholder">
+                            <svg viewBox="0 0 24 24" fill="#ccc"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h8v2H6z"/></svg>
+                            <span>Click to upload</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group readonly">
-                    <label>Email</label>
-                    <div class="field-value" id="displayEmail"></div>
-                </div>
+            </div>
 
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <div class="field-value" id="displayPhone"></div>
-                    <input type="tel" id="inputPhone" placeholder="Enter phone number"/>
-                </div>
+            <!-- Divider -->
+            <div class="section-divider"></div>
 
-                <div class="form-group">
-                    <label>Birthday</label>
-                    <div class="field-value" id="displayDob"></div>
-                    <input type="date" id="inputDob"/>
+            <!-- Change Password -->
+            <div class="password-section">
+                <button class="btn-toggle-pw" onclick="togglePasswordForm()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                    Change Password
+                </button>
+                <div id="passwordForm" class="password-form" style="display:none">
+                    <div class="pw-grid">
+                        <div class="pw-group">
+                            <label>Current Password</label>
+                            <div class="pw-input-wrap">
+                                <input type="password" id="inputCurrentPw" placeholder="Enter current password"/>
+                                <button type="button" class="pw-eye" onclick="togglePwVisibility('inputCurrentPw', this)" tabindex="-1">
+                                    <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="pw-group">
+                            <label>New Password</label>
+                            <div class="pw-input-wrap">
+                                <input type="password" id="inputNewPw" placeholder="New Password"/>
+                                <button type="button" class="pw-eye" onclick="togglePwVisibility('inputNewPw', this)" tabindex="-1">
+                                    <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="pw-group">
+                            <label>Confirm New Password</label>
+                            <div class="pw-input-wrap">
+                                <input type="password" id="inputConfirmPw" placeholder="Repeat new password"/>
+                                <button type="button" class="pw-eye" onclick="togglePwVisibility('inputConfirmPw', this)" tabindex="-1">
+                                    <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pw-actions">
+                        <button class="btn-save-pw" onclick="changePassword()">Update Password</button>
+                        <button class="btn-cancel-pw" onclick="togglePasswordForm()">Cancel</button>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Gender</label>
-                    <div class="field-value" id="displayGender"></div>
-                    <select id="inputGender">
-                        <option value="">Select gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                        <option value="Prefer not to say">Prefer not to say</option>
-                    </select>
-                </div>
-
             </div>
 
             <!-- Action Buttons -->
@@ -158,7 +203,7 @@
     <div id="history" class="tab-panel">
         <div class="profile-card">
             <div class="history-empty">
-                <svg viewBox="0 0 24 24" fill="#b0bcf7"><path d="M13 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3zm-1 5v5l4 2.5-.75 1.23L11 14V8h1z"/></svg>
+                <svg viewBox="0 0 24 24" fill="#ccc"><path d="M13 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3zm-1 5v5l4 2.5-.75 1.23L11 14V8h1z"/></svg>
                 <p>No rental history yet</p>
                 <small>Your completed rentals will appear here.</small>
             </div>

@@ -39,11 +39,11 @@ public class Customer {
     @Column(name = "profile_image", length = 255)
     private String profileImage;
 
+    @Column(name = "license_image", length = 255)
+    private String licenseImage;
+
     @Column(name = "license_no", nullable = false, length = 100)
     private String licenseNo;
-
-    @Column(name = "gender", length = 20)
-    private String gender;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

@@ -15,5 +15,4 @@ public class CustomerDto {
     private String address;
     private String licenseNo;
     private String profileImage;
-    private String gender;
 }

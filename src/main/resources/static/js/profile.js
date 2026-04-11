@@ -52,14 +52,34 @@ function renderProfile(d) {
     if (photoInitials) photoInitials.textContent = initial;
 
     // Profile image
+    const circle = document.getElementById('photoCircle');
+    const existingImg = circle.querySelector('img');
+    if (existingImg) existingImg.remove();
+    const cameraIcon = circle.querySelector('.photo-camera-icon');
     if (d.profileImage) {
         const img = document.createElement('img');
         img.src = d.profileImage;
         img.alt = 'Profile';
-        const circle = document.getElementById('photoCircle');
-        const initialsEl = circle.querySelector('.photo-initials');
-        if (initialsEl) initialsEl.style.display = 'none';
-        circle.insertBefore(img, circle.querySelector('.photo-upload-icon'));
+        circle.appendChild(img);
+        if (cameraIcon) cameraIcon.style.display = 'none';
+    } else {
+        if (cameraIcon) cameraIcon.style.display = 'flex';
+    }
+
+    // License image
+    const licenseBox = document.getElementById('licensePhotoBox');
+    const existingLicImg = licenseBox.querySelector('img');
+    if (existingLicImg) existingLicImg.remove();
+    const placeholder = document.getElementById('licensePlaceholder');
+    if (d.licenseImage) {
+        if (placeholder) placeholder.style.display = 'none';
+        const img = document.createElement('img');
+        img.src = d.licenseImage;
+        img.alt = 'License';
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:10px;';
+        licenseBox.insertBefore(img, placeholder);
+    } else {
+        if (placeholder) placeholder.style.display = 'flex';
     }
 
     // Display values
@@ -68,14 +88,12 @@ function renderProfile(d) {
     setDisplay('displayAddress',  d.address || '—');
     setDisplay('displayPhone',    d.phoneNumber || '—');
     setDisplay('displayDob',      d.dob ? formatDate(d.dob) : '—');
-    setDisplay('displayGender',   d.gender  || '—');
 
     // Input defaults (for edit mode)
     setInput('inputFirstName', fullName);
     setInput('inputAddress',   d.address   || '');
     setInput('inputPhone',     d.phoneNumber || '');
     setInput('inputDob',       d.dob || '');
-    setSelectValue('inputGender', d.gender || '');
 }
 
 function setDisplay(id, value) {
@@ -127,8 +145,7 @@ async function saveProfile() {
         lastName:    lastName,
         phoneNumber: document.getElementById('inputPhone').value.trim(),
         dob:         document.getElementById('inputDob').value || null,
-        address:     document.getElementById('inputAddress').value.trim(),
-        gender:      document.getElementById('inputGender').value
+        address:     document.getElementById('inputAddress').value.trim()
     };
 
     showLoading(true);
@@ -183,6 +200,120 @@ async function deleteAccount() {
         setTimeout(() => window.location.href = '/home', 1500);
     } catch (e) {
         showToast('Failed to delete account.', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// ── Photo uploads ─────────────────────────────────────────────────────────────
+async function handleProfilePhotoChange(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    showLoading(true);
+    try {
+        const res = await fetch(`${API}/api/customer/profile/photo`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+            body: formData
+        });
+        if (!res.ok) throw new Error('Failed');
+        const data = await res.json();
+        profileData.profileImage = data.profileImage;
+        renderProfile(profileData);
+        showToast('Profile photo updated!', 'success');
+    } catch (e) {
+        showToast('Failed to upload photo.', 'error');
+    } finally {
+        showLoading(false);
+        event.target.value = '';
+    }
+}
+
+async function handleLicensePhotoChange(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    showLoading(true);
+    try {
+        const res = await fetch(`${API}/api/customer/profile/license-image`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+            body: formData
+        });
+        if (!res.ok) throw new Error('Failed');
+        const data = await res.json();
+        profileData.licenseImage = data.licenseImage;
+        renderProfile(profileData);
+        showToast('License photo updated!', 'success');
+    } catch (e) {
+        showToast('Failed to upload license photo.', 'error');
+    } finally {
+        showLoading(false);
+        event.target.value = '';
+    }
+}
+
+// ── Password visibility toggle ────────────────────────────────────────────────
+function togglePwVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.querySelector('.eye-show').style.display = isHidden ? 'none' : '';
+    btn.querySelector('.eye-hide').style.display = isHidden ? '' : 'none';
+}
+
+// ── Change Password ───────────────────────────────────────────────────────────
+function togglePasswordForm() {
+    const form = document.getElementById('passwordForm');
+    const visible = form.style.display !== 'none';
+    form.style.display = visible ? 'none' : 'block';
+    if (visible) {
+        document.getElementById('inputCurrentPw').value = '';
+        document.getElementById('inputNewPw').value = '';
+        document.getElementById('inputConfirmPw').value = '';
+    }
+}
+
+async function changePassword() {
+    const currentPw  = document.getElementById('inputCurrentPw').value.trim();
+    const newPw      = document.getElementById('inputNewPw').value.trim();
+    const confirmPw  = document.getElementById('inputConfirmPw').value.trim();
+
+    if (!currentPw || !newPw || !confirmPw) {
+        showToast('Please fill in all password fields.', 'error');
+        return;
+    }
+    if (newPw.length < 6) {
+        showToast('New password must be at least 6 characters.', 'error');
+        return;
+    }
+    if (newPw !== confirmPw) {
+        showToast('New passwords do not match.', 'error');
+        return;
+    }
+
+    showLoading(true);
+    try {
+        const res = await fetch(`${API}/api/customer/password`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw })
+        });
+        const text = await res.text();
+        if (!res.ok) {
+            showToast(text || 'Failed to update password.', 'error');
+            return;
+        }
+        showToast('Password updated successfully!', 'success');
+        togglePasswordForm();
+    } catch (e) {
+        showToast('Failed to update password. Please try again.', 'error');
     } finally {
         showLoading(false);
     }

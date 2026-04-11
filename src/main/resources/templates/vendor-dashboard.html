@@ -1088,6 +1088,15 @@ function openBookingDetail(bookingId) {
                 <span class="bk-detail-value">${b.customerPhone || '—'}</span>
             </div>
         </div>
+
+        <p class="bk-section-title">Customer License</p>
+        ${b.customerLicenseImage
+            ? `<div style="margin-top:8px;">
+                <img src="http://localhost:8081${b.customerLicenseImage}" alt="Customer License"
+                     style="width:100%;max-height:220px;object-fit:contain;border-radius:10px;border:1px solid #e5e7eb;background:#f9fafb;"/>
+               </div>`
+            : `<p style="font-size:0.85rem;color:#9ca3af;margin-top:4px;">No license photo uploaded by this customer.</p>`
+        }
     `;
     document.getElementById('bookingDetailOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
