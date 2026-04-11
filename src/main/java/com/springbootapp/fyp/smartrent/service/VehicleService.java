@@ -25,6 +25,7 @@ public class VehicleService {
     @Autowired private VehicleCategoryRepository vehicleCategoryRepository;
     @Autowired private BookingRepository bookingRepository;
     @Autowired private FileStorageService fileStorageService;
+    @Autowired private ReviewRepository reviewRepository;
 
     // ── Public APIs ─────────────────────────────────────────────────────────
 
@@ -251,6 +252,13 @@ public class VehicleService {
                 .collect(Collectors.toList());
         dto.setImageUrls(urls);
         dto.setImageUrl(urls.isEmpty() ? null : urls.get(0));
+
+        List<com.springbootapp.fyp.smartrent.model.Review> reviews =
+                reviewRepository.findByVehicle_VehicleId(v.getVehicleId());
+        if (!reviews.isEmpty()) {
+            double avg = reviews.stream().mapToInt(r -> r.getRating()).average().orElse(0);
+            dto.setAverageRating(Math.round(avg * 10.0) / 10.0);
+        }
 
         return dto;
     }

@@ -49,20 +49,13 @@ async function loadBrands() {
 
         if (!brands.length) return; // keep static placeholders
 
-        grid.innerHTML = brands.map(b => {
-            const logoHtml = b.brandLogoUrl
-                ? `<img src="${b.brandLogoUrl}" alt="${b.brandName}" class="brand-logo-img"
-                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-                   <div class="brand-logo-circle" style="display:none">${b.brandName.charAt(0)}</div>`
-                : `<div class="brand-logo-circle">${b.brandName.charAt(0)}</div>`;
-            return `
+        grid.innerHTML = brands.map(b => `
                 <div class="brand-card" onclick="filterByBrand(${b.brandId})">
-                    ${logoHtml}
+                    <div class="brand-logo-circle">${b.brandName.charAt(0)}</div>
                     <p class="brand-name">${b.brandName}</p>
                     <p class="brand-count">${b.vehicleCount} Vehicle${b.vehicleCount !== 1 ? 's' : ''}</p>
                 </div>
-            `;
-        }).join('');
+            `).join('');
     } catch (e) {
         // Network error — keep static placeholders
     }
@@ -86,45 +79,33 @@ async function loadFeaturedVehicles() {
 }
 
 function buildVehicleCard(v) {
-    const price = v.rentalPrice
-        ? `Rs. ${Number(v.rentalPrice).toLocaleString()}`
-        : 'N/A';
-
-    const badge = v.categoryName || 'Vehicle';
-    const seats = v.seatsCapacity ? `${v.seatsCapacity} Seats` : '';
-    const brand  = v.brandName || '';
-
-    const imgHtml = v.imageUrl
-        ? `<img src="${v.imageUrl}" alt="${v.vehicleName}" style="width:100%;height:140px;object-fit:cover;display:block;"
-                onerror="this.outerHTML='<div class=vehicle-img-svg-fallback></div>'">`
-        : `<svg viewBox="0 0 200 120" fill="none">
-                <rect width="200" height="120" rx="12" fill="#f0f4ff"/>
-                <rect x="15" y="55" width="170" height="50" rx="6" fill="#dde4ff"/>
-                <path d="M25 55 L50 25 L150 25 L175 55" fill="#c5cfff"/>
-                <circle cx="50" cy="105" r="14" fill="#4a6cf7" opacity="0.7"/>
-                <circle cx="150" cy="105" r="14" fill="#4a6cf7" opacity="0.7"/>
-                <rect x="60" y="27" width="80" height="28" rx="3" fill="#a0b0ff" opacity="0.5"/>
-           </svg>`;
+    const imgSrc = v.imageUrl || '';
+    const ratingHtml = v.averageRating
+        ? `<svg width="14" height="14" viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg><span class="card-rating-val">${Number(v.averageRating).toFixed(1)}</span>`
+        : `<span class="card-no-reviews">No reviews</span>`;
 
     return `
         <div class="vehicle-card">
-            <div class="vehicle-img">
-                ${imgHtml}
+            <div class="card-image">
+                ${imgSrc ? `<img src="${imgSrc}" alt="${v.vehicleName}" onerror="this.style.display='none'">` : ''}
             </div>
-            <div class="vehicle-info">
-                <div class="vehicle-header">
-                    <h3 class="vehicle-name">${v.vehicleName}</h3>
-                    <span class="vehicle-badge">${badge}</span>
+            <div class="card-body">
+                <div>
+                    <h3 class="card-name">${v.vehicleName}</h3>
+                    <span class="card-category-label">${v.categoryName || 'Vehicle'}</span>
                 </div>
-                <div class="vehicle-specs">
-                    ${seats ? `<span>${seats}</span>` : ''}
-                    ${brand  ? `<span>${brand}</span>`  : ''}
+                <div class="card-meta-item">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>${v.seatsCapacity || '—'} Seats</span>
                 </div>
-                <div class="vehicle-price">
-                    <span class="price">${price}</span>
-                    <span class="price-per">/day</span>
+                <div class="card-rating-price-row">
+                    <div class="card-rating">${ratingHtml}</div>
+                    <div class="price-block">
+                        <span class="price-amount">NRS ${Number(v.rentalPrice).toLocaleString()}</span>
+                        <span class="price-unit">/day</span>
+                    </div>
                 </div>
-                <button class="btn-book" onclick="bookVehicle(${v.vehicleId})">Book Now</button>
+                <button class="btn-primary-card" onclick="bookVehicle(${v.vehicleId})">Book Now</button>
             </div>
         </div>
     `;

@@ -26,4 +26,5 @@ public class VehicleResponseDto {
     private String imageUrl;          // first image (for backwards compat)
     private List<String> imageUrls;   // all images
     private LocalDateTime createdAt;
+    private Double averageRating;
 }
