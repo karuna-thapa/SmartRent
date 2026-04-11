@@ -60,8 +60,10 @@
         <div class="filter-group">
             <label class="filter-label" for="sidebarSearch">Search Vehicle</label>
             <div class="search-input-wrap">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="sidebarSearch" class="filter-search-input" placeholder="e.g. Toyota, Honda…"/>
+                <span class="search-icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
+                <input type="text" id="sidebarSearch" class="filter-search-input" placeholder="Search vehicles…"/>
             </div>
         </div>
 
@@ -71,54 +73,46 @@
             <label class="checkbox-label">
                 <input type="checkbox" class="filter-cb" data-filter="category" value="Car"/>
                 <span class="cb-box"></span>
-                <span>🚗 Car</span>
+                <span>Car</span>
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="filter-cb" data-filter="category" value="Bike"/>
                 <span class="cb-box"></span>
-                <span>🏍️ Bike</span>
+                <span>Bike</span>
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="filter-cb" data-filter="category" value="Scooter"/>
                 <span class="cb-box"></span>
-                <span>🛵 Scooter</span>
+                <span>Scooter</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="filter-cb" data-filter="category" value="Bicycle"/>
+                <span class="cb-box"></span>
+                <span>Bicycle</span>
             </label>
         </div>
 
-        <!-- Brand -->
-        <div class="filter-group">
+        <!-- Brand — populated dynamically from live data -->
+        <div class="filter-group" id="brandFilterGroup">
             <h3 class="filter-heading">Brand</h3>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Toyota"/><span class="cb-box"></span><span>Toyota</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Honda"/><span class="cb-box"></span><span>Honda</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="BMW"/><span class="cb-box"></span><span>BMW</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Hyundai"/><span class="cb-box"></span><span>Hyundai</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Royal Enfield"/><span class="cb-box"></span><span>Royal Enfield</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Mercury"/><span class="cb-box"></span><span>Mercury</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="brand" value="Bajaj"/><span class="cb-box"></span><span>Bajaj</span></label>
+            <div id="brandCheckboxes"><span style="font-size:0.78rem;color:#9ca3af;">Loading…</span></div>
         </div>
 
         <!-- Price Range -->
         <div class="filter-group">
-            <h3 class="filter-heading">Price Range (NRS/day)</h3>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="0-1000"/><span class="cb-box"></span><span>0 – 1,000 NRS</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="1000-5000"/><span class="cb-box"></span><span>1,000 – 5,000 NRS</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="5000-10000"/><span class="cb-box"></span><span>5,000 – 10,000 NRS</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="10000-999999"/><span class="cb-box"></span><span>10,000+ NRS</span></label>
-        </div>
-
-        <!-- Transmission -->
-        <div class="filter-group">
-            <h3 class="filter-heading">Transmission</h3>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="transmission" value="Automatic"/><span class="cb-box"></span><span>Automatic</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="transmission" value="Manual"/><span class="cb-box"></span><span>Manual</span></label>
+            <h3 class="filter-heading">Price Range (NPR/day)</h3>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="0-1000"/><span class="cb-box"></span><span>0 – 1,000 NPR</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="1000-5000"/><span class="cb-box"></span><span>1,000 – 5,000 NPR</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="5000-10000"/><span class="cb-box"></span><span>5,000 – 10,000 NPR</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="price" value="10000-999999"/><span class="cb-box"></span><span>10,000+ NPR</span></label>
         </div>
 
         <!-- Seats -->
         <div class="filter-group">
-            <h3 class="filter-heading">Number of Seats</h3>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="2"/><span class="cb-box"></span><span>2 Seats</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="5"/><span class="cb-box"></span><span>5 Seats</span></label>
-            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="7"/><span class="cb-box"></span><span>7 Seats</span></label>
+            <h3 class="filter-heading">Seat Capacity</h3>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="1-2"/><span class="cb-box"></span><span>1 – 2 Seats</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="3-5"/><span class="cb-box"></span><span>3 – 5 Seats</span></label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-cb" data-filter="seats" value="6-999"/><span class="cb-box"></span><span>6+ Seats</span></label>
         </div>
     </aside>
 
@@ -132,7 +126,9 @@
             </div>
             <div class="toolbar-right">
                 <div class="search-wrap">
-                    <span class="search-icon-sm">🔍</span>
+                    <span class="search-icon-sm">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </span>
                     <input type="text" id="mainSearch" class="main-search-input" placeholder="Search vehicles…"/>
                 </div>
                 <div class="sort-wrap">
@@ -158,7 +154,9 @@
 
         <!-- Empty State -->
         <div class="empty-state" id="emptyState" style="display:none;">
-            <div class="empty-icon">🚗</div>
+            <div class="empty-icon">
+            <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:#d1d5db;"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/></svg>
+        </div>
             <h3 class="empty-title">No vehicles found</h3>
             <p class="empty-msg">Try adjusting your filters or search term to discover more options.</p>
             <button class="btn-primary-sm" id="emptyResetBtn">Clear All Filters</button>
@@ -192,19 +190,19 @@
             <p class="modal-description" id="mDesc"></p>
             <div class="modal-specs-grid">
                 <div class="modal-spec">
-                    <span class="modal-spec-icon">💺</span>
+                    <span class="modal-spec-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
                     <span class="modal-spec-label">Seats</span>
                     <span class="modal-spec-value" id="mSeats"></span>
                 </div>
                 <div class="modal-spec">
-                    <span class="modal-spec-icon">⚙️</span>
-                    <span class="modal-spec-label">Transmission</span>
-                    <span class="modal-spec-value" id="mTransmission"></span>
+                    <span class="modal-spec-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></span>
+                    <span class="modal-spec-label">Vehicle No.</span>
+                    <span class="modal-spec-value" id="mVehicleNo"></span>
                 </div>
                 <div class="modal-spec">
-                    <span class="modal-spec-icon" id="mFuelIcon"></span>
-                    <span class="modal-spec-label">Fuel Type</span>
-                    <span class="modal-spec-value" id="mFuel"></span>
+                    <span class="modal-spec-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
+                    <span class="modal-spec-label">Vendor</span>
+                    <span class="modal-spec-value" id="mVendor"></span>
                 </div>
             </div>
             <div class="modal-price-row">
@@ -258,73 +256,118 @@
 
 <!-- Mobile Filter Toggle -->
 <button class="mobile-filter-toggle" id="mobileFilterToggle" aria-label="Toggle Filters">
-    <span>⚙️</span> Filters
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+    Filters
 </button>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <script>
-// ── Vehicle Data ────────────────────────────────────────────────────────────
-const vehicles = [
-  { id:1,  name:"Toyota Hilux",       category:"Car",     brand:"Toyota",       price:8500,  transmission:"Manual",    seats:5, fuel:"Diesel",  rating:4.8, icon:"🚗", desc:"A rugged and reliable pickup truck perfect for both city drives and off-road adventures. Equipped with a powerful diesel engine, spacious cabin, and proven durability across Nepal's diverse terrain." },
-  { id:2,  name:"Toyota Land Cruiser",category:"Car",     brand:"Toyota",       price:15000, transmission:"Automatic", seats:7, fuel:"Diesel",  rating:4.9, icon:"🚙", desc:"The ultimate 7-seater SUV delivering unmatched comfort and off-road capability. Features premium leather interior, advanced safety systems, and a powerful diesel engine ideal for long journeys and mountain roads." },
-  { id:3,  name:"Honda City",         category:"Car",     brand:"Honda",        price:4500,  transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.6, icon:"🚗", desc:"A stylish and fuel-efficient sedan that blends performance with comfort. Its spacious cabin, smooth automatic transmission, and responsive petrol engine make it an excellent choice for city commutes and highway trips." },
-  { id:4,  name:"Honda Jazz",         category:"Car",     brand:"Honda",        price:3500,  transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.4, icon:"🚗", desc:"A versatile compact hatchback with exceptional interior space and flexibility. The Honda Jazz offers a comfortable ride, smart storage solutions, and great fuel economy — ideal for everyday use." },
-  { id:5,  name:"BMW 3 Series",       category:"Car",     brand:"BMW",          price:12000, transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.7, icon:"🏎️", desc:"Experience luxury and performance at its finest. The BMW 3 Series delivers a dynamic driving experience with a refined interior, cutting-edge technology, and a powerful petrol engine that sets it apart from the rest." },
-  { id:6,  name:"Hyundai Tucson",     category:"Car",     brand:"Hyundai",      price:7000,  transmission:"Automatic", seats:5, fuel:"Diesel",  rating:4.5, icon:"🚙", desc:"A modern and comfortable mid-size SUV with a bold design and a well-equipped interior. The Tucson's diesel engine provides strong performance and fuel efficiency, making it great for both city and long-distance travel." },
-  { id:7,  name:"Hyundai i20",        category:"Car",     brand:"Hyundai",      price:3800,  transmission:"Manual",    seats:5, fuel:"Petrol",  rating:4.3, icon:"🚗", desc:"A practical and stylish hatchback with a punchy petrol engine and modern features. The i20 is easy to drive in traffic, affordable to run, and comes with a comfortable 5-seat cabin." },
-  { id:8,  name:"Royal Enfield Classic 350", category:"Bike", brand:"Royal Enfield", price:1200, transmission:"Manual", seats:2, fuel:"Petrol", rating:4.7, icon:"🏍️", desc:"An iconic motorcycle that combines timeless style with dependable performance. The Classic 350 is perfect for scenic road trips and heritage routes, offering a smooth ride and a distinctive exhaust note that's hard to forget." },
-  { id:9,  name:"Royal Enfield Meteor", category:"Bike", brand:"Royal Enfield", price:1100, transmission:"Manual",   seats:2, fuel:"Petrol",  rating:4.6, icon:"🏍️", desc:"A modern cruiser built for effortless touring. The Meteor 350 delivers a relaxed riding posture, a refined engine, and premium touches that make every ride feel like an adventure." },
-  { id:10, name:"Mercury EV Bike",    category:"Bike",    brand:"Mercury",      price:800,   transmission:"Automatic", seats:2, fuel:"Electric",rating:4.2, icon:"⚡", desc:"A zero-emission electric bike designed for eco-conscious riders. Silent, smooth, and cost-effective, the Mercury EV Bike is perfect for daily commutes and short trips while keeping your carbon footprint minimal." },
-  { id:11, name:"Honda Activa 6G",    category:"Scooter", brand:"Honda",        price:550,   transmission:"Automatic", seats:2, fuel:"Petrol",  rating:4.4, icon:"🛵", desc:"Nepal's favourite scooter, known for its reliability and ease of use. The Activa 6G features a fuel-injected engine, LED lighting, and a practical design that makes navigating city streets effortless." },
-  { id:12, name:"Bajaj Chetak",       category:"Scooter", brand:"Bajaj",        price:600,   transmission:"Automatic", seats:2, fuel:"Electric",rating:4.3, icon:"🛵", desc:"A premium electric scooter that blends retro styling with modern technology. The Chetak offers a quiet, smooth ride with zero emissions, making it the perfect eco-friendly choice for urban commuters." },
-];
-
 // ── State ────────────────────────────────────────────────────────────────────
-const filters = { category: new Set(), brand: new Set(), price: new Set(), transmission: new Set(), seats: new Set(), search: "" };
+let vehicles = [];
+const filters = { category: new Set(), brand: new Set(), price: new Set(), seats: new Set(), search: "" };
 let sortOrder = "best";
 
+// ── Category icon SVG ─────────────────────────────────────────────────────────
+function categoryIcon() {
+    return `<svg width="40" height="40" fill="none" stroke="#c7d2fe" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/></svg>`;
+}
+
+// ── Load vehicles from API ────────────────────────────────────────────────────
+async function loadVehicles() {
+    const grid  = document.getElementById("vehicleGrid");
+    const empty = document.getElementById("emptyState");
+    grid.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#9ca3af;">
+            <div style="margin-bottom:12px;"><svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:#d1d5db;"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/></svg></div>
+            <p style="font-size:0.95rem;">Loading available vehicles…</p>
+        </div>`;
+    empty.style.display = "none";
+
+    try {
+        const res = await fetch("/api/vehicles");
+        if (!res.ok) throw new Error("Failed to load vehicles");
+        vehicles = await res.json();
+        buildBrandFilter();
+        renderCards();
+    } catch (e) {
+        grid.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#ef4444;">
+                <p style="font-size:0.95rem;">${e.message}</p>
+            </div>`;
+    }
+}
+
+// ── Build brand filter checkboxes dynamically ─────────────────────────────────
+function buildBrandFilter() {
+    const brands = [...new Set(vehicles.map(v => v.brandName).filter(Boolean))].sort();
+    const container = document.getElementById("brandCheckboxes");
+    if (!brands.length) { container.innerHTML = '<span style="font-size:0.78rem;color:#9ca3af;">No brands yet.</span>'; return; }
+    container.innerHTML = brands.map(b => `
+        <label class="checkbox-label">
+            <input type="checkbox" class="filter-cb" data-filter="brand" value="${b}"/>
+            <span class="cb-box"></span>
+            <span>${b}</span>
+        </label>
+    `).join("");
+    container.querySelectorAll(".filter-cb").forEach(cb => {
+        cb.addEventListener("change", () => {
+            if (cb.checked) filters.brand.add(cb.value);
+            else            filters.brand.delete(cb.value);
+            renderActiveTags();
+            renderCards();
+        });
+    });
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
-function stars(rating) {
+function fmt(n) { return Number(n).toLocaleString("en-NP"); }
+
+function buildStars(rating) {
     const full = Math.floor(rating);
     const half = rating - full >= 0.5;
     let html = "";
     for (let i = 0; i < 5; i++) {
-        if (i < full) html += '<span class="star full">★</span>';
+        if (i < full)            html += '<span class="star full">★</span>';
         else if (i === full && half) html += '<span class="star half">★</span>';
-        else html += '<span class="star empty">★</span>';
+        else                     html += '<span class="star empty">★</span>';
     }
     return html;
 }
 
-function fmt(n) { return n.toLocaleString("en-NP"); }
-
 function priceInRange(price, rangeStr) {
     const [lo, hi] = rangeStr.split("-").map(Number);
-    return price >= lo && price <= hi;
+    return Number(price) >= lo && Number(price) <= hi;
+}
+
+function seatsInRange(seats, rangeStr) {
+    const [lo, hi] = rangeStr.split("-").map(Number);
+    return Number(seats) >= lo && Number(seats) <= hi;
 }
 
 // ── Filter & Sort ────────────────────────────────────────────────────────────
 function applyFilters() {
     let result = [...vehicles];
     const q = filters.search.toLowerCase().trim();
-    if (q) result = result.filter(v => v.name.toLowerCase().includes(q) || v.brand.toLowerCase().includes(q));
-    if (filters.category.size) result = result.filter(v => filters.category.has(v.category));
-    if (filters.brand.size)    result = result.filter(v => filters.brand.has(v.brand));
-    if (filters.price.size)    result = result.filter(v => [...filters.price].some(r => priceInRange(v.price, r)));
-    if (filters.transmission.size) result = result.filter(v => filters.transmission.has(v.transmission));
-    if (filters.seats.size)    result = result.filter(v => filters.seats.has(String(v.seats)));
+    if (q) result = result.filter(v =>
+        v.vehicleName.toLowerCase().includes(q) ||
+        (v.brandName || "").toLowerCase().includes(q) ||
+        (v.categoryName || "").toLowerCase().includes(q)
+    );
+    if (filters.category.size) result = result.filter(v => filters.category.has(v.categoryName));
+    if (filters.brand.size)    result = result.filter(v => filters.brand.has(v.brandName));
+    if (filters.price.size)    result = result.filter(v => [...filters.price].some(r => priceInRange(v.rentalPrice, r)));
+    if (filters.seats.size)    result = result.filter(v => [...filters.seats].some(r => seatsInRange(v.seatsCapacity, r)));
 
-    if (sortOrder === "price-asc")  result.sort((a,b) => a.price - b.price);
-    if (sortOrder === "price-desc") result.sort((a,b) => b.price - a.price);
-    if (sortOrder === "rating")     result.sort((a,b) => b.rating - a.rating);
+    if (sortOrder === "price-asc")  result.sort((a, b) => Number(a.rentalPrice) - Number(b.rentalPrice));
+    if (sortOrder === "price-desc") result.sort((a, b) => Number(b.rentalPrice) - Number(a.rentalPrice));
 
     return result;
 }
 
 // ── Render Cards ─────────────────────────────────────────────────────────────
 function renderCards() {
-    const data = applyFilters();
-    const grid = document.getElementById("vehicleGrid");
+    const data  = applyFilters();
+    const grid  = document.getElementById("vehicleGrid");
     const empty = document.getElementById("emptyState");
     document.getElementById("countNum").textContent = data.length;
 
@@ -335,37 +378,37 @@ function renderCards() {
     }
     empty.style.display = "none";
 
-    grid.innerHTML = data.map(v => `
-        <div class="vehicle-card" data-id="${v.id}">
+    grid.innerHTML = data.map(v => {
+        const imageHtml = v.imageUrl
+            ? `<img src="${v.imageUrl}" alt="${v.vehicleName}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;"/>`
+            : `<span class="vehicle-icon">${categoryIcon()}</span>`;
+
+        return `
+        <div class="vehicle-card" data-id="${v.vehicleId}">
             <div class="card-image">
-                <span class="vehicle-icon">${v.icon}</span>
-                <span class="brand-badge">${v.brand}</span>
-                <span class="category-tag">${v.category}</span>
+                ${imageHtml}
+                <span class="brand-badge">${v.brandName || '—'}</span>
+                <span class="category-tag">${v.categoryName || '—'}</span>
             </div>
             <div class="card-body">
-                <h3 class="card-name">${v.name}</h3>
+                <h3 class="card-name">${v.vehicleName}</h3>
                 <div class="card-specs">
-                    <span class="spec-item"><span class="spec-icon">💺</span>${v.seats} Seats</span>
-                    <span class="spec-item"><span class="spec-icon">⚙️</span>${v.transmission}</span>
-                    <span class="spec-item"><span class="spec-icon">${v.fuel === 'Electric' ? '⚡' : '⛽'}</span>${v.fuel}</span>
-                </div>
-                <div class="card-rating">
-                    <div class="stars">${stars(v.rating)}</div>
-                    <span class="rating-num">${v.rating}</span>
+                    <span class="spec-item"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>${v.seatsCapacity || '—'} Seats</span>
+                    <span class="spec-item"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>${v.vendorName || '—'}</span>
                 </div>
                 <div class="card-footer">
                     <div class="price-block">
-                        <span class="price-amount">NRS ${fmt(v.price)}</span>
+                        <span class="price-amount">NPR ${fmt(v.rentalPrice)}</span>
                         <span class="price-unit">/day</span>
                     </div>
                     <div class="card-actions">
-                        <button class="btn-outline" onclick="viewDetails(${v.id})">View Details</button>
-                        <button class="btn-primary-card" onclick="bookNow(${v.id})">Book Now</button>
+                        <button class="btn-outline"      onclick="viewDetails(${v.vehicleId})">View Details</button>
+                        <button class="btn-primary-card" onclick="bookNow(${v.vehicleId})">Book Now</button>
                     </div>
                 </div>
             </div>
-        </div>
-    `).join("");
+        </div>`;
+    }).join("");
 }
 
 // ── Active Filter Tags ────────────────────────────────────────────────────────
@@ -375,11 +418,10 @@ function renderActiveTags() {
     const allTags = [];
 
     if (filters.search) allTags.push({ label: `"${filters.search}"`, key: "search", val: null });
-    filters.category.forEach(v     => allTags.push({ label: `Category: ${v}`,     key: "category",     val: v }));
-    filters.brand.forEach(v        => allTags.push({ label: `Brand: ${v}`,        key: "brand",        val: v }));
-    filters.price.forEach(v        => allTags.push({ label: `Price: ${v.replace("-999999","+")} NRS`, key: "price", val: v }));
-    filters.transmission.forEach(v => allTags.push({ label: `Trans: ${v}`,        key: "transmission", val: v }));
-    filters.seats.forEach(v        => allTags.push({ label: `${v} Seats`,         key: "seats",        val: v }));
+    filters.category.forEach(v => allTags.push({ label: `Category: ${v}`, key: "category", val: v }));
+    filters.brand.forEach(v    => allTags.push({ label: `Brand: ${v}`,    key: "brand",    val: v }));
+    filters.price.forEach(v    => allTags.push({ label: `Price: ${v.replace("-999999","+")} NPR`, key: "price", val: v }));
+    filters.seats.forEach(v    => allTags.push({ label: `Seats: ${v.replace("-999","+").replace("-"," – ")}`, key: "seats", val: v }));
 
     if (!allTags.length) { wrap.style.display = "none"; return; }
     wrap.style.display = "flex";
@@ -399,7 +441,8 @@ function renderActiveTags() {
                 document.getElementById("mainSearch").value = "";
             } else {
                 filters[key].delete(val);
-                document.querySelector(`.filter-cb[data-filter="${key}"][value="${val}"]`).checked = false;
+                const cb = document.querySelector(`.filter-cb[data-filter="${key}"][value="${val}"]`);
+                if (cb) cb.checked = false;
             }
             renderActiveTags();
             renderCards();
@@ -423,7 +466,7 @@ document.querySelectorAll(".filter-cb").forEach(cb => {
     cb.addEventListener("change", () => {
         const key = cb.dataset.filter, val = cb.value;
         if (cb.checked) filters[key].add(val);
-        else filters[key].delete(val);
+        else            filters[key].delete(val);
         renderActiveTags();
         renderCards();
     });
@@ -435,8 +478,9 @@ document.getElementById("sortSelect").addEventListener("change", e => {
 });
 
 function clearAll() {
-    filters.category.clear(); filters.brand.clear(); filters.price.clear();
-    filters.transmission.clear(); filters.seats.clear(); filters.search = "";
+    filters.category.clear(); filters.brand.clear();
+    filters.price.clear();    filters.seats.clear();
+    filters.search = "";
     document.querySelectorAll(".filter-cb").forEach(cb => cb.checked = false);
     document.getElementById("sidebarSearch").value = "";
     document.getElementById("mainSearch").value = "";
@@ -474,23 +518,22 @@ let currentVehicleId = null;
 let selectedRating = 0;
 
 function viewDetails(id) {
-    const v = vehicles.find(x => x.id === id);
+    const v = vehicles.find(x => x.vehicleId === id);
     if (!v) return;
     currentVehicleId = id;
 
-    document.getElementById("mIcon").textContent         = v.icon;
-    document.getElementById("mCategory").textContent     = v.category;
-    document.getElementById("mBrand").textContent        = v.brand;
-    document.getElementById("mName").textContent         = v.name;
-    document.getElementById("mStars").innerHTML          = stars(v.rating);
-    document.getElementById("mRating").textContent       = `${v.rating} / 5`;
-    document.getElementById("mDesc").textContent         = v.desc;
-    document.getElementById("mSeats").textContent        = `${v.seats} Seats`;
-    document.getElementById("mTransmission").textContent = v.transmission;
-    document.getElementById("mFuelIcon").textContent     = v.fuel === "Electric" ? "⚡" : "⛽";
-    document.getElementById("mFuel").textContent         = v.fuel;
-    document.getElementById("mPrice").textContent        = `NRS ${fmt(v.price)}`;
-    document.getElementById("mBookBtn").onclick          = () => { closeModal(); bookNow(v.id); };
+    document.getElementById("mIcon").innerHTML         = categoryIcon();
+    document.getElementById("mCategory").textContent   = v.categoryName || '—';
+    document.getElementById("mBrand").textContent      = v.brandName    || '—';
+    document.getElementById("mName").textContent       = v.vehicleName;
+    document.getElementById("mStars").innerHTML        = "—";
+    document.getElementById("mRating").textContent     = "";
+    document.getElementById("mDesc").textContent       = v.description  || "No description provided.";
+    document.getElementById("mSeats").textContent      = v.seatsCapacity ? `${v.seatsCapacity} Seats` : '—';
+    document.getElementById("mVehicleNo").textContent  = v.vehicleNo    || '—';
+    document.getElementById("mVendor").textContent     = v.vendorName   || '—';
+    document.getElementById("mPrice").textContent      = `NPR ${fmt(v.rentalPrice)}`;
+    document.getElementById("mBookBtn").onclick        = () => { closeModal(); bookNow(v.vehicleId); };
 
     // Reset review form
     selectedRating = 0;
@@ -500,8 +543,8 @@ function viewDetails(id) {
 
     // Show/hide write-review vs login prompt
     const token = localStorage.getItem("token");
-    document.getElementById("mWriteReview").style.display  = token ? "block" : "none";
-    document.getElementById("mLoginPrompt").style.display  = token ? "none"  : "block";
+    document.getElementById("mWriteReview").style.display = token ? "block" : "none";
+    document.getElementById("mLoginPrompt").style.display = token ? "none"  : "block";
 
     document.getElementById("vehicleModal").classList.add("open");
     document.body.style.overflow = "hidden";
@@ -520,8 +563,14 @@ function loadVehicleReviews(vehicleId) {
             countEl.textContent = reviews.length > 0 ? `${reviews.length} review${reviews.length > 1 ? "s" : ""}` : "";
             if (!reviews.length) {
                 list.innerHTML = '<div class="reviews-empty">No reviews yet. Be the first to review!</div>';
+                document.getElementById("mStars").innerHTML = "—";
+                document.getElementById("mRating").textContent = "";
                 return;
             }
+            // Compute average rating from real reviews
+            const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+            document.getElementById("mStars").innerHTML  = buildStars(avg);
+            document.getElementById("mRating").textContent = `${avg.toFixed(1)} / 5`;
             list.innerHTML = reviews.map(r => buildReviewCard(r)).join("");
         })
         .catch(() => {
@@ -624,7 +673,7 @@ function bookNow(id) {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-renderCards();
+loadVehicles();
 </script>
 <script src="/js/navbar.js"></script>
 </body>

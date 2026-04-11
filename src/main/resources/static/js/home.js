@@ -183,9 +183,8 @@ function clearField(id) {
 }
 
 function searchVehicles() {
-    const pickup     = document.getElementById('pickupLocation')?.value?.trim();
-    const dropoff    = document.getElementById('dropoffLocation')?.value?.trim();
-    const pickupDate = document.getElementById('pickupDate')?.value;
+    const pickup      = document.getElementById('pickupLocation')?.value?.trim();
+    const pickupDate  = document.getElementById('pickupDate')?.value;
     const dropoffDate = document.getElementById('dropoffDate')?.value;
 
     if (!pickup) {
@@ -204,14 +203,7 @@ function searchVehicles() {
         return;
     }
 
-    const params = new URLSearchParams({
-        pickup,
-        dropoff: dropoff || pickup,
-        pickupDate,
-        dropoffDate
-    });
-
-    window.location.href = `/vehicles.html?${params.toString()}`;
+    window.location.href = `/vehicle-rentals`;
 }
 
 function showBookingError(msg) {
