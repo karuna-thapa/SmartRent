@@ -87,6 +87,7 @@ function buildVehicleCard(v) {
     return `
         <div class="vehicle-card">
             <div class="card-image">
+                ${v.brandName ? `<span class="card-brand-badge">${v.brandName}</span>` : ''}
                 ${imgSrc ? `<img src="${imgSrc}" alt="${v.vehicleName}" onerror="this.style.display='none'">` : ''}
             </div>
             <div class="card-body">
