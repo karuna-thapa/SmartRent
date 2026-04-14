@@ -14,8 +14,7 @@
 <!-- ===== SIDEBAR ===== -->
 <aside class="sidebar">
     <div class="sidebar-logo">
-        <div class="logo-icon">SR</div>
-        <span>Smart Rent</span>
+        <img src="/images/SmartRentLogo.png" alt="SmartRent Logo" class="sidebar-logo-img"/>
     </div>
 
     <nav class="sidebar-nav">
@@ -47,7 +46,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" id="navReviews" onclick="showSection('reviews',this)">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
@@ -100,7 +99,21 @@
                 <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                 <span id="topbarBrandName"></span>
             </div>
-            <div class="topbar-admin">
+            <button id="notifBtn" onclick="toggleNotifications()" style="position:relative;background:none;border:none;cursor:pointer;padding:6px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+                <svg width="20" height="20" fill="none" stroke="#6b7280" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span id="notifBadge" style="display:none;position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;background:#ef4444;border-radius:8px;border:2px solid white;font-size:0.6rem;font-weight:700;color:white;line-height:12px;text-align:center;"></span>
+            </button>
+            <div id="notifDropdown" style="display:none;position:fixed;top:64px;right:16px;width:380px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:9999;">
+                <div style="padding:14px 16px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;">
+                    <span style="font-weight:600;font-size:0.9rem;color:#111827;">Booking Requests</span>
+                    <span id="notifPendingCount" style="font-size:0.75rem;color:#6b7280;"></span>
+                </div>
+                <div id="notifList" style="max-height:480px;overflow-y:auto;"></div>
+            </div>
+            <div class="topbar-admin" onclick="showSection('profile', document.getElementById('navProfile'))" style="cursor:pointer;">
                 <div class="admin-avatar">
                     <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -175,7 +188,6 @@
                 + Add Vehicle
             </button>
             <button class="btn-action" onclick="showSection('vehicles', document.getElementById('navVehicles'))">View My Vehicles</button>
-            <button class="btn-action">My Profile</button>
         </div>
 
         <!-- Revenue Chart -->
@@ -187,7 +199,6 @@
                 </div>
                 <div class="chart-period-tabs">
                     <button class="period-tab active" onclick="switchPeriod('monthly', this)">Monthly</button>
-                    <button class="period-tab" onclick="switchPeriod('quarterly', this)">Quarterly</button>
                     <button class="period-tab" onclick="switchPeriod('yearly', this)">Yearly</button>
                 </div>
             </div>
@@ -216,28 +227,8 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>#2001</td><td>Toyota Hilux</td><td>Aarav Sharma</td>
-                            <td>2026-04-01</td><td>2026-04-05</td><td>4 days</td>
-                            <td>NRS 34,000</td>
-                            <td><span class="status-badge confirmed">Confirmed</span></td>
-                            <td><button class="btn-view">View</button></td>
-                        </tr>
-                        <tr>
-                            <td>#2002</td><td>Honda City</td><td>Priya Thapa</td>
-                            <td>2026-04-03</td><td>2026-04-06</td><td>3 days</td>
-                            <td>NRS 13,500</td>
-                            <td><span class="status-badge pending">Pending</span></td>
-                            <td><button class="btn-view">View</button></td>
-                        </tr>
-                        <tr>
-                            <td>#2003</td><td>Royal Enfield Classic</td><td>Bikash Gurung</td>
-                            <td>2026-03-28</td><td>2026-04-02</td><td>5 days</td>
-                            <td>NRS 6,000</td>
-                            <td><span class="status-badge completed">Completed</span></td>
-                            <td><button class="btn-view">View</button></td>
-                        </tr>
+                    <tbody id="dashRecentBody">
+                        <tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -369,6 +360,36 @@
         </div>
     </div><!-- /sectionBookings -->
 
+    <!-- ===== REVIEWS SECTION ===== -->
+    <div class="page-body" id="sectionReviews" style="display:none;">
+
+        <div class="vv-section-header">
+            <div>
+                <h2 class="vv-section-title">Customer Reviews</h2>
+                <p class="vv-section-sub">Reviews left by customers on your brand's vehicles</p>
+            </div>
+        </div>
+
+        <div class="table-card" style="margin-top:0;">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reviewsTableBody">
+                        <tr><td colspan="5" style="text-align:center;padding:40px;color:#9ca3af;">Loading reviews...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionReviews -->
+
     <!-- ===== PROFILE SECTION ===== -->
     <div class="page-body" id="sectionProfile" style="display:none;">
 
@@ -433,7 +454,7 @@
                     </div>
                     <div class="vp-form-group">
                         <label>New Password <span class="req">*</span></label>
-                        <input type="password" id="pfNewPw" placeholder="Min. 6 characters" autocomplete="new-password"/>
+                        <input type="password" id="pfNewPw" placeholder="New Password" autocomplete="new-password"/>
                     </div>
                     <div class="vp-form-group">
                         <label>Confirm New Password <span class="req">*</span></label>
@@ -570,7 +591,7 @@ function logout() {
 
 // ── Section switching ─────────────────────────────────────────────────────
 function showSection(name, linkEl) {
-    ['dashboard','vehicles','bookings','profile'].forEach(s => {
+    ['dashboard','vehicles','bookings','reviews','profile'].forEach(s => {
         const el = document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1));
         if (el) el.style.display = (s === name) ? '' : 'none';
     });
@@ -579,6 +600,7 @@ function showSection(name, linkEl) {
 
     if (name === 'vehicles') loadVehicles();
     if (name === 'bookings') loadBookings();
+    if (name === 'reviews')  loadVendorReviews();
     if (name === 'profile')  loadProfile();
 }
 
@@ -842,6 +864,7 @@ async function submitVehicleForm(e) {
             'success'
         );
         loadVehicles();
+        loadDashboardStats();
     } catch (err) {
         errEl.textContent = err.message;
         errEl.style.display = 'block';
@@ -862,6 +885,7 @@ async function deactivateVehicle(id) {
         if (!res.ok) throw new Error(msg);
         showToast('Vehicle deactivated.', 'success');
         loadVehicles();
+        loadDashboardStats();
     } catch (e) {
         showToast(e.message, 'error');
     }
@@ -878,20 +902,21 @@ async function reactivateVehicle(id) {
         if (!res.ok) throw new Error(msg);
         showToast('Vehicle reactivated and sent for approval.', 'success');
         loadVehicles();
+        loadDashboardStats();
     } catch (e) {
         showToast(e.message, 'error');
     }
 }
 
 // ── Revenue Chart ─────────────────────────────────────────────────────────
-const revenueData = {
-    monthly:   { labels: ['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'], values: [4200,5800,3900,8500,7100,6400,5300,4600,5900,7800,6200,5100] },
-    quarterly: { labels: ['Q1 2025','Q2 2025','Q3 2025','Q4 2025'], values: [13900,19400,18800,18300] },
-    yearly:    { labels: ['2021','2022','2023','2024','2025','2026'], values: [38000,51000,64000,72000,88000,27000] }
+let liveRevenueData = {
+    monthly: { labels: [], values: [] },
+    yearly:  { labels: [], values: [] }
 };
+let activePeriod = 'monthly';
 
-function fmtFull(n) { return 'NRS ' + n.toLocaleString('en-NP'); }
-function getPeakIndex(v) { return v.indexOf(Math.max(...v)); }
+function fmtFull(n) { return 'NRS ' + Number(n).toLocaleString('en-NP'); }
+function getPeakIndex(v) { return v.length ? v.indexOf(Math.max(...v)) : 0; }
 function buildColors(v,p) { return v.map((_,i)=>i===p?'#4a6cf7':'#e8ecf4'); }
 function buildHoverColors(v,p) { return v.map((_,i)=>i===p?'#3a5ce5':'#d0d6e8'); }
 
@@ -916,24 +941,92 @@ const darkTooltipPlugin = {
 };
 
 function initChart(period) {
-    const d=revenueData[period];
-    const peakIdx=getPeakIndex(d.values);
-    const peakVal=d.values[peakIdx];
-    document.getElementById('chartBigValue').textContent=fmtFull(peakVal);
-    const ctx=document.getElementById('revenueChart').getContext('2d');
-    if(revenueChart)revenueChart.destroy();
-    revenueChart=new Chart(ctx,{type:'bar',plugins:[darkTooltipPlugin],data:{labels:d.labels,datasets:[{label:'Revenue',data:d.values,backgroundColor:buildColors(d.values,peakIdx),hoverBackgroundColor:buildHoverColors(d.values,peakIdx),borderRadius:8,borderSkipped:false,barPercentage:0.55,categoryPercentage:0.75}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:500,easing:'easeOutQuart'},plugins:{legend:{display:false},tooltip:{enabled:false,external:()=>{},callbacks:{label:ctx=>fmtFull(ctx.parsed.y)}}},onHover(event,elements){if(!elements.length)return;document.getElementById('chartBigValue').textContent=fmtFull(d.values[elements[0].index]);},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{family:'Poppins',size:11},color:'#9ca3af',padding:6}},y:{display:false,grid:{display:false}}}}});
-    document.getElementById('revenueChart').onmouseleave=()=>{document.getElementById('chartBigValue').textContent=fmtFull(peakVal);};
+    const d = { labels: liveRevenueData[period].labels, values: liveRevenueData[period].values.map(Number) };
+    if (!d.labels.length) { d.labels = ['—']; d.values = [0]; }
+    const peakIdx = getPeakIndex(d.values);
+    const peakVal = d.values[peakIdx] || 0;
+    document.getElementById('chartBigValue').textContent = fmtFull(peakVal);
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    if (revenueChart) revenueChart.destroy();
+    revenueChart = new Chart(ctx, {type:'bar',plugins:[darkTooltipPlugin],data:{labels:d.labels,datasets:[{label:'Revenue',data:d.values,backgroundColor:buildColors(d.values,peakIdx),hoverBackgroundColor:buildHoverColors(d.values,peakIdx),borderRadius:8,borderSkipped:false,barPercentage:0.55,categoryPercentage:0.75}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:500,easing:'easeOutQuart'},plugins:{legend:{display:false},tooltip:{enabled:false,external:()=>{},callbacks:{label:c=>fmtFull(c.parsed.y)}}},onHover(event,elements){if(!elements.length)return;document.getElementById('chartBigValue').textContent=fmtFull(d.values[elements[0].index]);},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{family:'Poppins',size:11},color:'#9ca3af',padding:6}},y:{display:false,grid:{display:false}}}}});
+    document.getElementById('revenueChart').onmouseleave = () => { document.getElementById('chartBigValue').textContent = fmtFull(peakVal); };
 }
 
 function switchPeriod(period, btn) {
-    document.querySelectorAll('.period-tab').forEach(b=>b.classList.remove('active'));
+    activePeriod = period;
+    document.querySelectorAll('.period-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     initChart(period);
 }
 
-initChart('monthly');
+// ── Dashboard Stats (real-time) ───────────────────────────────────────────
+async function loadDashboardStats() {
+    try {
+        const [statsRes, bookingsRes, notifsRes] = await Promise.all([
+            fetch('/api/vendor/stats',                  { headers: { 'Authorization': 'Bearer ' + TOKEN() } }),
+            fetch('/api/vendor/bookings?',              { headers: { 'Authorization': 'Bearer ' + TOKEN() } }),
+            fetch('/api/vendor/bookings/notifications', { headers: { 'Authorization': 'Bearer ' + TOKEN() } })
+        ]);
+
+        if (statsRes.ok) {
+            const s = await statsRes.json();
+            document.getElementById('statVehicles').textContent  = s.vehicleCount   ?? '—';
+            document.getElementById('statBookings').textContent  = s.activeBookingCount ?? '—';
+            document.getElementById('statReviews').textContent   = s.reviewCount    ?? '—';
+            document.getElementById('statRevenue').textContent   = 'NPR ' + Number(s.totalRevenue || 0).toLocaleString('en-NP');
+
+            // Update chart data
+            liveRevenueData.monthly = { labels: s.monthlyLabels || [], values: s.monthlyValues || [] };
+            liveRevenueData.yearly  = { labels: s.yearlyLabels  || [], values: s.yearlyValues  || [] };
+            initChart(activePeriod);
+        }
+
+        if (bookingsRes.ok) {
+            const bookings = await bookingsRes.json();
+            renderDashRecentBookings(bookings.slice(0, 5));
+        }
+
+        if (notifsRes.ok) {
+            notifData = await notifsRes.json();
+            const pending = notifData.filter(b => b.bookingStatus === 'PENDING');
+            const badge   = document.getElementById('notifBadge');
+            if (pending.length > 0) {
+                badge.style.display = '';
+                badge.textContent   = pending.length > 9 ? '9+' : pending.length;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    } catch (_) {}
+}
+
+function renderDashRecentBookings(bookings) {
+    const tbody = document.getElementById('dashRecentBody');
+    if (!bookings.length) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">No bookings yet.</td></tr>';
+        return;
+    }
+    const statusCls = { PENDING: 'pending', CONFIRMED: 'confirmed', CANCELLED: 'cancelled' };
+    tbody.innerHTML = bookings.map(b => `
+        <tr>
+            <td style="font-weight:600;color:#6b7280;font-size:0.78rem;">#${b.bookingId}</td>
+            <td style="font-weight:600;">${b.vehicleName || '—'}</td>
+            <td>${b.customerName || '—'}</td>
+            <td>${b.startDate || '—'}</td>
+            <td>${b.endDate   || '—'}</td>
+            <td>${b.durationDays != null ? b.durationDays + ' day(s)' : '—'}</td>
+            <td>NPR ${b.totalPrice != null ? Number(b.totalPrice).toLocaleString('en-NP') : '—'}</td>
+            <td><span class="status-badge ${statusCls[b.bookingStatus] || ''}">${b.bookingStatus || '—'}</span></td>
+            <td><button class="btn-view" onclick="showSection('bookings',document.getElementById('navBookings'))">View</button></td>
+        </tr>
+    `).join('');
+}
+
 loadDropdowns();
+loadDashboardStats();
+
+// Auto-refresh every 30 seconds
+setInterval(loadDashboardStats, 30000);
 
 // ── Booking vehicle filter population ────────────────────────────────────
 async function loadMyVehiclesForFilter() {
@@ -1212,6 +1305,186 @@ function showPwMsg(msg, isError) {
     el.textContent = msg;
     el.style.display = '';
     el.style.color = isError ? '#dc2626' : '#16a34a';
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────
+let notifData = [];
+
+function toggleNotifications() {
+    const dd = document.getElementById('notifDropdown');
+    const isOpen = dd.style.display !== 'none';
+    dd.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) loadNotifications();
+}
+
+document.addEventListener('click', e => {
+    const btn = document.getElementById('notifBtn');
+    const dd  = document.getElementById('notifDropdown');
+    if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+        dd.style.display = 'none';
+    }
+});
+
+async function loadNotifications() {
+    const list = document.getElementById('notifList');
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:#9ca3af;font-size:0.85rem;">Loading...</div>';
+
+    try {
+        const res = await fetch('/api/vendor/bookings/notifications', {
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        if (!res.ok) throw new Error();
+        notifData = await res.json();
+        renderNotifications();
+    } catch {
+        list.innerHTML = '<div style="padding:20px;text-align:center;color:#ef4444;font-size:0.85rem;">Failed to load notifications.</div>';
+    }
+}
+
+function renderNotifications() {
+    const list    = document.getElementById('notifList');
+    const badge   = document.getElementById('notifBadge');
+    const counter = document.getElementById('notifPendingCount');
+
+    const pending = notifData.filter(b => b.bookingStatus === 'PENDING');
+    if (pending.length > 0) {
+        badge.style.display = '';
+        badge.textContent   = pending.length > 9 ? '9+' : pending.length;
+    } else {
+        badge.style.display = 'none';
+    }
+    counter.textContent = pending.length > 0 ? `${pending.length} pending` : 'All resolved';
+
+    if (!notifData.length) {
+        list.innerHTML = '<div style="padding:24px;text-align:center;color:#9ca3af;font-size:0.85rem;">No booking requests yet.</div>';
+        return;
+    }
+
+    list.innerHTML = notifData.map(b => buildNotifCard(b)).join('');
+}
+
+function buildNotifCard(b) {
+    const isPending   = b.bookingStatus === 'PENDING';
+    const isConfirmed = b.bookingStatus === 'CONFIRMED';
+    const date = b.createdAt ? b.createdAt.slice(0, 10) : '—';
+
+    const statusBadge = isPending
+        ? `<span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;">PENDING</span>`
+        : isConfirmed
+            ? `<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;">APPROVED</span>`
+            : `<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;">REJECTED</span>`;
+
+    const actionButtons = isPending ? `
+        <div style="display:flex;gap:8px;margin-top:10px;">
+            <button onclick="handleBookingAction(${b.bookingId},'approve')" style="flex:1;padding:7px 0;background:#4a6cf7;color:white;border:none;border-radius:7px;font-size:0.8rem;font-weight:600;cursor:pointer;">
+                ✓ Approve
+            </button>
+            <button onclick="handleBookingAction(${b.bookingId},'reject')" style="flex:1;padding:7px 0;background:white;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:0.8rem;font-weight:600;cursor:pointer;">
+                ✕ Reject
+            </button>
+        </div>` : '';
+
+    const licenseHtml = b.customerLicenseImage
+        ? `<img src="http://localhost:8081${b.customerLicenseImage}" alt="License" style="width:100%;max-height:120px;object-fit:contain;border-radius:6px;border:1px solid #e5e7eb;background:#f9fafb;margin-top:6px;"/>`
+        : '';
+
+    return `
+        <div id="notif-${b.bookingId}" style="padding:14px 16px;border-bottom:1px solid #f3f4f6;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;">
+                <div>
+                    <div style="font-weight:600;font-size:0.85rem;color:#111827;">${b.customerName || 'Customer'}</div>
+                    <div style="font-size:0.72rem;color:#6b7280;">${b.customerEmail || ''} ${b.customerPhone ? '· ' + b.customerPhone : ''}</div>
+                </div>
+                ${statusBadge}
+            </div>
+            <div style="font-size:0.8rem;color:#374151;margin-bottom:4px;">
+                <strong>${b.vehicleName || '—'}</strong> &nbsp;·&nbsp; <code style="font-size:0.72rem;">${b.vehicleNo || ''}</code>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:0.75rem;color:#6b7280;">
+                <span>📅 ${b.startDate || '—'} → ${b.endDate || '—'}</span>
+                <span>⏱ ${b.durationDays != null ? b.durationDays + ' day(s)' : '—'}</span>
+                <span>💰 NPR ${b.totalPrice != null ? Number(b.totalPrice).toLocaleString('en-NP') : '—'}</span>
+                <span>🕒 Booked: ${date}</span>
+            </div>
+            ${licenseHtml}
+            ${actionButtons}
+        </div>
+    `;
+}
+
+async function handleBookingAction(bookingId, action) {
+    try {
+        const res = await fetch(`/api/vendor/bookings/${bookingId}/${action}`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const updated = await res.json();
+
+        // Update in local cache and re-render just that card
+        const idx = notifData.findIndex(b => b.bookingId === bookingId);
+        if (idx !== -1) notifData[idx] = updated;
+
+        const card = document.getElementById(`notif-${bookingId}`);
+        if (card) card.outerHTML = buildNotifCard(updated);
+
+        // Update badge count
+        const pending = notifData.filter(b => b.bookingStatus === 'PENDING');
+        const badge   = document.getElementById('notifBadge');
+        const counter = document.getElementById('notifPendingCount');
+        if (pending.length > 0) {
+            badge.style.display = '';
+            badge.textContent   = pending.length > 9 ? '9+' : pending.length;
+        } else {
+            badge.style.display = 'none';
+        }
+        counter.textContent = pending.length > 0 ? `${pending.length} pending` : 'All resolved';
+
+        showToast(action === 'approve' ? '✔ Booking approved.' : '✔ Booking rejected.', 'success');
+
+        // Refresh bookings table if visible
+        if (document.getElementById('sectionBookings').style.display !== 'none') loadBookings();
+        loadDashboardStats();
+    } catch (e) {
+        showToast(e.message || 'Action failed.', 'error');
+    }
+}
+
+// ── Vendor Reviews ────────────────────────────────────────────────────────
+async function loadVendorReviews() {
+    const tbody = document.getElementById('reviewsTableBody');
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#9ca3af;">Loading...</td></tr>';
+
+    try {
+        const res = await fetch('/api/vendor/reviews', {
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        if (!res.ok) throw new Error('Failed to load reviews');
+        const reviews = await res.json();
+
+        document.getElementById('statReviews').textContent = reviews.length;
+
+        if (!reviews.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#9ca3af;">No reviews yet for your brand\'s vehicles.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = reviews.map(r => {
+            const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+            const date  = r.createdAt ? r.createdAt.slice(0, 10) : '—';
+            return `
+                <tr>
+                    <td style="font-weight:600;">${r.customerName || 'Anonymous'}</td>
+                    <td>${r.vehicleName || '—'}</td>
+                    <td style="color:#f5a623;letter-spacing:2px;" title="${r.rating}/5">${stars}</td>
+                    <td style="color:#6b7280;font-size:0.85rem;">${r.comment || '<em>No comment</em>'}</td>
+                    <td style="font-size:0.82rem;color:#9ca3af;">${date}</td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:#ef4444;">${e.message}</td></tr>`;
+    }
 }
 </script>
 </body>

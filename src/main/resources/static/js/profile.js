@@ -23,6 +23,7 @@ function switchTab(id, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     btn.classList.add('active');
+    if (id === 'reviews') loadMyReviews();
 }
 
 // ── Load profile ──────────────────────────────────────────────────────────────
@@ -314,6 +315,89 @@ async function changePassword() {
         togglePasswordForm();
     } catch (e) {
         showToast('Failed to update password. Please try again.', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// ── Reviews History ───────────────────────────────────────────────────────────
+async function loadMyReviews() {
+    const list = document.getElementById('reviewsList');
+    const countBadge = document.getElementById('reviewsCount');
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#bbb;font-size:13px;">Loading...</div>';
+    try {
+        const res = await fetch(`${API}/api/reviews/my-reviews`, {
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        if (!res.ok) throw new Error('Failed');
+        const reviews = await res.json();
+        countBadge.textContent = reviews.length;
+        if (reviews.length === 0) {
+            list.innerHTML = `
+                <div class="reviews-empty">
+                    <svg viewBox="0 0 24 24" fill="#ccc"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+                    <p>No reviews yet</p>
+                    <small>Reviews you leave on vehicles will appear here.</small>
+                </div>`;
+            return;
+        }
+        list.innerHTML = reviews.map(r => buildMyReviewCard(r)).join('');
+    } catch (e) {
+        list.innerHTML = '<div style="text-align:center;padding:40px;color:#ef4444;font-size:13px;">Failed to load reviews.</div>';
+    }
+}
+
+function buildMyReviewCard(r) {
+    const initials = r.vehicleName ? r.vehicleName.charAt(0).toUpperCase() : 'V';
+    const stars = Array.from({ length: 5 }, (_, i) =>
+        `<svg viewBox="0 0 24 24" fill="${i < r.rating ? '#f59e0b' : '#e5e7eb'}"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`
+    ).join('');
+    const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+    return `
+        <div class="review-card" id="review-${r.reviewId}">
+            <div class="review-avatar">${initials}</div>
+            <div class="review-body">
+                <div class="review-top">
+                    <span class="review-vehicle">${r.vehicleName || 'Vehicle'}</span>
+                    <div class="review-stars">${stars}</div>
+                    <span class="review-date">${date}</span>
+                </div>
+                <div class="review-comment">${r.comment || ''}</div>
+            </div>
+            <button class="btn-delete-review" onclick="confirmDeleteReview(${r.reviewId})" title="Delete review">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-8h2v7H9v-7zm4 0h2v7h-2v-7zM15.5 4l-1-1h-5l-1 1H5v2h14V4h-3.5z"/></svg>
+            </button>
+        </div>`;
+}
+
+function confirmDeleteReview(reviewId) {
+    if (!confirm('Delete this review? This cannot be undone.')) return;
+    deleteMyReview(reviewId);
+}
+
+async function deleteMyReview(reviewId) {
+    showLoading(true);
+    try {
+        const res = await fetch(`${API}/api/reviews/${reviewId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        if (!res.ok) throw new Error('Failed');
+        const card = document.getElementById(`review-${reviewId}`);
+        if (card) card.remove();
+        const remaining = document.querySelectorAll('.review-card').length;
+        document.getElementById('reviewsCount').textContent = remaining;
+        if (remaining === 0) {
+            document.getElementById('reviewsList').innerHTML = `
+                <div class="reviews-empty">
+                    <svg viewBox="0 0 24 24" fill="#ccc"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+                    <p>No reviews yet</p>
+                    <small>Reviews you leave on vehicles will appear here.</small>
+                </div>`;
+        }
+        showToast('Review deleted.', 'success');
+    } catch (e) {
+        showToast('Failed to delete review.', 'error');
     } finally {
         showLoading(false);
     }

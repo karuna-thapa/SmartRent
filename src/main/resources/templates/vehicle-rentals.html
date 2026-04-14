@@ -204,35 +204,27 @@
 <div class="modal-overlay" id="vehicleModal" onclick="closeModalOnBackdrop(event)">
     <div class="modal-box" id="modalBox">
         <div class="modal-header">
-            <span class="modal-vehicle-icon" id="mIcon"></span>
+            <img class="modal-vehicle-img" id="mImage" src="" alt="" style="display:none"/>
+            <div class="modal-vehicle-icon" id="mIcon" style="display:none"></div>
             <span class="modal-category-badge" id="mCategory"></span>
             <span class="modal-brand-badge" id="mBrand"></span>
             <button class="modal-close-btn" onclick="closeModal()" aria-label="Close">✕</button>
         </div>
         <div class="modal-body">
-            <h2 class="modal-title" id="mName"></h2>
-            <div class="modal-rating-row">
-                <div class="stars" id="mStars"></div>
-                <span class="modal-rating-num" id="mRating"></span>
+            <div class="modal-title-row">
+                <div class="modal-title-left">
+                    <h2 class="modal-title" id="mName"></h2>
+                    <div class="modal-rating-row">
+                        <div class="stars" id="mStars"></div>
+                        <span class="modal-rating-num" id="mRating"></span>
+                    </div>
+                </div>
+                <div class="modal-seats-badge">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span id="mSeats"></span>
+                </div>
             </div>
             <p class="modal-description" id="mDesc"></p>
-            <div class="modal-specs-grid">
-                <div class="modal-spec">
-                    <span class="modal-spec-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-                    <span class="modal-spec-label">Seats</span>
-                    <span class="modal-spec-value" id="mSeats"></span>
-                </div>
-                <div class="modal-spec">
-                    <span class="modal-spec-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></span>
-                    <span class="modal-spec-label">Vehicle No.</span>
-                    <span class="modal-spec-value" id="mVehicleNo"></span>
-                </div>
-                <div class="modal-spec">
-                    <span class="modal-spec-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
-                    <span class="modal-spec-label">Vendor</span>
-                    <span class="modal-spec-value" id="mVendor"></span>
-                </div>
-            </div>
             <div class="modal-price-row">
                 <span class="modal-price-label">Rental Price</span>
                 <div style="display:flex;align-items:baseline;gap:4px;">
@@ -554,16 +546,25 @@ function viewDetails(id) {
     if (!v) return;
     currentVehicleId = id;
 
-    document.getElementById("mIcon").innerHTML         = categoryIcon();
+    const mImg  = document.getElementById("mImage");
+    const mIcon = document.getElementById("mIcon");
+    if (v.imageUrl) {
+        mImg.src = v.imageUrl;
+        mImg.alt = v.vehicleName;
+        mImg.style.display = "block";
+        mIcon.style.display = "none";
+    } else {
+        mImg.style.display = "none";
+        mIcon.innerHTML    = categoryIcon();
+        mIcon.style.display = "block";
+    }
     document.getElementById("mCategory").textContent   = v.categoryName || '—';
     document.getElementById("mBrand").textContent      = v.brandName    || '—';
     document.getElementById("mName").textContent       = v.vehicleName;
-    document.getElementById("mStars").innerHTML        = "—";
+    document.getElementById("mStars").innerHTML        = "";
     document.getElementById("mRating").textContent     = "";
     document.getElementById("mDesc").textContent       = v.description  || "No description provided.";
     document.getElementById("mSeats").textContent      = v.seatsCapacity ? `${v.seatsCapacity} Seats` : '—';
-    document.getElementById("mVehicleNo").textContent  = v.vehicleNo    || '—';
-    document.getElementById("mVendor").textContent     = v.vendorName   || '—';
     document.getElementById("mPrice").textContent      = `NPR ${fmt(v.rentalPrice)}`;
     document.getElementById("mBookBtn").onclick        = () => { closeModal(); bookNow(v.vehicleId); };
 
@@ -595,8 +596,8 @@ function loadVehicleReviews(vehicleId) {
             countEl.textContent = reviews.length > 0 ? `${reviews.length} review${reviews.length > 1 ? "s" : ""}` : "";
             if (!reviews.length) {
                 list.innerHTML = '<div class="reviews-empty">No reviews yet. Be the first to review!</div>';
-                document.getElementById("mStars").innerHTML = "—";
-                document.getElementById("mRating").textContent = "";
+                document.getElementById("mStars").innerHTML = "";
+                document.getElementById("mRating").textContent = "No reviews";
                 return;
             }
             // Compute average rating from real reviews

@@ -604,8 +604,8 @@ body {
 
 .modal-header {
   position: relative;
-  height: 200px;
-  background: linear-gradient(135deg, var(--primary-light) 0%, oklch(0.94 0.06 85) 100%);
+  height: 260px;
+  background: #f3f4f6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -613,6 +613,12 @@ body {
   overflow: hidden;
 }
 .modal-vehicle-icon { font-size: 5.5rem; line-height: 1; }
+.modal-vehicle-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 12px;
+}
 .modal-category-badge {
   position: absolute;
   top: 1rem;
@@ -658,6 +664,14 @@ body {
 
 .modal-body { padding: 1.75rem 2rem 2rem; }
 
+.modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 1.1rem;
+}
+.modal-title-left { flex: 1; }
 .modal-title {
   font-size: 1.5rem;
   font-weight: 800;
@@ -668,9 +682,21 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1.1rem;
 }
 .modal-rating-num { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
+.modal-seats-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
 .modal-description {
   font-size: 0.9rem;
@@ -832,6 +858,11 @@ body {
   color: var(--text-light);
 }
 .review-stars { margin-left: auto; }
+
+.star { font-size: 1.1rem; line-height: 1; }
+.star.full  { color: #f5a623; }
+.star.half  { color: #f5a623; }
+.star.empty { color: #d1d5db; }
 .review-comment {
   font-size: 0.875rem;
   color: var(--text-muted);

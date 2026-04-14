@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +42,13 @@ public class VehicleService {
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public Optional<VehicleResponseDto> getVehicleById(Integer vehicleId) {
+        return vehicleRepository.findById(vehicleId)
+                .filter(v -> Boolean.TRUE.equals(v.getActive())
+                        && v.getApprovalStatus() == Vehicle.ApprovalStatus.APPROVED)
+                .map(this::toDto);
     }
 
     public List<VehicleResponseDto> searchVehicles(Integer brandId, Integer categoryId) {
@@ -188,6 +196,26 @@ public class VehicleService {
                 .collect(Collectors.toList());
     }
 
+    public List<VehicleResponseDto> getAllVehiclesAdmin(Integer vendorId,
+                                                         Integer brandId,
+                                                         Integer categoryId,
+                                                         String approvalStatusStr,
+                                                         String activeStr) {
+        Vehicle.ApprovalStatus approvalStatus = null;
+        if (approvalStatusStr != null && !approvalStatusStr.isBlank()) {
+            try { approvalStatus = Vehicle.ApprovalStatus.valueOf(approvalStatusStr.toUpperCase()); }
+            catch (IllegalArgumentException ignored) {}
+        }
+        Boolean active = null;
+        if ("true".equalsIgnoreCase(activeStr))  active = true;
+        if ("false".equalsIgnoreCase(activeStr)) active = false;
+
+        return vehicleRepository.findAllForAdmin(vendorId, brandId, categoryId, approvalStatus, active)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void approveVehicle(Integer vehicleId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
@@ -202,6 +230,52 @@ public class VehicleService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
         vehicle.setApprovalStatus(Vehicle.ApprovalStatus.REJECTED);
         vehicleRepository.save(vehicle);
+    }
+
+    @Transactional
+    public void adminDeactivateVehicle(Integer vehicleId) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        if (bookingRepository.hasActiveBookings(vehicleId))
+            throw new RuntimeException("Cannot deactivate: vehicle has active bookings.");
+        vehicle.setActive(false);
+        vehicleRepository.save(vehicle);
+    }
+
+    @Transactional
+    public void adminReactivateVehicle(Integer vehicleId) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        vehicle.setActive(true);
+        vehicleRepository.save(vehicle);
+    }
+
+    @Transactional
+    public VehicleResponseDto adminUpdateVehicle(Integer vehicleId, VehicleRequestDto dto) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+        if (dto.getVehicleName()    != null) vehicle.setVehicleName(dto.getVehicleName());
+        if (dto.getVehicleNo()      != null) vehicle.setVehicleNo(dto.getVehicleNo());
+        if (dto.getSeatsCapacity()  != null) vehicle.setSeatsCapacity(dto.getSeatsCapacity());
+        if (dto.getRentalPrice()    != null) vehicle.setRentalPrice(dto.getRentalPrice());
+        if (dto.getDescription()    != null) vehicle.setDescription(dto.getDescription());
+        if (dto.getBrandId() != null) {
+            Brand brand = brandRepository.findById(dto.getBrandId())
+                    .orElseThrow(() -> new RuntimeException("Brand not found"));
+            vehicle.setBrand(brand);
+        }
+        if (dto.getVehicleCategoryId() != null) {
+            VehicleCategory category = vehicleCategoryRepository.findById(dto.getVehicleCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+            vehicle.setVehicleCategory(category);
+        }
+        if (dto.getStatus() != null) {
+            try { vehicle.setStatus(Vehicle.Status.valueOf(dto.getStatus())); }
+            catch (IllegalArgumentException ignored) {}
+        }
+
+        return toDto(vehicleRepository.save(vehicle));
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────

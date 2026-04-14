@@ -12,4 +12,8 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
     List<Review> findTop6ByOrderByCreatedAtDesc();
 
     List<Review> findByVehicle_VehicleId(Integer vehicleId);
+
+    List<Review> findByCustomer_EmailOrderByCreatedAtDesc(String email);
+
+    List<Review> findByVehicle_Brand_BrandIdOrderByCreatedAtDesc(Integer brandId);
 }

@@ -48,4 +48,50 @@ public class VendorBookingController {
 
         return ResponseEntity.ok(result);
     }
+
+    /**
+     * GET /api/vendor/notifications
+     * Returns the 30 most recent bookings for this vendor's vehicles (newest first).
+     * PENDING = requires action; CONFIRMED / CANCELLED = resolved.
+     */
+    @GetMapping("/notifications")
+    public ResponseEntity<List<BookingResponseDto>> getNotifications(Principal principal) {
+        List<BookingResponseDto> result = bookingRepository
+                .findVendorBookings(principal.getName(), null, null, null, null)
+                .stream()
+                .limit(30)
+                .map(BookingResponseDto::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * PUT /api/vendor/bookings/{id}/approve
+     */
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<?> approveBooking(@PathVariable Integer id, Principal principal) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        if (!booking.getVehicle().getVendor().getEmail().equals(principal.getName())) {
+            return ResponseEntity.status(403).body("Not authorized.");
+        }
+        booking.setBookingStatus(Booking.BookingStatus.CONFIRMED);
+        bookingRepository.save(booking);
+        return ResponseEntity.ok(BookingResponseDto.from(booking));
+    }
+
+    /**
+     * PUT /api/vendor/bookings/{id}/reject
+     */
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<?> rejectBooking(@PathVariable Integer id, Principal principal) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        if (!booking.getVehicle().getVendor().getEmail().equals(principal.getName())) {
+            return ResponseEntity.status(403).body("Not authorized.");
+        }
+        booking.setBookingStatus(Booking.BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+        return ResponseEntity.ok(BookingResponseDto.from(booking));
+    }
 }

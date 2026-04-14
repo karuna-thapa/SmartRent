@@ -201,30 +201,109 @@ body {
   background: var(--primary-light);
 }
 
+/* ── Skeleton loader ── */
+.skeleton-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+.skeleton-img {
+  flex-shrink: 0;
+  width: 220px;
+  height: 160px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding-top: 4px; }
+.skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-line.w60 { width: 60%; height: 22px; }
+.skeleton-line.w40 { width: 40%; }
+.skeleton-line.w80 { width: 80%; }
+.skeleton-line.w30 { width: 30%; height: 18px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
 /* ── Vehicle Info Card ── */
 .vehicle-info-card {
   background: var(--white);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   display: flex;
-  gap: 1.5rem;
+  gap: 1.75rem;
   padding: 1.5rem;
   margin-bottom: 1.75rem;
   align-items: flex-start;
 }
 
-.vehicle-image-box {
+/* ── Image gallery ── */
+.vehicle-image-wrap {
   flex-shrink: 0;
-  width: 160px;
-  height: 120px;
-  background: var(--primary-light);
-  border-radius: var(--radius-md);
+  width: 240px;
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vehicle-main-image-box {
+  width: 100%;
+  height: 170px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--primary-light);
+  border: 1.5px solid var(--border);
+}
+
+.vehicle-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.vehicle-main-img:hover { transform: scale(1.03); }
+
+.vehicle-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 4rem;
-  border: 2px solid var(--border);
+  gap: 8px;
+  color: #c7d2fe;
+  font-size: 0.78rem;
 }
+
+.vehicle-thumb-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.thumb {
+  width: 52px;
+  height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.18s;
+  flex-shrink: 0;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb.active { border-color: var(--primary); }
+.thumb:hover  { border-color: var(--primary); }
 
 .vehicle-info-body {
   flex: 1;
@@ -296,57 +375,96 @@ body {
   color: var(--text-muted);
 }
 
-/* ── Date Pickers ── */
+/* ── Steps label ── */
+.steps-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* ── Step Cards ── */
+.step-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--border);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.step-card:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px oklch(0.45 0.2 250 / 0.1);
+}
+
+.step-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Date / Location pickers (inside step-card) ── */
 .date-picker-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.75rem;
+  gap: 0.85rem;
 }
 
 .date-picker-box {
-  background: var(--white);
+  background: var(--bg);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
   border: 1.5px solid var(--border);
-  padding: 1rem 1.25rem;
+  padding: 0.85rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
   transition: border-color var(--transition);
 }
-.date-picker-box:focus-within {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px oklch(0.45 0.2 250 / 0.12);
-}
+.date-picker-box:focus-within { border-color: var(--primary); }
 
 .date-picker-box label {
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.72rem;
+  font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .date-picker-box input[type="date"] {
-  border: none;
-  outline: none;
+  border: none; outline: none;
   font-family: var(--font);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-main);
   background: transparent;
   cursor: pointer;
   width: 100%;
 }
-
-.date-picker-box input[type="date"]::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.6;
-}
+.date-picker-box input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
 
 /* ── Booking Summary ── */
 .summary-card {
@@ -354,7 +472,7 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1rem;
 }
 
 .summary-header {
@@ -375,7 +493,11 @@ body {
   padding: 0.85rem 1.5rem;
   font-size: 0.9rem;
   border-bottom: 1px solid var(--border);
+}
+
+.summary-table .label-col {
   color: var(--text-muted);
+  width: 45%;
 }
 
 .summary-table td:last-child {
@@ -384,12 +506,14 @@ body {
   color: var(--text-main);
 }
 
-.summary-table .label-col {
-  color: var(--text-muted);
-}
+.summary-table tr:last-child td { border-bottom: none; }
 
-.summary-table tr:last-child td {
-  border-bottom: none;
+/* Placeholder text for unfilled rows */
+.pending-cell {
+  color: var(--text-light) !important;
+  font-weight: 400 !important;
+  font-style: italic;
+  font-size: 0.82rem !important;
 }
 
 .grand-total-row td {
@@ -400,10 +524,31 @@ body {
   border-bottom: none !important;
   padding: 1rem 1.5rem;
 }
+.grand-total-row .pending-cell {
+  color: var(--text-light) !important;
+  font-weight: 400 !important;
+}
+
+/* ── Rating row ── */
+.rating-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #92400e;
+  background: #fef3c7;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
 
 /* ── Proceed Button ── */
 .proceed-btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   width: 100%;
   padding: 1rem;
   background: var(--primary);
@@ -417,6 +562,7 @@ body {
   transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
   letter-spacing: 0.02em;
   box-shadow: var(--shadow-md);
+  margin-top: 0.5rem;
 }
 .proceed-btn:hover {
   background: var(--primary-dark);
@@ -425,7 +571,7 @@ body {
 }
 .proceed-btn:active { transform: translateY(0); }
 .proceed-btn:disabled {
-  background: var(--text-light);
+  background: #cbd5e1;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -452,13 +598,11 @@ body {
 .date-picker-box select:focus { outline: none; }
 .date-picker-box select option[value=""] { color: var(--text-light); }
 
-/* ── Date / location errors ── */
-.date-error,
-.location-error {
-  font-size: 0.8rem;
+/* ── Field errors ── */
+.field-error {
+  font-size: 0.79rem;
   color: #dc2626;
-  margin-top: -1.2rem;
-  margin-bottom: 1rem;
+  margin-top: 0.6rem;
   display: none;
 }
 
@@ -477,12 +621,34 @@ body {
 .footer-bottom { text-align: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; }
 .footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.35); }
 
+/* ── Location select inside date-picker-box ── */
+.date-picker-box select {
+  border: none; outline: none;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-main);
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.25rem center;
+  padding-right: 1.25rem;
+}
+.date-picker-box select:focus { outline: none; }
+
 /* ── Responsive ── */
-@media (max-width: 640px) {
-  .vehicle-info-card { flex-direction: column; }
-  .vehicle-image-box { width: 100%; height: 140px; }
-  .date-picker-row   { grid-template-columns: 1fr; }
-  .hamburger         { display: flex; }
+@media (max-width: 700px) {
+  .vehicle-info-card   { flex-direction: column; }
+  .vehicle-image-wrap  { width: 100%; }
+  .vehicle-main-image-box { height: 200px; }
+  .date-picker-row     { grid-template-columns: 1fr; }
+  .skeleton-card       { flex-direction: column; }
+  .skeleton-img        { width: 100%; height: 160px; }
+  .hamburger           { display: flex; }
   .nav-links, .nav-auth { display: none; }
   .nav-links.open, .nav-auth.open {
     display: flex;

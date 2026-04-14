@@ -32,6 +32,31 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewsByVehicle(vehicleId));
     }
 
+    // GET /api/reviews/my-reviews — get all reviews submitted by the logged-in customer
+    @GetMapping("/my-reviews")
+    public ResponseEntity<?> getMyReviews() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Please log in.");
+        }
+        return ResponseEntity.ok(reviewService.getReviewsByCustomer(auth.getName()));
+    }
+
+    // DELETE /api/reviews/{reviewId} — delete own review
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Integer reviewId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Please log in.");
+        }
+        try {
+            reviewService.deleteReview(reviewId, auth.getName());
+            return ResponseEntity.ok("Review deleted.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
     // POST /api/reviews — submit a review (requires authentication)
     @PostMapping
     public ResponseEntity<?> submitReview(@RequestBody ReviewRequestDto request) {

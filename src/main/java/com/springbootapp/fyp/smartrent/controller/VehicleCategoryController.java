@@ -38,6 +38,25 @@ public class VehicleCategoryController {
         return ResponseEntity.ok(vehicleCategoryRepository.save(cat));
     }
 
+    // Admin — rename a category
+    @PutMapping("/api/admin/categories/{id}")
+    public ResponseEntity<?> updateCategory(@PathVariable Integer id,
+                                             @RequestBody Map<String, String> body) {
+        String name = body.getOrDefault("vehicleCategoryName", "").trim();
+        if (name.isBlank()) return ResponseEntity.badRequest().body("Category name is required.");
+
+        VehicleCategory cat = vehicleCategoryRepository.findById(id).orElse(null);
+        if (cat == null) return ResponseEntity.badRequest().body("Category not found.");
+
+        boolean duplicate = vehicleCategoryRepository.findAll().stream()
+                .anyMatch(c -> !c.getVehicleCategoryId().equals(id)
+                        && c.getVehicleCategoryName().equalsIgnoreCase(name));
+        if (duplicate) return ResponseEntity.badRequest().body("Category name already exists.");
+
+        cat.setVehicleCategoryName(name);
+        return ResponseEntity.ok(vehicleCategoryRepository.save(cat));
+    }
+
     // Admin — delete a category
     @DeleteMapping("/api/admin/categories/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Integer id) {

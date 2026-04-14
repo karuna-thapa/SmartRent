@@ -16,6 +16,7 @@ public class VendorResponseDto {
     private Integer brandId;
     private String brandName;
     private String status;
+    private Boolean active;
     private LocalDateTime createdAt;
 
     public static VendorResponseDto from(Vendor v) {
@@ -29,6 +30,7 @@ public class VendorResponseDto {
         dto.setBrandId(v.getBrand() != null ? v.getBrand().getBrandId() : null);
         dto.setBrandName(v.getBrand() != null ? v.getBrand().getBrandName() : "—");
         dto.setStatus(v.getStatus().name());
+        dto.setActive(v.getActive() == null || v.getActive());
         dto.setCreatedAt(v.getCreatedAt());
         return dto;
     }

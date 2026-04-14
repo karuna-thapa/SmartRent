@@ -47,6 +47,8 @@
 
 <!-- ==================== BOOKING CONTENT ==================== -->
 <main class="booking-page">
+
+    <!-- Page header -->
     <div class="booking-page-header">
         <button class="back-btn" onclick="history.back()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
@@ -55,120 +57,182 @@
         <h1>Book Your Vehicle</h1>
     </div>
 
-    <!-- Vehicle Info -->
-    <div class="vehicle-info-card" id="vehicleInfoCard">
-        <div class="vehicle-image-box" id="vIcon">🚗</div>
-        <div class="vehicle-info-body">
-            <div class="vehicle-badges">
-                <span class="badge badge-category" id="vCategory"></span>
-                <span class="badge badge-brand" id="vBrand"></span>
+    <!-- Loading skeleton -->
+    <div id="loadingSkeleton" class="skeleton-card">
+        <div class="skeleton-img"></div>
+        <div class="skeleton-body">
+            <div class="skeleton-line w60"></div>
+            <div class="skeleton-line w40"></div>
+            <div class="skeleton-line w80"></div>
+            <div class="skeleton-line w30"></div>
+        </div>
+    </div>
+
+    <!-- Error state -->
+    <div id="errorState" style="display:none;text-align:center;padding:4rem 1rem;">
+        <svg width="52" height="52" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 16px;display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p style="font-size:1rem;color:#64748b;margin-bottom:12px;">Vehicle not found or no longer available.</p>
+        <a href="/vehicle-rentals" style="color:var(--primary);font-weight:600;text-decoration:none;">Browse all vehicles →</a>
+    </div>
+
+    <!-- Main booking content (hidden until loaded) -->
+    <div id="bookingContent" style="display:none;">
+
+        <!-- Vehicle Info Card -->
+        <div class="vehicle-info-card" id="vehicleInfoCard">
+
+            <!-- Image gallery -->
+            <div class="vehicle-image-wrap" id="vehicleImageWrap">
+                <div class="vehicle-main-image-box" id="vehicleMainImg">
+                    <!-- filled by JS -->
+                </div>
+                <div class="vehicle-thumb-row" id="vehicleThumbRow" style="display:none;"></div>
             </div>
-            <h2 id="vName">Loading…</h2>
-            <div class="vehicle-specs-row" id="vSpecs"></div>
-            <p class="vehicle-desc" id="vDesc"></p>
-            <div class="price-tag" id="vPrice"></div>
-        </div>
-    </div>
 
-    <!-- Location Pickers -->
-    <div class="date-picker-row">
-        <div class="date-picker-box">
-            <label for="pickupLocation">📍 Pickup Location</label>
-            <select id="pickupLocation" onchange="updateSummary()">
-                <option value="">— Select location —</option>
-                <option>Pokhara, Lakeside</option>
-                <option>Pokhara, Bus Park</option>
-                <option>Pokhara, Prithvi Chowk</option>
-                <option>Pokhara, Airport</option>
-                <option>Pokhara, Mahendrapul</option>
-                <option>Pokhara, Bagar</option>
-                <option>Pokhara, New Road</option>
-                <option>Kathmandu, Thamel</option>
-                <option>Kathmandu, New Bus Park</option>
-                <option>Kathmandu, Airport</option>
-                <option>Chitwan, Bharatpur</option>
-                <option>Lumbini, Bhairahawa</option>
-            </select>
+            <!-- Info body -->
+            <div class="vehicle-info-body">
+                <div class="vehicle-badges">
+                    <span class="badge badge-category" id="vCategory"></span>
+                    <span class="badge badge-brand" id="vBrand"></span>
+                </div>
+                <h2 id="vName"></h2>
+                <div class="vehicle-specs-row" id="vSpecs"></div>
+                <p class="vehicle-desc" id="vDesc"></p>
+                <div class="price-tag" id="vPrice"></div>
+                <div class="vehicle-meta-row" id="vMeta"></div>
+            </div>
         </div>
-        <div class="date-picker-box">
-            <label for="dropoffLocation">📍 Drop-off Location</label>
-            <select id="dropoffLocation" onchange="updateSummary()">
-                <option value="">— Select location —</option>
-                <option>Pokhara, Lakeside</option>
-                <option>Pokhara, Bus Park</option>
-                <option>Pokhara, Prithvi Chowk</option>
-                <option>Pokhara, Airport</option>
-                <option>Pokhara, Mahendrapul</option>
-                <option>Pokhara, Bagar</option>
-                <option>Pokhara, New Road</option>
-                <option>Kathmandu, Thamel</option>
-                <option>Kathmandu, New Bus Park</option>
-                <option>Kathmandu, Airport</option>
-                <option>Chitwan, Bharatpur</option>
-                <option>Lumbini, Bhairahawa</option>
-            </select>
-        </div>
-    </div>
-    <p class="location-error" id="locationError">Please select both pickup and drop-off locations.</p>
 
-    <!-- Date Pickers -->
-    <div class="date-picker-row">
-        <div class="date-picker-box">
-            <label for="pickupDate">📅 Pickup Day</label>
-            <input type="date" id="pickupDate" onchange="updateSummary()"/>
-        </div>
-        <div class="date-picker-box">
-            <label for="dropoffDate">📅 Dropoff Day</label>
-            <input type="date" id="dropoffDate" onchange="updateSummary()"/>
-        </div>
-    </div>
-    <p class="date-error" id="dateError">Dropoff date must be after pickup date.</p>
+        <!-- ── Step cards ── -->
+        <div class="steps-label">Complete your booking details</div>
 
-    <!-- Booking Summary -->
-    <div class="summary-card">
-        <div class="summary-header">Booking Summary</div>
-        <table class="summary-table">
-            <tbody>
-                <tr>
-                    <td class="label-col">Vehicle</td>
-                    <td id="sVehicle">—</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Pickup Location</td>
-                    <td id="sPickupLocation">—</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Drop-off Location</td>
-                    <td id="sDropoffLocation">—</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Price per Day</td>
-                    <td id="sPricePerDay">—</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Number of Days</td>
-                    <td id="sNumDays">—</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Subtotal</td>
-                    <td id="sSubtotal">—</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Service Fee (5%)</td>
-                    <td id="sServiceFee">—</td>
-                </tr>
-                <tr class="grand-total-row">
-                    <td>Grand Total</td>
-                    <td id="sGrandTotal">—</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- Location Pickers -->
+        <div class="step-card">
+            <div class="step-card-header">
+                <div class="step-num">1</div>
+                <span>Pickup &amp; Drop-off Locations</span>
+            </div>
+            <div class="date-picker-row">
+                <div class="date-picker-box">
+                    <label for="pickupLocation">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Pickup Location
+                    </label>
+                    <select id="pickupLocation" onchange="updateSummary()">
+                        <option value="">Select pickup location</option>
+                        <option>Pokhara, Lakeside</option>
+                        <option>Pokhara, Bus Park</option>
+                        <option>Pokhara, Prithvi Chowk</option>
+                        <option>Pokhara, Airport</option>
+                        <option>Pokhara, Mahendrapul</option>
+                        <option>Pokhara, Bagar</option>
+                        <option>Pokhara, New Road</option>
+                        <option>Kathmandu, Thamel</option>
+                        <option>Kathmandu, New Bus Park</option>
+                        <option>Kathmandu, Airport</option>
+                        <option>Chitwan, Bharatpur</option>
+                        <option>Lumbini, Bhairahawa</option>
+                    </select>
+                </div>
+                <div class="date-picker-box">
+                    <label for="dropoffLocation">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Drop-off Location
+                    </label>
+                    <select id="dropoffLocation" onchange="updateSummary()">
+                        <option value="">Select drop-off location</option>
+                        <option>Pokhara, Lakeside</option>
+                        <option>Pokhara, Bus Park</option>
+                        <option>Pokhara, Prithvi Chowk</option>
+                        <option>Pokhara, Airport</option>
+                        <option>Pokhara, Mahendrapul</option>
+                        <option>Pokhara, Bagar</option>
+                        <option>Pokhara, New Road</option>
+                        <option>Kathmandu, Thamel</option>
+                        <option>Kathmandu, New Bus Park</option>
+                        <option>Kathmandu, Airport</option>
+                        <option>Chitwan, Bharatpur</option>
+                        <option>Lumbini, Bhairahawa</option>
+                    </select>
+                </div>
+            </div>
+            <p class="field-error" id="locationError">Please select both pickup and drop-off locations.</p>
+        </div>
 
-    <!-- Proceed Button -->
-    <button class="proceed-btn" id="proceedBtn" onclick="proceedToBooking()" disabled>
-        Proceed to Booking
-    </button>
+        <!-- Date Pickers -->
+        <div class="step-card">
+            <div class="step-card-header">
+                <div class="step-num">2</div>
+                <span>Rental Dates</span>
+            </div>
+            <div class="date-picker-row">
+                <div class="date-picker-box">
+                    <label for="pickupDate">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Pickup Date
+                    </label>
+                    <input type="date" id="pickupDate" onchange="updateSummary()"/>
+                </div>
+                <div class="date-picker-box">
+                    <label for="dropoffDate">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Drop-off Date
+                    </label>
+                    <input type="date" id="dropoffDate" onchange="updateSummary()"/>
+                </div>
+            </div>
+            <p class="field-error" id="dateError">Drop-off date must be after pickup date.</p>
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="summary-card">
+            <div class="summary-header">Booking Summary</div>
+            <table class="summary-table">
+                <tbody>
+                    <tr>
+                        <td class="label-col">Vehicle</td>
+                        <td id="sVehicle"></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Pickup Location</td>
+                        <td id="sPickupLocation"></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Drop-off Location</td>
+                        <td id="sDropoffLocation"></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Price per Day</td>
+                        <td id="sPricePerDay"></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Number of Days</td>
+                        <td id="sNumDays" class="pending-cell">Select dates above</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Subtotal</td>
+                        <td id="sSubtotal" class="pending-cell">Select dates above</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Service Fee (5%)</td>
+                        <td id="sServiceFee" class="pending-cell">Select dates above</td>
+                    </tr>
+                    <tr class="grand-total-row">
+                        <td>Grand Total</td>
+                        <td id="sGrandTotal" class="pending-cell">Select dates above</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Proceed Button -->
+        <button class="proceed-btn" id="proceedBtn" onclick="proceedToBooking()" disabled>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+            Proceed to Booking
+        </button>
+
+    </div><!-- /bookingContent -->
+
 </main>
 
 <!-- ==================== FOOTER ==================== -->
@@ -182,7 +246,7 @@
             </a>
             <div class="social-links">
                 <a href="#" class="social-link" aria-label="Instagram">
-                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 </a>
                 <a href="#" class="social-link" aria-label="Facebook">
                     <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -207,127 +271,197 @@
 </footer>
 
 <script>
-// ── Vehicle Data (keep in sync with vehicle-rentals.html) ────────────────────
-const vehicles = [
-  { id:1,  name:"Toyota Hilux",       category:"Car",     brand:"Toyota",       price:8500,  transmission:"Manual",    seats:5, fuel:"Diesel",  rating:4.8, icon:"🚗", desc:"A rugged and reliable pickup truck perfect for both city drives and off-road adventures. Equipped with a powerful diesel engine, spacious cabin, and proven durability across Nepal's diverse terrain." },
-  { id:2,  name:"Toyota Land Cruiser",category:"Car",     brand:"Toyota",       price:15000, transmission:"Automatic", seats:7, fuel:"Diesel",  rating:4.9, icon:"🚙", desc:"The ultimate 7-seater SUV delivering unmatched comfort and off-road capability. Features premium leather interior, advanced safety systems, and a powerful diesel engine ideal for long journeys and mountain roads." },
-  { id:3,  name:"Honda City",         category:"Car",     brand:"Honda",        price:4500,  transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.6, icon:"🚗", desc:"A stylish and fuel-efficient sedan that blends performance with comfort. Its spacious cabin, smooth automatic transmission, and responsive petrol engine make it an excellent choice for city commutes and highway trips." },
-  { id:4,  name:"Honda Jazz",         category:"Car",     brand:"Honda",        price:3500,  transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.4, icon:"🚗", desc:"A versatile compact hatchback with exceptional interior space and flexibility. The Honda Jazz offers a comfortable ride, smart storage solutions, and great fuel economy — ideal for everyday use." },
-  { id:5,  name:"BMW 3 Series",       category:"Car",     brand:"BMW",          price:12000, transmission:"Automatic", seats:5, fuel:"Petrol",  rating:4.7, icon:"🏎️", desc:"Experience luxury and performance at its finest. The BMW 3 Series delivers a dynamic driving experience with a refined interior, cutting-edge technology, and a powerful petrol engine that sets it apart from the rest." },
-  { id:6,  name:"Hyundai Tucson",     category:"Car",     brand:"Hyundai",      price:7000,  transmission:"Automatic", seats:5, fuel:"Diesel",  rating:4.5, icon:"🚙", desc:"A modern and comfortable mid-size SUV with a bold design and a well-equipped interior. The Tucson's diesel engine provides strong performance and fuel efficiency, making it great for both city and long-distance travel." },
-  { id:7,  name:"Hyundai i20",        category:"Car",     brand:"Hyundai",      price:3800,  transmission:"Manual",    seats:5, fuel:"Petrol",  rating:4.3, icon:"🚗", desc:"A practical and stylish hatchback with a punchy petrol engine and modern features. The i20 is easy to drive in traffic, affordable to run, and comes with a comfortable 5-seat cabin." },
-  { id:8,  name:"Royal Enfield Classic 350", category:"Bike", brand:"Royal Enfield", price:1200, transmission:"Manual", seats:2, fuel:"Petrol", rating:4.7, icon:"🏍️", desc:"An iconic motorcycle that combines timeless style with dependable performance. The Classic 350 is perfect for scenic road trips and heritage routes, offering a smooth ride and a distinctive exhaust note that's hard to forget." },
-  { id:9,  name:"Royal Enfield Meteor", category:"Bike", brand:"Royal Enfield", price:1100, transmission:"Manual",   seats:2, fuel:"Petrol",  rating:4.6, icon:"🏍️", desc:"A modern cruiser built for effortless touring. The Meteor 350 delivers a relaxed riding posture, a refined engine, and premium touches that make every ride feel like an adventure." },
-  { id:10, name:"Mercury EV Bike",    category:"Bike",    brand:"Mercury",      price:800,   transmission:"Automatic", seats:2, fuel:"Electric",rating:4.2, icon:"⚡", desc:"A zero-emission electric bike designed for eco-conscious riders. Silent, smooth, and cost-effective, the Mercury EV Bike is perfect for daily commutes and short trips while keeping your carbon footprint minimal." },
-  { id:11, name:"Honda Activa 6G",    category:"Scooter", brand:"Honda",        price:550,   transmission:"Automatic", seats:2, fuel:"Petrol",  rating:4.4, icon:"🛵", desc:"Nepal's favourite scooter, known for its reliability and ease of use. The Activa 6G features a fuel-injected engine, LED lighting, and a practical design that makes navigating city streets effortless." },
-  { id:12, name:"Bajaj Chetak",       category:"Scooter", brand:"Bajaj",        price:600,   transmission:"Automatic", seats:2, fuel:"Electric",rating:4.3, icon:"🛵", desc:"A premium electric scooter that blends retro styling with modern technology. The Chetak offers a quiet, smooth ride with zero emissions, making it the perfect eco-friendly choice for urban commuters." },
-];
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmt(n) { return Number(n).toLocaleString('en-NP'); }
 
-function fmt(n) { return n.toLocaleString("en-NP"); }
+// ── Load vehicle from API ─────────────────────────────────────────────────────
+const urlParams = new URLSearchParams(window.location.search);
+const vehicleId = parseInt(urlParams.get('vehicleId'));
+let vehicle = null;
 
-// ── Load vehicle from URL param ───────────────────────────────────────────────
-const params   = new URLSearchParams(window.location.search);
-const vehicleId = parseInt(params.get("vehicleId"));
-const vehicle  = vehicles.find(v => v.id === vehicleId);
+async function loadVehicle() {
+    if (!vehicleId) { showError(); return; }
+    try {
+        const res = await fetch(`/api/vehicles/${vehicleId}`);
+        if (!res.ok) { showError(); return; }
+        vehicle = await res.json();
+        renderVehicle();
+    } catch (_) { showError(); }
+}
 
-if (!vehicle) {
-    document.querySelector(".booking-page").innerHTML =
-        '<div style="text-align:center;padding:4rem 1rem;">' +
-        '<p style="font-size:1.1rem;color:#64748b;">Vehicle not found. ' +
-        '<a href="/vehicle-rentals" style="color:var(--primary)">Browse all vehicles</a>.</p></div>';
-} else {
-    // Populate vehicle info
-    document.getElementById("vIcon").textContent     = vehicle.icon;
-    document.getElementById("vCategory").textContent = vehicle.category;
-    document.getElementById("vBrand").textContent    = vehicle.brand;
-    document.getElementById("vName").textContent     = vehicle.name;
-    document.getElementById("vDesc").textContent     = vehicle.desc;
-    document.getElementById("vPrice").innerHTML =
-        `NRS ${fmt(vehicle.price)} <span>/ day</span>`;
-    document.getElementById("sVehicle").textContent     = vehicle.name;
-    document.getElementById("sPricePerDay").textContent = `NRS ${fmt(vehicle.price)}`;
+function showError() {
+    document.getElementById('loadingSkeleton').style.display = 'none';
+    document.getElementById('errorState').style.display = '';
+}
 
-    const fuelIcon = vehicle.fuel === "Electric" ? "⚡" : "⛽";
-    document.getElementById("vSpecs").innerHTML = `
-        <span class="spec-pill">💺 ${vehicle.seats} Seats</span>
-        <span class="spec-pill">⚙️ ${vehicle.transmission}</span>
-        <span class="spec-pill">${fuelIcon} ${vehicle.fuel}</span>
-    `;
+function renderVehicle() {
+    document.getElementById('loadingSkeleton').style.display = 'none';
+    document.getElementById('bookingContent').style.display = '';
 
-    // Set min date for pickup to today
-    const today = new Date().toISOString().split("T")[0];
-    document.getElementById("pickupDate").min  = today;
-    document.getElementById("dropoffDate").min = today;
+    // ── Main image / gallery ──────────────────────────────────────────────────
+    const mainBox   = document.getElementById('vehicleMainImg');
+    const thumbRow  = document.getElementById('vehicleThumbRow');
+    const images    = vehicle.imageUrls && vehicle.imageUrls.length ? vehicle.imageUrls
+                    : vehicle.imageUrl ? [vehicle.imageUrl] : [];
+
+    if (images.length > 0) {
+        mainBox.innerHTML = `<img src="${images[0]}" alt="${vehicle.vehicleName}" class="vehicle-main-img" id="mainImgEl"/>`;
+        if (images.length > 1) {
+            thumbRow.style.display = 'flex';
+            thumbRow.innerHTML = images.map((url, i) => `
+                <div class="thumb${i === 0 ? ' active' : ''}" onclick="setMainImage('${url}', this)">
+                    <img src="${url}" alt=""/>
+                </div>`).join('');
+        }
+    } else {
+        mainBox.innerHTML = `
+            <div class="vehicle-img-placeholder">
+                <svg width="56" height="56" fill="none" stroke="#c7d2fe" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/>
+                    <rect x="9" y="11" width="14" height="10" rx="2"/>
+                </svg>
+                <span>No image</span>
+            </div>`;
+    }
+
+    // ── Info body ─────────────────────────────────────────────────────────────
+    document.getElementById('vCategory').textContent = vehicle.categoryName  || '';
+    document.getElementById('vBrand').textContent    = vehicle.brandName     || '';
+    document.getElementById('vName').textContent     = vehicle.vehicleName   || '';
+    document.getElementById('vDesc').textContent     = vehicle.description   || '';
+    document.getElementById('vPrice').innerHTML      =
+        `NRS ${fmt(vehicle.rentalPrice)} <span>/ day</span>`;
+
+    // Specs
+    const specItems = [];
+    if (vehicle.seatsCapacity) specItems.push(`<span class="spec-pill">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        ${vehicle.seatsCapacity} Seats</span>`);
+    if (vehicle.vehicleNo) specItems.push(`<span class="spec-pill">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/></svg>
+        ${vehicle.vehicleNo}</span>`);
+    if (vehicle.vendorName) specItems.push(`<span class="spec-pill">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        ${vehicle.vendorName}</span>`);
+    document.getElementById('vSpecs').innerHTML = specItems.join('');
+
+    // Rating
+    if (vehicle.averageRating) {
+        document.getElementById('vMeta').innerHTML = `
+            <div class="rating-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#f5a623"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span>${Number(vehicle.averageRating).toFixed(1)}</span>
+            </div>`;
+    }
+
+    // ── Summary table (always-visible rows) ──────────────────────────────────
+    document.getElementById('sVehicle').textContent    = vehicle.vehicleName || '';
+    document.getElementById('sPricePerDay').textContent = `NRS ${fmt(vehicle.rentalPrice)}`;
+
+    // Set date min to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('pickupDate').min  = today;
+    document.getElementById('dropoffDate').min = today;
+}
+
+function setMainImage(url, thumbEl) {
+    document.getElementById('mainImgEl').src = url;
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    thumbEl.classList.add('active');
 }
 
 // ── Summary calculation ───────────────────────────────────────────────────────
+function setPending(id, text) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.classList.add('pending-cell');
+}
+function setValue(id, text) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.classList.remove('pending-cell');
+}
+
 function updateSummary() {
     if (!vehicle) return;
 
-    const pickupLoc  = document.getElementById("pickupLocation").value;
-    const dropoffLoc = document.getElementById("dropoffLocation").value;
-    const pickupVal  = document.getElementById("pickupDate").value;
-    const dropoffVal = document.getElementById("dropoffDate").value;
-    const locErrEl   = document.getElementById("locationError");
-    const dateErrEl  = document.getElementById("dateError");
-    const btn        = document.getElementById("proceedBtn");
+    const pickupLoc  = document.getElementById('pickupLocation').value;
+    const dropoffLoc = document.getElementById('dropoffLocation').value;
+    const pickupVal  = document.getElementById('pickupDate').value;
+    const dropoffVal = document.getElementById('dropoffDate').value;
+    const locErrEl   = document.getElementById('locationError');
+    const dateErrEl  = document.getElementById('dateError');
+    const btn        = document.getElementById('proceedBtn');
 
-    // Reset computed fields
-    ["sNumDays","sSubtotal","sServiceFee","sGrandTotal"].forEach(id => {
-        document.getElementById(id).textContent = "—";
-    });
-    locErrEl.style.display  = "none";
-    dateErrEl.style.display = "none";
+    locErrEl.style.display  = 'none';
+    dateErrEl.style.display = 'none';
     btn.disabled = true;
 
-    // Update location summary rows immediately
-    document.getElementById("sPickupLocation").textContent  = pickupLoc  || "—";
-    document.getElementById("sDropoffLocation").textContent = dropoffLoc || "—";
+    // Location rows — update immediately when changed
+    if (pickupLoc)  setValue('sPickupLocation', pickupLoc);
+    else            document.getElementById('sPickupLocation').textContent = '';
+    if (dropoffLoc) setValue('sDropoffLocation', dropoffLoc);
+    else            document.getElementById('sDropoffLocation').textContent = '';
 
     if (!pickupLoc || !dropoffLoc) {
-        if (pickupVal && dropoffVal) locErrEl.style.display = "block";
+        if (pickupVal && dropoffVal) locErrEl.style.display = 'block';
+        setPending('sNumDays',    'Select dates above');
+        setPending('sSubtotal',   'Select dates above');
+        setPending('sServiceFee', 'Select dates above');
+        setPending('sGrandTotal', 'Select dates above');
         return;
     }
 
-    if (!pickupVal || !dropoffVal) return;
+    if (!pickupVal || !dropoffVal) {
+        setPending('sNumDays',    'Select dates above');
+        setPending('sSubtotal',   'Select dates above');
+        setPending('sServiceFee', 'Select dates above');
+        setPending('sGrandTotal', 'Select dates above');
+        return;
+    }
 
     const pickup  = new Date(pickupVal);
     const dropoff = new Date(dropoffVal);
 
     if (dropoff <= pickup) {
-        dateErrEl.style.display = "block";
+        dateErrEl.style.display = 'block';
+        setPending('sNumDays',    'Invalid dates');
+        setPending('sSubtotal',   'Invalid dates');
+        setPending('sServiceFee', 'Invalid dates');
+        setPending('sGrandTotal', 'Invalid dates');
         return;
     }
 
-    const msPerDay = 1000 * 60 * 60 * 24;
-    const days     = Math.round((dropoff - pickup) / msPerDay);
-    const subtotal = days * vehicle.price;
+    const days     = Math.round((dropoff - pickup) / 86400000);
+    const subtotal = days * Number(vehicle.rentalPrice);
     const fee      = Math.round(subtotal * 0.05);
     const total    = subtotal + fee;
 
-    document.getElementById("sNumDays").textContent    = `${days} day${days > 1 ? "s" : ""}`;
-    document.getElementById("sSubtotal").textContent   = `NRS ${fmt(subtotal)}`;
-    document.getElementById("sServiceFee").textContent = `NRS ${fmt(fee)}`;
-    document.getElementById("sGrandTotal").textContent = `NRS ${fmt(total)}`;
-
+    setValue('sNumDays',    `${days} day${days > 1 ? 's' : ''}`);
+    setValue('sSubtotal',   `NRS ${fmt(subtotal)}`);
+    setValue('sServiceFee', `NRS ${fmt(fee)}`);
+    setValue('sGrandTotal', `NRS ${fmt(total)}`);
     btn.disabled = false;
 }
 
 // ── Proceed ───────────────────────────────────────────────────────────────────
 function proceedToBooking() {
-    const pickupLoc  = document.getElementById("pickupLocation").value;
-    const dropoffLoc = document.getElementById("dropoffLocation").value;
-    const pickup     = document.getElementById("pickupDate").value;
-    const dropoff    = document.getElementById("dropoffDate").value;
-    alert(`Booking confirmed!\n\nVehicle: ${vehicle.name}\nPickup Location: ${pickupLoc}\nDrop-off Location: ${dropoffLoc}\nPickup Date: ${pickup}\nDrop-off Date: ${dropoff}\n\nFull payment integration coming soon.`);
+    const pickupLoc  = document.getElementById('pickupLocation').value;
+    const dropoffLoc = document.getElementById('dropoffLocation').value;
+    const pickup     = document.getElementById('pickupDate').value;
+    const dropoff    = document.getElementById('dropoffDate').value;
+    alert(`Booking confirmed!\n\nVehicle: ${vehicle.vehicleName}\nPickup: ${pickupLoc} on ${pickup}\nDrop-off: ${dropoffLoc} on ${dropoff}\n\nFull payment integration coming soon.`);
 }
 
 // ── Hamburger ─────────────────────────────────────────────────────────────────
-document.getElementById("hamburger").addEventListener("click", () => {
-    document.querySelector(".nav-links").classList.toggle("open");
-    document.querySelector(".nav-auth").classList.toggle("open");
-    document.getElementById("navUser")?.classList.toggle("open");
+document.getElementById('hamburger').addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('open');
+    document.querySelector('.nav-auth').classList.toggle('open');
+    document.getElementById('navUser')?.classList.toggle('open');
 });
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+loadVehicle();
 </script>
 <script src="/js/navbar.js"></script>
 </body>

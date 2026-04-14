@@ -44,29 +44,15 @@ ul { list-style: none; }
 .sidebar-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 22px 20px 18px;
+    justify-content: center;
+    padding: 18px 16px 16px;
     border-bottom: 1px solid var(--border);
 }
 
-.sidebar-logo .logo-icon {
-    width: 32px;
-    height: 32px;
-    background: var(--primary);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.sidebar-logo span {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text);
+.sidebar-logo-img {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
 }
 
 .sidebar-nav {

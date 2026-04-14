@@ -13,8 +13,7 @@
 <!-- ===== SIDEBAR ===== -->
 <aside class="sidebar">
     <div class="sidebar-logo">
-        <div class="logo-icon">SR</div>
-        <span>Smart Rent</span>
+        <img src="/images/SmartRentLogo.png" alt="SmartRent Logo" class="sidebar-logo-img"/>
     </div>
 
     <nav class="sidebar-nav">
@@ -29,7 +28,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" id="navVehicles" onclick="showVehiclesSection(this)">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/>
                         <rect x="9" y="11" width="14" height="10" rx="2"/>
@@ -38,7 +37,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" id="navCustomers" onclick="showCustomersSection(this)">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
                     </svg>
@@ -46,7 +45,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" id="navVendors" onclick="showVendorsSection(this)">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <rect x="2" y="7" width="20" height="14" rx="2"/>
                         <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
@@ -55,7 +54,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" id="navBookings" onclick="showBookingsSection(this)">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M3 3h18M3 9h18M3 15h18M3 21h18"/>
                     </svg>
@@ -81,6 +80,15 @@
                 </a>
             </li>
             <li>
+                <a href="#" id="navBrands" onclick="showBrandsSection(this)">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M8 12h8M12 8v8"/>
+                    </svg>
+                    Brands
+                </a>
+            </li>
+            <li>
                 <a href="#">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -88,15 +96,6 @@
                         <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
                     </svg>
                     Report
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                    Profile
                 </a>
             </li>
         </ul>
@@ -362,12 +361,11 @@
         <div class="chart-card">
             <div class="chart-header">
                 <div>
-                    <div class="chart-title">Monthly Revenue</div>
+                    <div class="chart-title" id="chartTitle">Monthly Revenue</div>
                     <div class="chart-big-value" id="chartBigValue">NRS 0</div>
                 </div>
                 <div class="chart-period-tabs">
                     <button class="period-tab active" data-period="monthly" onclick="switchPeriod('monthly',this)">Monthly</button>
-                    <button class="period-tab" data-period="quarterly" onclick="switchPeriod('quarterly',this)">Quarterly</button>
                     <button class="period-tab" data-period="yearly" onclick="switchPeriod('yearly',this)">Yearly</button>
                 </div>
             </div>
@@ -489,15 +487,10 @@
 
     <!-- ===== CATEGORIES SECTION ===== -->
     <div class="page-body" id="sectionCategories" style="display:none;">
-
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-            <div>
-                <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">Vehicle Categories</h2>
-                <p style="font-size:0.8rem;color:var(--text-light);">Core categories: Car, Bike, Scooter, Bicycle — add extras as needed</p>
-            </div>
+        <div style="margin-bottom:20px;">
+            <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">Vehicle Categories</h2>
+            <p style="font-size:0.8rem;color:var(--text-light);">Core categories: Car, Bike, Scooter, Bicycle — add extras as needed</p>
         </div>
-
-        <!-- Add Category -->
         <div class="table-card" style="margin-bottom:18px;">
             <div class="table-card-header"><h3>Add New Category</h3></div>
             <div style="padding:16px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
@@ -509,8 +502,6 @@
                 <span id="catAddMsg" style="font-size:0.82rem;display:none;"></span>
             </div>
         </div>
-
-        <!-- Categories Table -->
         <div class="table-card" style="margin-top:0;">
             <div class="table-card-header">
                 <h3>All Categories</h3>
@@ -518,22 +509,549 @@
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Category Name</th>
-                            <th>Created</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>#</th><th>Category Name</th><th>Created</th><th>Actions</th></tr></thead>
                     <tbody id="categoriesTableBody">
                         <tr><td colspan="4" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div><!-- /sectionCategories -->
+
+    <!-- ===== BRANDS SECTION ===== -->
+    <div class="page-body" id="sectionBrands" style="display:none;">
+        <div style="margin-bottom:20px;">
+            <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">Vehicle Brands</h2>
+            <p style="font-size:0.8rem;color:var(--text-light);">Brands used by vendors when listing vehicles (e.g. Honda, Toyota, Yamaha)</p>
+        </div>
+        <div class="table-card" style="margin-bottom:18px;">
+            <div class="table-card-header"><h3>Add New Brand</h3></div>
+            <div style="padding:16px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <input type="text" id="newBrandName" placeholder="e.g. Honda" maxlength="100"
+                    style="padding:9px 13px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;min-width:260px;transition:border-color 0.18s;"
+                    onkeydown="if(event.key==='Enter') addBrand()"
+                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                <button class="btn-action primary" onclick="addBrand()" style="padding:9px 20px;">Add Brand</button>
+                <span id="brandAddMsg" style="font-size:0.82rem;display:none;"></span>
+            </div>
+        </div>
+        <div class="table-card">
+            <div class="table-card-header">
+                <h3>All Brands</h3>
+                <span id="brandCount" style="font-size:0.78rem;color:var(--text-light);"></span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>#</th><th>Brand Name</th><th>Vehicles</th><th>Actions</th></tr></thead>
+                    <tbody id="brandsTableBody">
+                        <tr><td colspan="4" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionBrands -->
+
+    <!-- ===== ALL VEHICLES SECTION ===== -->
+    <div class="page-body" id="sectionVehicles" style="display:none;">
+        <div style="margin-bottom:20px;">
+            <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">All Vehicles</h2>
+            <p style="font-size:0.8rem;color:var(--text-light);">View, filter, edit and manage all vehicles across all vendors</p>
+        </div>
+        <!-- Filters -->
+        <div class="table-card" style="margin-bottom:18px;">
+            <div style="padding:14px 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">Brand</label>
+                    <select id="vfBrand" onchange="loadAllVehicles()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;">
+                        <option value="">All Brands</option>
+                    </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">Category</label>
+                    <select id="vfCategory" onchange="loadAllVehicles()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">Approval</label>
+                    <select id="vfApproval" onchange="loadAllVehicles()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;">
+                        <option value="">All</option>
+                        <option value="APPROVED">Approved</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="REJECTED">Rejected</option>
+                    </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">Active</label>
+                    <select id="vfActive" onchange="loadAllVehicles()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;">
+                        <option value="">All</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+                <button onclick="clearVehicleFilters()" style="padding:7px 16px;font-size:0.82rem;font-weight:600;border:1px solid var(--border);background:#fff;color:var(--text-light);border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;align-self:flex-end;">Clear</button>
+                <span id="vfCount" style="font-size:0.78rem;color:var(--text-light);align-self:flex-end;margin-left:auto;"></span>
+            </div>
+        </div>
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th><th>Vehicle Name</th><th>Vendor</th><th>Brand</th>
+                            <th>Category</th><th>Price/Day</th><th>Approval</th><th>Active</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allVehiclesBody">
+                        <tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionVehicles -->
+
+    <!-- ===== CUSTOMERS SECTION ===== -->
+    <div class="page-body" id="sectionCustomers" style="display:none;">
+        <div style="margin-bottom:20px;">
+            <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">Customers</h2>
+            <p style="font-size:0.8rem;color:var(--text-light);">All registered customers — view details, booking activity, and manage accounts</p>
+        </div>
+
+        <!-- Search + count bar -->
+        <div class="table-card" style="margin-bottom:16px;">
+            <div style="padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <input type="text" id="custSearch" placeholder="Search by name, email or phone…"
+                    oninput="filterCustomers()"
+                    style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;min-width:280px;flex:1;"
+                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                <select id="custStatusFilter" onchange="filterCustomers()"
+                    style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+                <span id="custCount" style="font-size:0.78rem;color:var(--text-light);white-space:nowrap;"></span>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Registered</th>
+                            <th>Bookings</th>
+                            <th>Total Spent</th>
+                            <th>Active Bookings</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionCustomers -->
+
+    <!-- ===== VENDORS SECTION ===== -->
+    <div class="page-body" id="sectionVendors" style="display:none;">
+        <div style="margin-bottom:20px;">
+            <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">Vendors</h2>
+            <p style="font-size:0.8rem;color:var(--text-light);">All registered vendors — view details and manage account status</p>
+        </div>
+
+        <!-- Search + filter bar -->
+        <div class="table-card" style="margin-bottom:16px;">
+            <div style="padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <input type="text" id="vendorSearch" placeholder="Search by name, company, email or phone…"
+                    oninput="filterVendors()"
+                    style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;min-width:280px;flex:1;"
+                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                <select id="vendorStatusFilter" onchange="filterVendors()"
+                    style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;">
+                    <option value="">All Status</option>
+                    <option value="APPROVED">Approved</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="REJECTED">Rejected</option>
+                </select>
+                <select id="vendorActiveFilter" onchange="filterVendors()"
+                    style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;">
+                    <option value="">Active &amp; Inactive</option>
+                    <option value="active">Active Only</option>
+                    <option value="inactive">Inactive Only</option>
+                </select>
+                <span id="vendorCount" style="font-size:0.78rem;color:var(--text-light);white-space:nowrap;"></span>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Company</th>
+                            <th>Email</th>
+                            <th>Brand</th>
+                            <th>Vehicles</th>
+                            <th>Bookings</th>
+                            <th>Revenue</th>
+                            <th>Active Jobs</th>
+                            <th>Registered</th>
+                            <th>Approval</th>
+                            <th>Account</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vendorsTableBody">
+                        <tr><td colspan="12" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionVendors -->
+
+    <!-- ===== BOOKINGS SECTION ===== -->
+    <div class="page-body" id="sectionBookings" style="display:none;">
+        <div style="margin-bottom:20px;">
+            <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">All Bookings</h2>
+            <p style="font-size:0.8rem;color:var(--text-light);">View and manage every booking across all vendors and customers</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="table-card" style="margin-bottom:16px;">
+            <div style="padding:14px 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">Vendor</label>
+                    <select id="bfVendor" onchange="loadAdminBookings()"
+                        style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;min-width:160px;">
+                        <option value="">All Vendors</option>
+                    </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">Status</label>
+                    <select id="bfStatus" onchange="loadAdminBookings()"
+                        style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;">
+                        <option value="">All Status</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">From Date</label>
+                    <input type="date" id="bfDateFrom" onchange="loadAdminBookings()"
+                        style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;"/>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">To Date</label>
+                    <input type="date" id="bfDateTo" onchange="loadAdminBookings()"
+                        style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;cursor:pointer;"/>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px;">
+                    <label style="font-size:0.75rem;font-weight:600;color:var(--text-light);">Customer</label>
+                    <input type="text" id="bfCustomer" placeholder="Search by name or email…"
+                        oninput="filterBookingsClient()"
+                        style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;"
+                        onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                </div>
+                <button onclick="clearBookingFilters()" style="padding:7px 16px;font-size:0.82rem;font-weight:600;border:1px solid var(--border);background:#fff;color:var(--text-light);border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;align-self:flex-end;">Clear</button>
+                <span id="bfCount" style="font-size:0.78rem;color:var(--text-light);align-self:flex-end;margin-left:auto;white-space:nowrap;"></span>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Vendor</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminBookingsBody">
+                        <tr><td colspan="11" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionBookings -->
+
+    <!-- ===== BOOKING DETAIL MODAL ===== -->
+    <div class="vendor-modal-overlay" id="bookingDetailOverlay" onclick="closeBookingDetailModal(event)">
+        <div class="vendor-modal" style="width:640px;max-height:90vh;overflow-y:auto;">
+            <div class="vendor-modal-header">
+                <h3>Booking Details</h3>
+                <button class="vendor-modal-close" onclick="document.getElementById('bookingDetailOverlay').classList.remove('open');document.body.style.overflow=''">✕</button>
+            </div>
+            <div class="vendor-modal-body">
+                <!-- Header row: ID + status badge -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+                    <div>
+                        <div style="font-size:0.75rem;color:#9ca3af;font-weight:600;letter-spacing:0.04em;">BOOKING</div>
+                        <div style="font-size:1.3rem;font-weight:800;color:var(--text);" id="bdId"></div>
+                    </div>
+                    <div id="bdStatusBadge"></div>
+                </div>
+
+                <!-- 3-panel info grid -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;">
+                    <!-- Customer -->
+                    <div style="background:#f8faff;border-radius:10px;padding:14px;">
+                        <div style="font-size:0.7rem;font-weight:700;color:#9ca3af;letter-spacing:0.06em;margin-bottom:8px;">CUSTOMER</div>
+                        <div style="font-weight:700;font-size:0.88rem;color:var(--text);" id="bdCustName"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;" id="bdCustEmail"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;" id="bdCustPhone"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;">License: <span id="bdCustLicense" style="font-weight:600;"></span></div>
+                    </div>
+                    <!-- Vehicle -->
+                    <div style="background:#f8faff;border-radius:10px;padding:14px;">
+                        <div style="font-size:0.7rem;font-weight:700;color:#9ca3af;letter-spacing:0.06em;margin-bottom:8px;">VEHICLE</div>
+                        <div style="font-weight:700;font-size:0.88rem;color:var(--text);" id="bdVehName"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;" id="bdVehBrand"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;" id="bdVehCat"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;">Plate: <span id="bdVehNo" style="font-weight:600;font-family:monospace;"></span></div>
+                    </div>
+                    <!-- Vendor -->
+                    <div style="background:#f8faff;border-radius:10px;padding:14px;">
+                        <div style="font-size:0.7rem;font-weight:700;color:#9ca3af;letter-spacing:0.06em;margin-bottom:8px;">VENDOR</div>
+                        <div style="font-weight:700;font-size:0.88rem;color:var(--text);" id="bdVendorName"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;" id="bdVendorCompany"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;" id="bdVendorEmail"></div>
+                        <div style="font-size:0.78rem;color:#6b7280;" id="bdVendorPhone"></div>
+                    </div>
+                </div>
+
+                <!-- Booking dates + amount -->
+                <div class="vendor-fields-grid" style="margin-bottom:16px;">
+                    <div class="vendor-field"><span class="vendor-field-label">Start Date</span><span class="vendor-field-value" id="bdStart"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">End Date</span><span class="vendor-field-value" id="bdEnd"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Duration</span><span class="vendor-field-value" id="bdDuration"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Rate Type</span><span class="vendor-field-value" id="bdRateType"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Total Amount</span><span class="vendor-field-value" style="font-weight:700;color:var(--primary);" id="bdAmount"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Booked On</span><span class="vendor-field-value" id="bdCreated"></span></div>
+                </div>
+            </div>
+            <div class="vendor-modal-actions" id="bdActions"></div>
+        </div>
+    </div>
+
+    <!-- ===== VENDOR MANAGEMENT DETAIL MODAL ===== -->
+    <div class="vendor-modal-overlay" id="vendorMgmtOverlay" onclick="closeVendorMgmtModal(event)">
+        <div class="vendor-modal" style="width:600px;max-height:90vh;overflow-y:auto;">
+            <div class="vendor-modal-header">
+                <h3>Vendor Details</h3>
+                <button class="vendor-modal-close" onclick="document.getElementById('vendorMgmtOverlay').classList.remove('open');document.body.style.overflow=''">✕</button>
+            </div>
+            <div class="vendor-modal-body">
+                <!-- Profile row -->
+                <div class="vendor-avatar-row" style="margin-bottom:20px;">
+                    <div class="vendor-big-avatar" id="vdAvatar"></div>
+                    <div>
+                        <div class="vendor-modal-name" id="vdName"></div>
+                        <div id="vdCompanyLabel" style="font-size:0.82rem;color:#6b7280;margin-top:2px;"></div>
+                        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+                            <div id="vdApprovalBadge"></div>
+                            <div id="vdActiveBadge"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance stats -->
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+                    <div style="background:#f8faff;border-radius:10px;padding:12px 10px;text-align:center;">
+                        <div style="font-size:1.3rem;font-weight:800;color:#4a6cf7;" id="vdStatVehicles">0</div>
+                        <div style="font-size:0.7rem;color:#6b7280;font-weight:500;margin-top:2px;">Vehicles</div>
+                    </div>
+                    <div style="background:#f8faff;border-radius:10px;padding:12px 10px;text-align:center;">
+                        <div style="font-size:1.3rem;font-weight:800;color:#2d2d4e;" id="vdStatBookings">0</div>
+                        <div style="font-size:0.7rem;color:#6b7280;font-weight:500;margin-top:2px;">Total Bookings</div>
+                    </div>
+                    <div style="background:#f8faff;border-radius:10px;padding:12px 10px;text-align:center;">
+                        <div style="font-size:1.1rem;font-weight:800;color:#16a34a;" id="vdStatRevenue">0</div>
+                        <div style="font-size:0.7rem;color:#6b7280;font-weight:500;margin-top:2px;">Revenue</div>
+                    </div>
+                    <div style="background:#f8faff;border-radius:10px;padding:12px 10px;text-align:center;">
+                        <div style="font-size:1.3rem;font-weight:800;color:#f5a623;" id="vdStatActive">0</div>
+                        <div style="font-size:0.7rem;color:#6b7280;font-weight:500;margin-top:2px;">Active Jobs</div>
+                    </div>
+                </div>
+
+                <!-- Info grid -->
+                <div class="vendor-fields-grid">
+                    <div class="vendor-field"><span class="vendor-field-label">Email Address</span><span class="vendor-field-value" id="vdEmail"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Phone Number</span><span class="vendor-field-value" id="vdPhone"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Registration No.</span><span class="vendor-field-value" id="vdRegNo"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Brand</span><span class="vendor-field-value" id="vdBrand"></span></div>
+                    <div class="vendor-field" style="grid-column:span 2;"><span class="vendor-field-label">Registered On</span><span class="vendor-field-value" id="vdDate"></span></div>
+                </div>
+            </div>
+            <div class="vendor-modal-actions" id="vdActions"></div>
+        </div>
+    </div>
+
+    <!-- ===== CUSTOMER DETAIL MODAL ===== -->
+    <div class="vendor-modal-overlay" id="custDetailOverlay" onclick="closeCustDetailModal(event)">
+        <div class="vendor-modal" style="width:620px;max-height:90vh;overflow-y:auto;">
+            <div class="vendor-modal-header">
+                <h3>Customer Details</h3>
+                <button class="vendor-modal-close" onclick="document.getElementById('custDetailOverlay').classList.remove('open');document.body.style.overflow=''">✕</button>
+            </div>
+            <div class="vendor-modal-body">
+                <!-- Profile row -->
+                <div class="vendor-avatar-row" style="margin-bottom:20px;">
+                    <div class="vendor-big-avatar" id="cdAvatar"></div>
+                    <div>
+                        <div class="vendor-modal-name" id="cdName"></div>
+                        <div class="vendor-modal-date" id="cdEmail" style="font-size:0.82rem;color:#6b7280;"></div>
+                        <div id="cdStatusBadge" style="margin-top:6px;"></div>
+                    </div>
+                </div>
+                <!-- Info grid -->
+                <div class="vendor-fields-grid" style="margin-bottom:20px;">
+                    <div class="vendor-field"><span class="vendor-field-label">Phone</span><span class="vendor-field-value" id="cdPhone"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Date of Birth</span><span class="vendor-field-value" id="cdDob"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">License No.</span><span class="vendor-field-value" id="cdLicense"></span></div>
+                    <div class="vendor-field"><span class="vendor-field-label">Registered On</span><span class="vendor-field-value" id="cdJoined"></span></div>
+                    <div class="vendor-field" style="grid-column:span 2;"><span class="vendor-field-label">Address</span><span class="vendor-field-value" id="cdAddress"></span></div>
+                </div>
+                <!-- Booking stats row -->
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
+                    <div style="background:#f8faff;border-radius:10px;padding:12px 14px;text-align:center;">
+                        <div style="font-size:1.4rem;font-weight:800;color:var(--primary);" id="cdTotalBookings">0</div>
+                        <div style="font-size:0.72rem;color:#6b7280;font-weight:500;margin-top:2px;">Total Bookings</div>
+                    </div>
+                    <div style="background:#f8faff;border-radius:10px;padding:12px 14px;text-align:center;">
+                        <div style="font-size:1.4rem;font-weight:800;color:#16a34a;" id="cdTotalSpent">0</div>
+                        <div style="font-size:0.72rem;color:#6b7280;font-weight:500;margin-top:2px;">Total Spent</div>
+                    </div>
+                    <div style="background:#f8faff;border-radius:10px;padding:12px 14px;text-align:center;">
+                        <div style="font-size:1.4rem;font-weight:800;color:#f5a623;" id="cdActiveBookings">0</div>
+                        <div style="font-size:0.72rem;color:#6b7280;font-weight:500;margin-top:2px;">Active Bookings</div>
+                    </div>
+                </div>
+                <!-- Booking history -->
+                <div style="font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:10px;">Booking History</div>
+                <div style="max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">
+                    <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+                        <thead style="position:sticky;top:0;background:#f8faff;">
+                            <tr>
+                                <th style="padding:8px 12px;text-align:left;color:#6b7280;font-weight:600;border-bottom:1px solid var(--border);">#</th>
+                                <th style="padding:8px 12px;text-align:left;color:#6b7280;font-weight:600;border-bottom:1px solid var(--border);">Vehicle</th>
+                                <th style="padding:8px 12px;text-align:left;color:#6b7280;font-weight:600;border-bottom:1px solid var(--border);">Dates</th>
+                                <th style="padding:8px 12px;text-align:left;color:#6b7280;font-weight:600;border-bottom:1px solid var(--border);">Amount</th>
+                                <th style="padding:8px 12px;text-align:left;color:#6b7280;font-weight:600;border-bottom:1px solid var(--border);">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cdBookingsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="vendor-modal-actions" id="cdActions"></div>
+        </div>
+    </div>
+
+    <!-- ===== EDIT VEHICLE MODAL ===== -->
+    <div class="vendor-modal-overlay" id="editVehicleOverlay" onclick="closeEditVehicleModal(event)">
+        <div class="vendor-modal" style="width:560px;">
+            <div class="vendor-modal-header">
+                <h3>Edit Vehicle</h3>
+                <button class="vendor-modal-close" onclick="document.getElementById('editVehicleOverlay').classList.remove('open');document.body.style.overflow=''">✕</button>
+            </div>
+            <div class="vendor-modal-body">
+                <input type="hidden" id="evId"/>
+                <div class="vendor-fields-grid">
+                    <div class="vendor-field" style="grid-column:span 2;">
+                        <span class="vendor-field-label">Vehicle Name</span>
+                        <input type="text" id="evName" maxlength="150" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Brand</span>
+                        <select id="evBrand" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;"></select>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Category</span>
+                        <select id="evCategory" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);background:#fff;"></select>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Daily Price (NPR)</span>
+                        <input type="number" id="evPrice" min="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                    </div>
+                    <div class="vendor-field">
+                        <span class="vendor-field-label">Seat Capacity</span>
+                        <input type="number" id="evSeats" min="1" max="50" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                    </div>
+                    <div class="vendor-field" style="grid-column:span 2;">
+                        <span class="vendor-field-label">Description</span>
+                        <textarea id="evDesc" rows="3" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:0.85rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;resize:vertical;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+                    </div>
+                </div>
+                <p id="evError" style="font-size:0.82rem;color:#dc2626;margin-top:8px;display:none;"></p>
+            </div>
+            <div class="vendor-modal-actions">
+                <button class="vbtn-reject" onclick="document.getElementById('editVehicleOverlay').classList.remove('open');document.body.style.overflow=''">Cancel</button>
+                <button class="vbtn-approve" onclick="saveEditVehicle()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== EDIT CATEGORY MODAL ===== -->
+    <div class="vendor-modal-overlay" id="editCatOverlay" onclick="closeEditCatModal(event)">
+        <div class="vendor-modal" style="width:420px;">
+            <div class="vendor-modal-header">
+                <h3>Rename Category</h3>
+                <button class="vendor-modal-close" onclick="document.getElementById('editCatOverlay').classList.remove('open');document.body.style.overflow=''">✕</button>
+            </div>
+            <div class="vendor-modal-body">
+                <input type="hidden" id="ecId"/>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <label style="font-size:0.82rem;font-weight:600;color:var(--text-light);">Category Name</label>
+                    <input type="text" id="ecName" maxlength="100" style="padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.88rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                    <p id="ecError" style="font-size:0.8rem;color:#dc2626;display:none;"></p>
+                </div>
+            </div>
+            <div class="vendor-modal-actions">
+                <button class="vbtn-reject" onclick="document.getElementById('editCatOverlay').classList.remove('open');document.body.style.overflow=''">Cancel</button>
+                <button class="vbtn-approve" onclick="saveEditCategory()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== EDIT BRAND MODAL ===== -->
+    <div class="vendor-modal-overlay" id="editBrandOverlay" onclick="closeEditBrandModal(event)">
+        <div class="vendor-modal" style="width:420px;">
+            <div class="vendor-modal-header">
+                <h3>Rename Brand</h3>
+                <button class="vendor-modal-close" onclick="document.getElementById('editBrandOverlay').classList.remove('open');document.body.style.overflow=''">✕</button>
+            </div>
+            <div class="vendor-modal-body">
+                <input type="hidden" id="ebId"/>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <label style="font-size:0.82rem;font-weight:600;color:var(--text-light);">Brand Name</label>
+                    <input type="text" id="ebName" maxlength="100" style="padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.88rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"/>
+                    <p id="ebError" style="font-size:0.8rem;color:#dc2626;display:none;"></p>
+                </div>
+            </div>
+            <div class="vendor-modal-actions">
+                <button class="vbtn-reject" onclick="document.getElementById('editBrandOverlay').classList.remove('open');document.body.style.overflow=''">Cancel</button>
+                <button class="vbtn-approve" onclick="saveEditBrand()">Save</button>
+            </div>
+        </div>
+    </div>
 
 </div><!-- /main-content -->
 
@@ -883,31 +1401,10 @@
     }
 
     // ── Revenue Chart ─────────────────────────────────────────────────────────
-    const revenueData = {
-        monthly: {
-            labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
-            values: [8200, 9500, 6800, 15000, 11200, 10400, 9800, 7600, 8900, 12300, 10100, 9200]
-        },
-        quarterly: {
-            labels: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025'],
-            values: [24500, 31300, 29600, 28800]
-        },
-        yearly: {
-            labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
-            values: [72000, 89000, 104000, 118000, 135000, 42000]
-        }
-    };
-
-    function fmtRevenue(n) {
-        if (n >= 1000) return 'NRS ' + (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + 'K';
-        return 'NRS ' + n.toLocaleString('en-NP');
-    }
-
     function fmtFull(n) {
-        return 'NRS ' + n.toLocaleString('en-NP');
+        return 'NRS ' + Number(n).toLocaleString('en-NP');
     }
 
-    // Find index of the peak value to highlight in blue
     function getPeakIndex(values) {
         return values.indexOf(Math.max(...values));
     }
@@ -971,26 +1468,36 @@
         }
     };
 
-    function initChart(period) {
-        const d = revenueData[period];
-        const peakIdx = getPeakIndex(d.values);
-        const peakVal = d.values[peakIdx];
+    async function initChart(period) {
+        const token = localStorage.getItem('token');
+        const url   = '/api/admin/revenue?period=' + period;
+        let d = { labels: [], values: [] };
+        try {
+            const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+            if (res.ok) d = await res.json();
+        } catch (_) {}
+
+        const values  = d.values.map(Number);
+        const labels  = d.labels || [];
+        const peakIdx = getPeakIndex(values);
+        const peakVal = values[peakIdx] || 0;
         document.getElementById('chartBigValue').textContent = fmtFull(peakVal);
+        document.getElementById('chartTitle') && (document.getElementById('chartTitle').textContent =
+            period === 'yearly' ? 'Yearly Revenue' : 'Monthly Revenue ' + (d.year || ''));
 
         const ctx = document.getElementById('revenueChart').getContext('2d');
-
         if (revenueChart) revenueChart.destroy();
 
         revenueChart = new Chart(ctx, {
             type: 'bar',
             plugins: [darkTooltipPlugin],
             data: {
-                labels: d.labels,
+                labels,
                 datasets: [{
                     label: 'Revenue',
-                    data: d.values,
-                    backgroundColor: buildColors(d.values, peakIdx),
-                    hoverBackgroundColor: buildHoverColors(d.values, peakIdx),
+                    data: values,
+                    backgroundColor: buildColors(values, peakIdx),
+                    hoverBackgroundColor: buildHoverColors(values, peakIdx),
                     borderRadius: 8,
                     borderSkipped: false,
                     barPercentage: 0.55,
@@ -1004,37 +1511,26 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        enabled: false,        // use custom plugin above
+                        enabled: false,
                         external: () => {},
-                        callbacks: {
-                            label: (ctx) => fmtFull(ctx.parsed.y)
-                        }
+                        callbacks: { label: (ctx) => fmtFull(ctx.parsed.y) }
                     }
                 },
                 onHover(event, elements) {
                     if (!elements.length) return;
-                    const val = d.values[elements[0].index];
-                    document.getElementById('chartBigValue').textContent = fmtFull(val);
+                    document.getElementById('chartBigValue').textContent = fmtFull(values[elements[0].index]);
                 },
                 scales: {
                     x: {
                         grid: { display: false },
                         border: { display: false },
-                        ticks: {
-                            font: { family: 'Poppins', size: 11 },
-                            color: '#9ca3af',
-                            padding: 6
-                        }
+                        ticks: { font: { family: 'Poppins', size: 11 }, color: '#9ca3af', padding: 6 }
                     },
-                    y: {
-                        display: false,
-                        grid: { display: false }
-                    }
+                    y: { display: false, grid: { display: false } }
                 }
             }
         });
 
-        // Restore big value on mouse leave
         document.getElementById('revenueChart').onmouseleave = () => {
             document.getElementById('chartBigValue').textContent = fmtFull(peakVal);
         };
@@ -1047,48 +1543,213 @@
         initChart(period);
     }
 
-    initChart('monthly');
-
-    // ── Categories Section ────────────────────────────────────────────────────
-    function showCategoriesSection(linkEl) {
-        document.getElementById('sectionCategories').style.display = '';
-        // Hide the main page-body (dashboard)
-        document.querySelector('.page-body:not(#sectionCategories)').style.display = 'none';
-        document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
-        if (linkEl) linkEl.classList.add('active');
-        loadCategories();
+    // ── Load dashboard stat cards ─────────────────────────────────────────────
+    async function loadStats() {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('/api/admin/stats', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) return;
+            const s = await res.json();
+            document.getElementById('statBookings').textContent =
+                Number(s.totalBookings).toLocaleString('en-NP');
+            document.getElementById('statUsers').textContent =
+                Number(s.totalUsers).toLocaleString('en-NP');
+            document.getElementById('statVehicles').textContent =
+                Number(s.totalVehicles).toLocaleString('en-NP');
+            document.getElementById('statSales').textContent =
+                'NRS ' + Number(s.totalRevenue).toLocaleString('en-NP');
+        } catch (_) {}
     }
 
-    async function loadCategories() {
-        const tbody = document.getElementById('categoriesTableBody');
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+    loadStats();
+    initChart('monthly');
+
+    // Auto-refresh stats and chart every 30 seconds
+    setInterval(() => {
+        loadStats();
+        initChart(currentPeriod);
+    }, 30000);
+
+    // ── Customers Section ─────────────────────────────────────────────────────
+    let allCustomers = [];
+
+    function showCustomersSection(linkEl) {
+        showSection('sectionCustomers', linkEl);
+        loadCustomers();
+    }
+
+    async function loadCustomers() {
+        const token = localStorage.getItem('token');
+        const tbody = document.getElementById('customersTableBody');
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
         try {
-            const res = await fetch('/api/categories');
-            if (!res.ok) throw new Error('Failed to load');
-            const cats = await res.json();
-            document.getElementById('catCount').textContent = cats.length + ' categories';
-            if (!cats.length) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:#9ca3af;">No categories yet.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = cats.map(c => `
-                <tr>
-                    <td style="color:#6b7280;font-size:0.78rem;">${c.vehicleCategoryId}</td>
-                    <td style="font-weight:600;">${c.vehicleCategoryName}</td>
-                    <td style="font-size:0.82rem;color:#6b7280;">${c.createdAt ? c.createdAt.slice(0,10) : '—'}</td>
-                    <td>
-                        <button onclick="deleteCategory(${c.vehicleCategoryId}, '${c.vehicleCategoryName.replace(/'/g,"\\'")}', this)"
-                            style="padding:5px 14px;font-size:0.73rem;font-weight:600;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;border:1px solid #fecaca;background:#fff5f5;color:#dc2626;transition:all 0.15s;"
-                            onmouseover="this.style.background='#dc2626';this.style.color='white'"
-                            onmouseout="this.style.background='#fff5f5';this.style.color='#dc2626'">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            const res = await fetch('/api/admin/customers', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Failed to load customers');
+            allCustomers = await res.json();
+            filterCustomers();
         } catch (e) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
         }
+    }
+
+    function filterCustomers() {
+        const q      = (document.getElementById('custSearch').value || '').toLowerCase();
+        const status = document.getElementById('custStatusFilter').value;
+        let list = allCustomers;
+        if (q) list = list.filter(c =>
+            (c.firstName + ' ' + c.lastName).toLowerCase().includes(q) ||
+            (c.email || '').toLowerCase().includes(q) ||
+            (c.phoneNumber || '').toLowerCase().includes(q)
+        );
+        if (status === 'active')   list = list.filter(c => c.active);
+        if (status === 'disabled') list = list.filter(c => !c.active);
+        document.getElementById('custCount').textContent = list.length + ' customer' + (list.length !== 1 ? 's' : '');
+        renderCustomers(list);
+    }
+
+    function renderCustomers(list) {
+        const tbody = document.getElementById('customersTableBody');
+        if (!list.length) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">No customers found.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = list.map(c => {
+            const name    = (c.firstName || '') + ' ' + (c.lastName || '');
+            const avatarBg = stringToColor(c.email || name);
+            const initial  = (c.firstName || '?').charAt(0).toUpperCase();
+            const statusBadge = c.active
+                ? '<span style="background:#dcfce7;color:#16a34a;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">Active</span>'
+                : '<span style="background:#fee2e2;color:#dc2626;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">Disabled</span>';
+            const toggleBtn = c.active
+                ? `<button onclick="toggleCustomer(${c.customerId}, false, this)" style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:none;border-radius:6px;background:#fee2e2;color:#dc2626;cursor:pointer;font-family:'Poppins',sans-serif;">Disable</button>`
+                : `<button onclick="toggleCustomer(${c.customerId}, true, this)" style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:none;border-radius:6px;background:#dcfce7;color:#16a34a;cursor:pointer;font-family:'Poppins',sans-serif;">Enable</button>`;
+            return `
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:9px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:${avatarBg};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">${initial}</div>
+                        <span style="font-weight:600;font-size:0.85rem;">${name}</span>
+                    </div>
+                </td>
+                <td style="font-size:0.82rem;color:#6b7280;">${c.email || '—'}</td>
+                <td style="font-size:0.82rem;">${c.phoneNumber || '—'}</td>
+                <td style="font-size:0.78rem;color:#6b7280;">${c.createdAt ? c.createdAt.slice(0,10) : '—'}</td>
+                <td style="font-weight:600;text-align:center;">${c.totalBookings}</td>
+                <td style="font-weight:600;color:var(--primary);">NRS ${Number(c.totalSpent || 0).toLocaleString('en-NP')}</td>
+                <td style="text-align:center;">
+                    ${c.activeBookings > 0
+                        ? `<span style="background:#fef9c3;color:#ca8a04;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">${c.activeBookings} active</span>`
+                        : '<span style="color:#9ca3af;font-size:0.78rem;">—</span>'}
+                </td>
+                <td>${statusBadge}</td>
+                <td>
+                    <div style="display:flex;gap:5px;">
+                        <button onclick="openCustDetailModal(${c.customerId})"
+                            style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:1px solid #c7d2fe;background:#eef0ff;color:#4a6cf7;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;">
+                            View
+                        </button>
+                        ${toggleBtn}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    async function toggleCustomer(id, enable, btn) {
+        const token    = localStorage.getItem('token');
+        const endpoint = enable ? 'enable' : 'disable';
+        btn.disabled   = true;
+        try {
+            const res = await fetch(`/api/admin/customers/${id}/${endpoint}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const text = await res.text();
+            if (!res.ok) { showToast(text, 'reject'); btn.disabled = false; return; }
+            showToast(enable ? '✔ Customer account enabled.' : '✔ Customer account disabled.', 'approve');
+            loadCustomers();
+        } catch (e) { showToast('Error: ' + e.message, 'reject'); btn.disabled = false; }
+    }
+
+    async function openCustDetailModal(id) {
+        const token = localStorage.getItem('token');
+        document.getElementById('custDetailOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('cdBookingsBody').innerHTML =
+            '<tr><td colspan="5" style="text-align:center;padding:20px;color:#9ca3af;">Loading...</td></tr>';
+        document.getElementById('cdActions').innerHTML = '';
+
+        try {
+            const res = await fetch(`/api/admin/customers/${id}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Failed to load customer');
+            const c = await res.json();
+
+            const name = (c.firstName || '') + ' ' + (c.lastName || '');
+            document.getElementById('cdAvatar').textContent    = (c.firstName || '?').charAt(0).toUpperCase();
+            document.getElementById('cdAvatar').style.background = stringToColor(c.email || name);
+            document.getElementById('cdName').textContent      = name;
+            document.getElementById('cdEmail').textContent     = c.email || '—';
+            document.getElementById('cdPhone').textContent     = c.phoneNumber || '—';
+            document.getElementById('cdDob').textContent       = c.dob ? c.dob.slice(0,10) : '—';
+            document.getElementById('cdLicense').textContent   = c.licenseNo || '—';
+            document.getElementById('cdAddress').textContent   = c.address || '—';
+            document.getElementById('cdJoined').textContent    = c.createdAt ? c.createdAt.slice(0,10) : '—';
+            document.getElementById('cdTotalBookings').textContent = c.totalBookings || 0;
+            document.getElementById('cdTotalSpent').textContent    = 'NRS ' + Number(c.totalSpent || 0).toLocaleString('en-NP');
+            document.getElementById('cdActiveBookings').textContent = c.activeBookings || 0;
+            document.getElementById('cdStatusBadge').innerHTML = c.active
+                ? '<span style="background:#dcfce7;color:#16a34a;font-size:0.75rem;font-weight:600;padding:3px 10px;border-radius:20px;">Active</span>'
+                : '<span style="background:#fee2e2;color:#dc2626;font-size:0.75rem;font-weight:600;padding:3px 10px;border-radius:20px;">Disabled</span>';
+
+            // Booking history
+            const bookings = c.bookings || [];
+            const statusColor = { CONFIRMED:'#dcfce7;color:#16a34a', PENDING:'#fef9c3;color:#ca8a04', CANCELLED:'#fee2e2;color:#dc2626' };
+            if (!bookings.length) {
+                document.getElementById('cdBookingsBody').innerHTML =
+                    '<tr><td colspan="5" style="text-align:center;padding:20px;color:#9ca3af;">No bookings yet.</td></tr>';
+            } else {
+                document.getElementById('cdBookingsBody').innerHTML = bookings.map(b => `
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:8px 12px;color:#6b7280;">#${b.bookingId}</td>
+                        <td style="padding:8px 12px;font-weight:600;">${b.vehicleName}</td>
+                        <td style="padding:8px 12px;font-size:0.78rem;color:#6b7280;">${b.startDate || '—'} → ${b.endDate || '—'}</td>
+                        <td style="padding:8px 12px;font-weight:600;color:var(--primary);">NRS ${Number(b.totalPrice || 0).toLocaleString('en-NP')}</td>
+                        <td style="padding:8px 12px;">
+                            <span style="background:${statusColor[b.status] || '#f1f5f9;color:#64748b'};font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:20px;">${b.status}</span>
+                        </td>
+                    </tr>`).join('');
+            }
+
+            // Action buttons
+            document.getElementById('cdActions').innerHTML = c.active
+                ? `<button class="vbtn-reject" onclick="toggleCustomer(${c.customerId}, false, this); document.getElementById('custDetailOverlay').classList.remove('open'); document.body.style.overflow=''">Disable Account</button>`
+                : `<button class="vbtn-approve" onclick="toggleCustomer(${c.customerId}, true, this); document.getElementById('custDetailOverlay').classList.remove('open'); document.body.style.overflow=''">Enable Account</button>`;
+
+        } catch (e) {
+            document.getElementById('cdBookingsBody').innerHTML =
+                `<tr><td colspan="5" style="text-align:center;padding:20px;color:#ef4444;">${e.message}</td></tr>`;
+        }
+    }
+
+    function closeCustDetailModal(e) {
+        if (e.target === document.getElementById('custDetailOverlay')) {
+            document.getElementById('custDetailOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Generate a consistent color from a string (for avatars)
+    function stringToColor(str) {
+        const colors = ['#4a6cf7','#7c3aed','#16a34a','#dc2626','#f5a623','#0891b2','#db2777','#65a30d'];
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        return colors[Math.abs(hash) % colors.length];
     }
 
     async function addCategory() {
@@ -1138,6 +1799,811 @@
         el.style.display = '';
         el.style.color = isError ? '#dc2626' : '#16a34a';
         setTimeout(() => { el.style.display = 'none'; }, 3500);
+    }
+
+    // ── Edit Category ─────────────────────────────────────────────────────────
+    function openEditCatModal(id, name) {
+        document.getElementById('ecId').value = id;
+        document.getElementById('ecName').value = name;
+        document.getElementById('ecError').style.display = 'none';
+        document.getElementById('editCatOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditCatModal(e) {
+        if (e.target === document.getElementById('editCatOverlay')) {
+            document.getElementById('editCatOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    async function saveEditCategory() {
+        const id   = document.getElementById('ecId').value;
+        const name = document.getElementById('ecName').value.trim();
+        const errEl = document.getElementById('ecError');
+        if (!name) { errEl.textContent = 'Name is required.'; errEl.style.display = ''; return; }
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch(`/api/admin/categories/${id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ vehicleCategoryName: name })
+            });
+            const text = await res.text();
+            if (!res.ok) { errEl.textContent = text; errEl.style.display = ''; return; }
+            document.getElementById('editCatOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+            showToast('Category renamed to "' + name + '"', 'approve');
+            loadCategories();
+        } catch (e) {
+            errEl.textContent = 'Error: ' + e.message; errEl.style.display = '';
+        }
+    }
+
+    // ── Section: Brands ───────────────────────────────────────────────────────
+    function showSection(sectionId, linkEl) {
+        document.querySelectorAll('.page-body').forEach(s => s.style.display = 'none');
+        document.getElementById(sectionId).style.display = '';
+        document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+        if (linkEl) linkEl.classList.add('active');
+    }
+
+    function showBrandsSection(linkEl) {
+        showSection('sectionBrands', linkEl);
+        loadBrandsTable();
+    }
+
+    function showVehiclesSection(linkEl) {
+        showSection('sectionVehicles', linkEl);
+        loadVehicleFilters();
+        loadAllVehicles();
+    }
+
+    // override showCategoriesSection to use shared helper
+    function showCategoriesSection(linkEl) {
+        showSection('sectionCategories', linkEl);
+        loadCategories();
+    }
+
+    async function loadBrandsTable() {
+        const tbody = document.getElementById('brandsTableBody');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+        try {
+            const res = await fetch('/api/brands');
+            if (!res.ok) throw new Error('Failed to load');
+            const brands = await res.json();
+            document.getElementById('brandCount').textContent = brands.length + ' brands';
+            if (!brands.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:#9ca3af;">No brands yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = brands.map(b => `
+                <tr>
+                    <td style="color:#6b7280;font-size:0.78rem;">${b.brandId}</td>
+                    <td style="font-weight:600;">${b.brandName}</td>
+                    <td><span style="background:#eef0ff;color:#4a6cf7;font-size:0.75rem;font-weight:600;padding:2px 9px;border-radius:20px;">${b.vehicleCount} vehicle${b.vehicleCount !== 1 ? 's' : ''}</span></td>
+                    <td>
+                        <div style="display:flex;gap:6px;">
+                            <button onclick="openEditBrandModal(${b.brandId}, '${b.brandName.replace(/'/g, "\\'")}')"
+                                style="padding:5px 12px;font-size:0.73rem;font-weight:600;border:1px solid #c7d2fe;background:#eef0ff;color:#4a6cf7;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;">
+                                Edit
+                            </button>
+                            <button onclick="deleteBrand(${b.brandId}, '${b.brandName.replace(/'/g, "\\'")}', this)"
+                                style="padding:5px 12px;font-size:0.73rem;font-weight:600;border:1px solid #fecaca;background:#fff5f5;color:#dc2626;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;"
+                                onmouseover="this.style.background='#dc2626';this.style.color='white'" onmouseout="this.style.background='#fff5f5';this.style.color='#dc2626'">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+        }
+    }
+
+    async function addBrand() {
+        const input = document.getElementById('newBrandName');
+        const name  = input.value.trim();
+        if (!name) { showBrandMsg('Brand name is required.', true); return; }
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('/api/admin/brands', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brandName: name })
+            });
+            const text = await res.text();
+            if (!res.ok) { showBrandMsg(text, true); return; }
+            input.value = '';
+            showBrandMsg('Brand added!', false);
+            loadBrandsTable();
+        } catch (e) { showBrandMsg('Error: ' + e.message, true); }
+    }
+
+    async function deleteBrand(id, name, btn) {
+        if (!confirm(`Delete brand "${name}"? This cannot be undone.`)) return;
+        const token = localStorage.getItem('token');
+        try {
+            btn.disabled = true;
+            const res = await fetch(`/api/admin/brands/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const text = await res.text();
+            if (!res.ok) { alert(text); btn.disabled = false; return; }
+            loadBrandsTable();
+        } catch (e) { alert('Error: ' + e.message); btn.disabled = false; }
+    }
+
+    function showBrandMsg(msg, isError) {
+        const el = document.getElementById('brandAddMsg');
+        el.textContent = msg; el.style.display = '';
+        el.style.color = isError ? '#dc2626' : '#16a34a';
+        setTimeout(() => { el.style.display = 'none'; }, 3500);
+    }
+
+    function openEditBrandModal(id, name) {
+        document.getElementById('ebId').value = id;
+        document.getElementById('ebName').value = name;
+        document.getElementById('ebError').style.display = 'none';
+        document.getElementById('editBrandOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditBrandModal(e) {
+        if (e.target === document.getElementById('editBrandOverlay')) {
+            document.getElementById('editBrandOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    async function saveEditBrand() {
+        const id   = document.getElementById('ebId').value;
+        const name = document.getElementById('ebName').value.trim();
+        const errEl = document.getElementById('ebError');
+        if (!name) { errEl.textContent = 'Name is required.'; errEl.style.display = ''; return; }
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch(`/api/admin/brands/${id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brandName: name })
+            });
+            const text = await res.text();
+            if (!res.ok) { errEl.textContent = text; errEl.style.display = ''; return; }
+            document.getElementById('editBrandOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+            showToast('Brand renamed to "' + name + '"', 'approve');
+            loadBrandsTable();
+        } catch (e) { errEl.textContent = 'Error: ' + e.message; errEl.style.display = ''; }
+    }
+
+    // ── Section: All Vehicles ─────────────────────────────────────────────────
+    async function loadVehicleFilters() {
+        const token = localStorage.getItem('token');
+        try {
+            const [bRes, cRes] = await Promise.all([
+                fetch('/api/brands'),
+                fetch('/api/categories')
+            ]);
+            const brands = bRes.ok ? await bRes.json() : [];
+            const cats   = cRes.ok ? await cRes.json() : [];
+
+            const bSel = document.getElementById('vfBrand');
+            const cSel = document.getElementById('vfCategory');
+            brands.forEach(b => {
+                const o = document.createElement('option');
+                o.value = b.brandId; o.textContent = b.brandName;
+                bSel.appendChild(o);
+            });
+            cats.forEach(c => {
+                const o = document.createElement('option');
+                o.value = c.vehicleCategoryId; o.textContent = c.vehicleCategoryName;
+                cSel.appendChild(o);
+            });
+        } catch (_) {}
+    }
+
+    async function loadAllVehicles() {
+        const token      = localStorage.getItem('token');
+        const brandId    = document.getElementById('vfBrand').value;
+        const categoryId = document.getElementById('vfCategory').value;
+        const approval   = document.getElementById('vfApproval').value;
+        const active     = document.getElementById('vfActive').value;
+
+        const params = new URLSearchParams();
+        if (brandId)    params.set('brandId',       brandId);
+        if (categoryId) params.set('categoryId',    categoryId);
+        if (approval)   params.set('approvalStatus', approval);
+        if (active)     params.set('active',         active);
+
+        const tbody = document.getElementById('allVehiclesBody');
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+        try {
+            const res = await fetch('/api/admin/vehicles/all?' + params, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Failed to load vehicles');
+            const vehicles = await res.json();
+            document.getElementById('vfCount').textContent = vehicles.length + ' vehicle' + (vehicles.length !== 1 ? 's' : '');
+
+            if (!vehicles.length) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">No vehicles found.</td></tr>';
+                return;
+            }
+
+            const approvalColor = { APPROVED: '#dcfce7;color:#16a34a', PENDING: '#fef9c3;color:#ca8a04', REJECTED: '#fee2e2;color:#dc2626' };
+
+            tbody.innerHTML = vehicles.map(v => {
+                const aColor = approvalColor[v.approvalStatus] || '#f1f5f9;color:#64748b';
+                const activeLabel = v.active
+                    ? '<span style="background:#dcfce7;color:#16a34a;font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:20px;">Active</span>'
+                    : '<span style="background:#fee2e2;color:#dc2626;font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:20px;">Inactive</span>';
+                const toggleBtn = v.active
+                    ? `<button onclick="adminToggleVehicle(${v.vehicleId}, false, this)" style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:none;border-radius:6px;background:#fee2e2;color:#dc2626;cursor:pointer;font-family:'Poppins',sans-serif;">Deactivate</button>`
+                    : `<button onclick="adminToggleVehicle(${v.vehicleId}, true, this)" style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:none;border-radius:6px;background:#dcfce7;color:#16a34a;cursor:pointer;font-family:'Poppins',sans-serif;">Reactivate</button>`;
+                return `
+                <tr>
+                    <td>${v.imageUrl
+                        ? `<img src="${v.imageUrl}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;"/>`
+                        : `<div style="width:52px;height:40px;background:#f1f5f9;border-radius:6px;border:1px solid #e5e9f0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🚗</div>`
+                    }</td>
+                    <td style="font-weight:600;">${v.vehicleName}</td>
+                    <td style="font-size:0.82rem;color:#6b7280;">${v.vendorName || '—'}</td>
+                    <td>${v.brandName || '—'}</td>
+                    <td>${v.categoryName || '—'}</td>
+                    <td style="font-weight:600;color:var(--primary);">NPR ${Number(v.rentalPrice).toLocaleString('en-NP')}</td>
+                    <td><span style="background:${aColor};font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">${v.approvalStatus}</span></td>
+                    <td>${activeLabel}</td>
+                    <td>
+                        <div style="display:flex;gap:5px;">
+                            <button onclick="openEditVehicleModal(${JSON.stringify(v).replace(/"/g,'&quot;')})"
+                                style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:1px solid #c7d2fe;background:#eef0ff;color:#4a6cf7;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;">
+                                Edit
+                            </button>
+                            ${toggleBtn}
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+        }
+    }
+
+    function clearVehicleFilters() {
+        document.getElementById('vfBrand').value    = '';
+        document.getElementById('vfCategory').value = '';
+        document.getElementById('vfApproval').value = '';
+        document.getElementById('vfActive').value   = '';
+        loadAllVehicles();
+    }
+
+    async function adminToggleVehicle(id, activate, btn) {
+        const token    = localStorage.getItem('token');
+        const endpoint = activate ? 'reactivate' : 'deactivate';
+        btn.disabled = true;
+        try {
+            const res = await fetch(`/api/admin/vehicles/${id}/${endpoint}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const text = await res.text();
+            if (!res.ok) { showToast(text, 'reject'); btn.disabled = false; return; }
+            showToast(activate ? '✔ Vehicle reactivated.' : '✔ Vehicle deactivated.', 'approve');
+            loadAllVehicles();
+        } catch (e) { showToast('Error: ' + e.message, 'reject'); btn.disabled = false; }
+    }
+
+    // ── Edit Vehicle Modal ────────────────────────────────────────────────────
+    async function openEditVehicleModal(v) {
+        document.getElementById('evId').value    = v.vehicleId;
+        document.getElementById('evName').value  = v.vehicleName || '';
+        document.getElementById('evPrice').value = v.rentalPrice || '';
+        document.getElementById('evSeats').value = v.seatsCapacity || '';
+        document.getElementById('evDesc').value  = v.description || '';
+        document.getElementById('evError').style.display = 'none';
+
+        // Populate brand dropdown
+        const bSel = document.getElementById('evBrand');
+        bSel.innerHTML = '';
+        try {
+            const res = await fetch('/api/brands');
+            const brands = res.ok ? await res.json() : [];
+            brands.forEach(b => {
+                const o = document.createElement('option');
+                o.value = b.brandId; o.textContent = b.brandName;
+                if (b.brandId === v.brandId) o.selected = true;
+                bSel.appendChild(o);
+            });
+        } catch (_) {}
+
+        // Populate category dropdown
+        const cSel = document.getElementById('evCategory');
+        cSel.innerHTML = '';
+        try {
+            const res = await fetch('/api/categories');
+            const cats = res.ok ? await res.json() : [];
+            cats.forEach(c => {
+                const o = document.createElement('option');
+                o.value = c.vehicleCategoryId; o.textContent = c.vehicleCategoryName;
+                if (c.vehicleCategoryId === v.categoryId) o.selected = true;
+                cSel.appendChild(o);
+            });
+        } catch (_) {}
+
+        document.getElementById('editVehicleOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditVehicleModal(e) {
+        if (e.target === document.getElementById('editVehicleOverlay')) {
+            document.getElementById('editVehicleOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    async function saveEditVehicle() {
+        const id    = document.getElementById('evId').value;
+        const name  = document.getElementById('evName').value.trim();
+        const price = document.getElementById('evPrice').value;
+        const seats = document.getElementById('evSeats').value;
+        const desc  = document.getElementById('evDesc').value.trim();
+        const brand = document.getElementById('evBrand').value;
+        const cat   = document.getElementById('evCategory').value;
+        const errEl = document.getElementById('evError');
+
+        if (!name || !price) { errEl.textContent = 'Name and price are required.'; errEl.style.display = ''; return; }
+
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch(`/api/admin/vehicles/${id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    vehicleName: name,
+                    rentalPrice: price,
+                    seatsCapacity: seats ? Number(seats) : null,
+                    description: desc,
+                    brandId: brand ? Number(brand) : null,
+                    vehicleCategoryId: cat ? Number(cat) : null
+                })
+            });
+            const text = await res.text();
+            if (!res.ok) { errEl.textContent = text; errEl.style.display = ''; return; }
+            document.getElementById('editVehicleOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+            showToast('✔ Vehicle updated successfully.', 'approve');
+            loadAllVehicles();
+        } catch (e) { errEl.textContent = 'Error: ' + e.message; errEl.style.display = ''; }
+    }
+
+    // ── Section: Bookings ────────────────────────────────────────────────────
+    let allAdminBookings   = [];   // full list from API
+    let filteredAdminBookings = []; // after client-side customer search
+
+    function showBookingsSection(linkEl) {
+        showSection('sectionBookings', linkEl);
+        loadBookingVendorFilter();
+        loadAdminBookings();
+    }
+
+    async function loadBookingVendorFilter() {
+        const sel = document.getElementById('bfVendor');
+        if (sel.options.length > 1) return; // already populated
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/admin/vendors/all', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) return;
+            const vendors = await res.json();
+            vendors.forEach(v => {
+                const o = document.createElement('option');
+                o.value = v.vendorId;
+                o.textContent = v.vendorName + (v.companyName ? ' (' + v.companyName + ')' : '');
+                sel.appendChild(o);
+            });
+        } catch (_) {}
+    }
+
+    async function loadAdminBookings() {
+        const token    = localStorage.getItem('token');
+        const vendorId = document.getElementById('bfVendor').value;
+        const status   = document.getElementById('bfStatus').value;
+        const dateFrom = document.getElementById('bfDateFrom').value;
+        const dateTo   = document.getElementById('bfDateTo').value;
+
+        const params = new URLSearchParams();
+        if (vendorId) params.set('vendorId', vendorId);
+        if (status)   params.set('status',   status);
+        if (dateFrom) params.set('dateFrom', dateFrom);
+        if (dateTo)   params.set('dateTo',   dateTo);
+
+        const tbody = document.getElementById('adminBookingsBody');
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+        try {
+            const res = await fetch('/api/admin/bookings?' + params, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Failed to load bookings');
+            allAdminBookings = await res.json();
+            filterBookingsClient();
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+        }
+    }
+
+    function filterBookingsClient() {
+        const q = (document.getElementById('bfCustomer').value || '').toLowerCase();
+        filteredAdminBookings = q
+            ? allAdminBookings.filter(b =>
+                (b.customerName || '').toLowerCase().includes(q) ||
+                (b.customerEmail || '').toLowerCase().includes(q))
+            : allAdminBookings;
+        document.getElementById('bfCount').textContent =
+            filteredAdminBookings.length + ' booking' + (filteredAdminBookings.length !== 1 ? 's' : '');
+        renderAdminBookings(filteredAdminBookings);
+    }
+
+    function renderAdminBookings(list) {
+        const tbody = document.getElementById('adminBookingsBody');
+        if (!list.length) {
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:#9ca3af;">No bookings found.</td></tr>';
+            return;
+        }
+        const statusStyle = {
+            CONFIRMED: 'background:#dcfce7;color:#16a34a',
+            PENDING:   'background:#fef9c3;color:#ca8a04',
+            CANCELLED: 'background:#fee2e2;color:#dc2626'
+        };
+        tbody.innerHTML = list.map(b => {
+            const sStyle = statusStyle[b.status] || 'background:#f1f5f9;color:#64748b';
+            const days   = daysBetween(b.startDate, b.endDate);
+            const actionBtns = [];
+            if (b.status === 'PENDING') {
+                actionBtns.push(`<button onclick="adminBookingAction(${b.bookingId},'confirm')" style="padding:5px 9px;font-size:0.7rem;font-weight:600;border:none;border-radius:6px;background:#dcfce7;color:#16a34a;cursor:pointer;font-family:'Poppins',sans-serif;">Confirm</button>`);
+            }
+            if (b.status !== 'CANCELLED') {
+                actionBtns.push(`<button onclick="adminBookingAction(${b.bookingId},'cancel')" style="padding:5px 9px;font-size:0.7rem;font-weight:600;border:none;border-radius:6px;background:#fee2e2;color:#dc2626;cursor:pointer;font-family:'Poppins',sans-serif;">Cancel</button>`);
+            }
+            return `
+            <tr>
+                <td style="font-size:0.78rem;color:#9ca3af;font-family:monospace;">#${b.bookingId}</td>
+                <td>
+                    <div style="font-weight:600;font-size:0.85rem;">${b.customerName || '—'}</div>
+                    <div style="font-size:0.73rem;color:#9ca3af;">${b.customerEmail || ''}</div>
+                </td>
+                <td>
+                    <div style="font-weight:600;font-size:0.85rem;">${b.vehicleName || '—'}</div>
+                    <div style="font-size:0.73rem;color:#9ca3af;font-family:monospace;">${b.vehicleNo || ''}</div>
+                </td>
+                <td style="font-size:0.82rem;color:#6b7280;">${b.vendorName || '—'}</td>
+                <td style="font-size:0.82rem;">${b.startDate || '—'}</td>
+                <td style="font-size:0.82rem;">${b.endDate || '—'}</td>
+                <td style="text-align:center;font-size:0.82rem;">${days} day${days !== 1 ? 's' : ''}</td>
+                <td style="font-weight:700;color:var(--primary);">NRS ${Number(b.totalPrice || 0).toLocaleString('en-NP')}</td>
+                <td><span style="font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;${sStyle}">${b.status}</span></td>
+                <td style="font-size:0.75rem;color:#9ca3af;">${b.createdAt ? b.createdAt.slice(0,10) : '—'}</td>
+                <td>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                        <button onclick="openBookingDetailModal(${b.bookingId})"
+                            style="padding:5px 9px;font-size:0.7rem;font-weight:600;border:1px solid #c7d2fe;background:#eef0ff;color:#4a6cf7;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;">
+                            View
+                        </button>
+                        ${actionBtns.join('')}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function daysBetween(start, end) {
+        if (!start || !end) return 0;
+        const d = (new Date(end) - new Date(start)) / 86400000;
+        return Math.max(1, Math.round(d) + 1);
+    }
+
+    function clearBookingFilters() {
+        document.getElementById('bfVendor').value   = '';
+        document.getElementById('bfStatus').value   = '';
+        document.getElementById('bfDateFrom').value = '';
+        document.getElementById('bfDateTo').value   = '';
+        document.getElementById('bfCustomer').value = '';
+        loadAdminBookings();
+    }
+
+    async function adminBookingAction(id, action) {
+        const token = localStorage.getItem('token');
+        const label = action === 'cancel' ? 'cancel' : 'confirm';
+        if (!confirm(`Are you sure you want to ${label} booking #${id}?`)) return;
+        try {
+            const res = await fetch(`/api/admin/bookings/${id}/${action}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const text = await res.text();
+            if (!res.ok) { showToast(text, 'reject'); return; }
+            showToast(action === 'cancel' ? `✔ Booking #${id} cancelled.` : `✔ Booking #${id} confirmed.`, 'approve');
+            loadAdminBookings();
+            document.getElementById('bookingDetailOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        } catch (e) { showToast('Error: ' + e.message, 'reject'); }
+    }
+
+    async function openBookingDetailModal(id) {
+        const token = localStorage.getItem('token');
+        document.getElementById('bookingDetailOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('bdActions').innerHTML = '';
+        document.getElementById('bdId').textContent = '#' + id;
+        document.getElementById('bdStatusBadge').innerHTML = '';
+
+        try {
+            const res = await fetch(`/api/admin/bookings/${id}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Failed to load booking');
+            const b = await res.json();
+
+            const statusStyle = { CONFIRMED:'#dcfce7;color:#16a34a', PENDING:'#fef9c3;color:#ca8a04', CANCELLED:'#fee2e2;color:#dc2626' };
+            const sStyle = statusStyle[b.status] || '#f1f5f9;color:#64748b';
+            const days   = daysBetween(b.startDate, b.endDate);
+
+            document.getElementById('bdStatusBadge').innerHTML =
+                `<span style="font-size:0.82rem;font-weight:700;padding:5px 14px;border-radius:20px;background:${sStyle}">${b.status}</span>`;
+
+            // Customer
+            document.getElementById('bdCustName').textContent    = b.customerName || '—';
+            document.getElementById('bdCustEmail').textContent   = b.customerEmail || '—';
+            document.getElementById('bdCustPhone').textContent   = b.customerPhone || '—';
+            document.getElementById('bdCustLicense').textContent = b.customerLicense || '—';
+
+            // Vehicle
+            document.getElementById('bdVehName').textContent = b.vehicleName || '—';
+            document.getElementById('bdVehBrand').textContent = b.brandName || '—';
+            document.getElementById('bdVehCat').textContent   = b.categoryName || '—';
+            document.getElementById('bdVehNo').textContent    = b.vehicleNo || '—';
+
+            // Vendor
+            document.getElementById('bdVendorName').textContent    = b.vendorName    || '—';
+            document.getElementById('bdVendorCompany').textContent = b.companyName   || '—';
+            document.getElementById('bdVendorEmail').textContent   = b.vendorEmail   || '—';
+            document.getElementById('bdVendorPhone').textContent   = b.vendorPhone   || '—';
+
+            // Booking info
+            document.getElementById('bdStart').textContent    = b.startDate || '—';
+            document.getElementById('bdEnd').textContent      = b.endDate   || '—';
+            document.getElementById('bdDuration').textContent = days + ' day' + (days !== 1 ? 's' : '');
+            document.getElementById('bdRateType').textContent = b.durationType ? b.durationType.replace('_', ' ') : '—';
+            document.getElementById('bdAmount').textContent   = 'NRS ' + Number(b.totalPrice || 0).toLocaleString('en-NP');
+            document.getElementById('bdCreated').textContent  = b.createdAt ? b.createdAt.slice(0,10) : '—';
+
+            // Actions
+            const btns = [];
+            if (b.status === 'PENDING') {
+                btns.push(`<button class="vbtn-approve" onclick="adminBookingAction(${b.bookingId},'confirm')">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    Confirm Booking
+                </button>`);
+            }
+            if (b.status !== 'CANCELLED') {
+                btns.push(`<button class="vbtn-reject" onclick="adminBookingAction(${b.bookingId},'cancel')">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Cancel Booking
+                </button>`);
+            }
+            document.getElementById('bdActions').innerHTML = btns.join('');
+
+        } catch (e) {
+            document.getElementById('bdStatusBadge').innerHTML =
+                `<span style="color:#ef4444;font-size:0.82rem;">${e.message}</span>`;
+        }
+    }
+
+    function closeBookingDetailModal(e) {
+        if (e.target === document.getElementById('bookingDetailOverlay')) {
+            document.getElementById('bookingDetailOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // ── Section: Vendors ─────────────────────────────────────────────────────
+    let allVendors = [];
+
+    function showVendorsSection(linkEl) {
+        showSection('sectionVendors', linkEl);
+        loadVendors();
+    }
+
+    async function loadVendors() {
+        const token = localStorage.getItem('token');
+        const tbody = document.getElementById('vendorsTableBody');
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+        try {
+            const res = await fetch('/api/admin/vendors/all', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Failed to load vendors');
+            allVendors = await res.json();
+            filterVendors();
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+        }
+    }
+
+    function filterVendors() {
+        const q      = (document.getElementById('vendorSearch').value || '').toLowerCase();
+        const status = document.getElementById('vendorStatusFilter').value;
+        const active = document.getElementById('vendorActiveFilter').value;
+        let list = allVendors;
+        if (q) list = list.filter(v =>
+            (v.vendorName || '').toLowerCase().includes(q) ||
+            (v.companyName || '').toLowerCase().includes(q) ||
+            (v.email || '').toLowerCase().includes(q) ||
+            (v.phoneNumber || '').toLowerCase().includes(q)
+        );
+        if (status)           list = list.filter(v => v.status === status);
+        if (active === 'active')   list = list.filter(v => v.active);
+        if (active === 'inactive') list = list.filter(v => !v.active);
+        document.getElementById('vendorCount').textContent = list.length + ' vendor' + (list.length !== 1 ? 's' : '');
+        renderVendors(list);
+    }
+
+    function renderVendors(list) {
+        const tbody = document.getElementById('vendorsTableBody');
+        if (!list.length) {
+            tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:30px;color:#9ca3af;">No vendors found.</td></tr>';
+            return;
+        }
+        const statusColor = { APPROVED: '#dcfce7;color:#16a34a', PENDING: '#fef9c3;color:#ca8a04', REJECTED: '#fee2e2;color:#dc2626' };
+        tbody.innerHTML = list.map(v => {
+            const avatarBg = stringToColor(v.email || v.vendorName);
+            const initial  = (v.vendorName || '?').charAt(0).toUpperCase();
+            const approvalBadge = `<span style="background:${statusColor[v.status] || '#f1f5f9;color:#64748b'};font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">${v.status}</span>`;
+            const activeBadge = v.active
+                ? '<span style="background:#dcfce7;color:#16a34a;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">Active</span>'
+                : '<span style="background:#fee2e2;color:#dc2626;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">Inactive</span>';
+            const toggleBtn = v.active
+                ? `<button onclick="toggleVendor(${v.vendorId}, false, this)" style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:none;border-radius:6px;background:#fee2e2;color:#dc2626;cursor:pointer;font-family:'Poppins',sans-serif;">Deactivate</button>`
+                : `<button onclick="toggleVendor(${v.vendorId}, true, this)" style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:none;border-radius:6px;background:#dcfce7;color:#16a34a;cursor:pointer;font-family:'Poppins',sans-serif;">Activate</button>`;
+            return `
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:9px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:${avatarBg};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">${initial}</div>
+                        <div>
+                            <div style="font-weight:600;font-size:0.85rem;">${v.vendorName || '—'}</div>
+                            <div style="font-size:0.75rem;color:#9ca3af;">${v.phoneNumber || ''}</div>
+                        </div>
+                    </div>
+                </td>
+                <td style="font-size:0.82rem;color:#6b7280;">${v.companyName || '—'}</td>
+                <td style="font-size:0.82rem;color:#6b7280;">${v.email || '—'}</td>
+                <td>${v.brandName || '—'}</td>
+                <td style="text-align:center;">
+                    <span style="background:#eef0ff;color:#4a6cf7;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">${v.vehicleCount} vehicle${v.vehicleCount !== 1 ? 's' : ''}</span>
+                </td>
+                <td style="font-weight:600;text-align:center;">${v.totalBookings}</td>
+                <td style="font-weight:600;color:var(--primary);">NRS ${Number(v.totalRevenue || 0).toLocaleString('en-NP')}</td>
+                <td style="text-align:center;">
+                    ${v.activeBookings > 0
+                        ? `<span style="background:#fef9c3;color:#ca8a04;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:20px;">${v.activeBookings} active</span>`
+                        : '<span style="color:#9ca3af;font-size:0.78rem;">—</span>'}
+                </td>
+                <td style="font-size:0.78rem;color:#6b7280;">${v.createdAt ? v.createdAt.slice(0,10) : '—'}</td>
+                <td>${approvalBadge}</td>
+                <td>${activeBadge}</td>
+                <td>
+                    <div style="display:flex;gap:5px;">
+                        <button onclick="openVendorMgmtModal(${v.vendorId})"
+                            style="padding:5px 10px;font-size:0.72rem;font-weight:600;border:1px solid #c7d2fe;background:#eef0ff;color:#4a6cf7;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;">
+                            View
+                        </button>
+                        ${toggleBtn}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    async function toggleVendor(id, activate, btn) {
+        const token    = localStorage.getItem('token');
+        const endpoint = activate ? 'activate' : 'deactivate';
+        btn.disabled   = true;
+        try {
+            const res = await fetch(`/api/admin/vendors/${id}/${endpoint}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const text = await res.text();
+            if (!res.ok) { showToast(text, 'reject'); btn.disabled = false; return; }
+            showToast(activate ? '✔ Vendor account activated.' : '✔ Vendor account deactivated.', 'approve');
+            loadVendors();
+        } catch (e) { showToast('Error: ' + e.message, 'reject'); btn.disabled = false; }
+    }
+
+    function openVendorMgmtModal(id) {
+        const v = allVendors.find(x => x.vendorId === id);
+        if (!v) return;
+
+        const avatarBg = stringToColor(v.email || v.vendorName);
+        document.getElementById('vdAvatar').textContent        = (v.vendorName || '?').charAt(0).toUpperCase();
+        document.getElementById('vdAvatar').style.background   = avatarBg;
+        document.getElementById('vdName').textContent          = v.vendorName || '—';
+        document.getElementById('vdCompanyLabel').textContent  = v.companyName || '';
+        document.getElementById('vdEmail').textContent         = v.email || '—';
+        document.getElementById('vdPhone').textContent         = v.phoneNumber || '—';
+        document.getElementById('vdRegNo').textContent         = v.registrationNo || '—';
+        document.getElementById('vdBrand').textContent         = v.brandName || '—';
+        document.getElementById('vdDate').textContent          = v.createdAt ? v.createdAt.slice(0,10) : '—';
+
+        // Performance stats
+        document.getElementById('vdStatVehicles').textContent = v.vehicleCount;
+        document.getElementById('vdStatBookings').textContent = v.totalBookings;
+        document.getElementById('vdStatRevenue').textContent  = 'NRS ' + Number(v.totalRevenue || 0).toLocaleString('en-NP');
+        document.getElementById('vdStatActive').textContent   = v.activeBookings;
+
+        const statusColor = { APPROVED: '#dcfce7;color:#16a34a', PENDING: '#fef9c3;color:#ca8a04', REJECTED: '#fee2e2;color:#dc2626' };
+        document.getElementById('vdApprovalBadge').innerHTML =
+            `<span style="background:${statusColor[v.status] || '#f1f5f9;color:#64748b'};font-size:0.75rem;font-weight:600;padding:3px 10px;border-radius:20px;">${v.status}</span>`;
+        document.getElementById('vdActiveBadge').innerHTML = v.active
+            ? '<span style="background:#dcfce7;color:#16a34a;font-size:0.75rem;font-weight:600;padding:3px 10px;border-radius:20px;">Account Active</span>'
+            : '<span style="background:#fee2e2;color:#dc2626;font-size:0.75rem;font-weight:600;padding:3px 10px;border-radius:20px;">Account Inactive</span>';
+
+        document.getElementById('vdActions').innerHTML = v.active
+            ? `<button class="vbtn-reject" onclick="toggleVendor(${v.vendorId}, false, this); document.getElementById('vendorMgmtOverlay').classList.remove('open'); document.body.style.overflow=''">Deactivate Account</button>`
+            : `<button class="vbtn-approve" onclick="toggleVendor(${v.vendorId}, true, this); document.getElementById('vendorMgmtOverlay').classList.remove('open'); document.body.style.overflow=''">Activate Account</button>`;
+
+        document.getElementById('vendorMgmtOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVendorMgmtModal(e) {
+        if (e.target === document.getElementById('vendorMgmtOverlay')) {
+            document.getElementById('vendorMgmtOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // ── Updated Categories table rows to include Edit button ─────────────────
+    // (override loadCategories to add Edit column)
+    async function loadCategories() {
+        const tbody = document.getElementById('categoriesTableBody');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+        try {
+            const res = await fetch('/api/categories');
+            if (!res.ok) throw new Error('Failed to load');
+            const cats = await res.json();
+            document.getElementById('catCount').textContent = cats.length + ' categories';
+            if (!cats.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:#9ca3af;">No categories yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = cats.map(c => `
+                <tr>
+                    <td style="color:#6b7280;font-size:0.78rem;">${c.vehicleCategoryId}</td>
+                    <td style="font-weight:600;">${c.vehicleCategoryName}</td>
+                    <td style="font-size:0.82rem;color:#6b7280;">${c.createdAt ? c.createdAt.slice(0,10) : '—'}</td>
+                    <td>
+                        <div style="display:flex;gap:6px;">
+                            <button onclick="openEditCatModal(${c.vehicleCategoryId}, '${c.vehicleCategoryName.replace(/'/g,"\\'")}')"
+                                style="padding:5px 12px;font-size:0.73rem;font-weight:600;border:1px solid #c7d2fe;background:#eef0ff;color:#4a6cf7;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;">
+                                Edit
+                            </button>
+                            <button onclick="deleteCategory(${c.vehicleCategoryId}, '${c.vehicleCategoryName.replace(/'/g,"\\'")}', this)"
+                                style="padding:5px 12px;font-size:0.73rem;font-weight:600;border:1px solid #fecaca;background:#fff5f5;color:#dc2626;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.15s;"
+                                onmouseover="this.style.background='#dc2626';this.style.color='white'" onmouseout="this.style.background='#fff5f5';this.style.color='#dc2626'">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+        }
     }
 </script>
 </body>

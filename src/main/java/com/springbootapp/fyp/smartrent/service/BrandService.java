@@ -29,4 +29,36 @@ public class BrandService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public Brand addBrand(String name) {
+        if (name == null || name.isBlank())
+            throw new RuntimeException("Brand name is required.");
+        if (brandRepository.findByBrandNameIgnoreCase(name.trim()).isPresent())
+            throw new RuntimeException("Brand '" + name.trim() + "' already exists.");
+        Brand brand = new Brand();
+        brand.setBrandName(name.trim());
+        return brandRepository.save(brand);
+    }
+
+    public Brand updateBrand(Integer id, String name) {
+        if (name == null || name.isBlank())
+            throw new RuntimeException("Brand name is required.");
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Brand not found."));
+        brandRepository.findByBrandNameIgnoreCase(name.trim()).ifPresent(existing -> {
+            if (!existing.getBrandId().equals(id))
+                throw new RuntimeException("Brand '" + name.trim() + "' already exists.");
+        });
+        brand.setBrandName(name.trim());
+        return brandRepository.save(brand);
+    }
+
+    public void deleteBrand(Integer id) {
+        if (!brandRepository.existsById(id))
+            throw new RuntimeException("Brand not found.");
+        long vehicleCount = vehicleRepository.countByBrand_BrandId(id);
+        if (vehicleCount > 0)
+            throw new RuntimeException("Cannot delete: " + vehicleCount + " vehicle(s) use this brand.");
+        brandRepository.deleteById(id);
+    }
 }

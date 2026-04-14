@@ -51,6 +51,9 @@ public class Customer {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "active", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean active = true;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", columnDefinition = "ENUM('admin','vendor','customer') DEFAULT 'customer'")
     private Role role = Role.customer;

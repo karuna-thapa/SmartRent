@@ -28,6 +28,14 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.getFeaturedVehicles());
     }
 
+    // GET /api/vehicles/{id} — single vehicle by id (must be active + approved)
+    @GetMapping("/{id}")
+    public ResponseEntity<VehicleResponseDto> getVehicleById(@PathVariable Integer id) {
+        return vehicleService.getVehicleById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     // GET /api/vehicles/search?brandId=1&categoryId=2
     @GetMapping("/search")
     public ResponseEntity<List<VehicleResponseDto>> searchVehicles(

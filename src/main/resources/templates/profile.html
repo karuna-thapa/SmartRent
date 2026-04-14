@@ -51,6 +51,7 @@
     <!-- Tabs -->
     <div class="profile-tabs">
         <button class="tab-btn active" onclick="switchTab('myProfile', this)">My Profile</button>
+        <button class="tab-btn" onclick="switchTab('reviews', this)">Reviews</button>
         <button class="tab-btn" onclick="switchTab('history', this)">History</button>
     </div>
 
@@ -136,7 +137,7 @@
                         <div class="pw-group">
                             <label>Current Password</label>
                             <div class="pw-input-wrap">
-                                <input type="password" id="inputCurrentPw" placeholder="Enter current password"/>
+                                <input type="password" id="inputCurrentPw" placeholder="Enter current password" autocomplete="off"/>
                                 <button type="button" class="pw-eye" onclick="togglePwVisibility('inputCurrentPw', this)" tabindex="-1">
                                     <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                     <svg class="eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -146,7 +147,7 @@
                         <div class="pw-group">
                             <label>New Password</label>
                             <div class="pw-input-wrap">
-                                <input type="password" id="inputNewPw" placeholder="New Password"/>
+                                <input type="password" id="inputNewPw" placeholder="New Password" autocomplete="new-password"/>
                                 <button type="button" class="pw-eye" onclick="togglePwVisibility('inputNewPw', this)" tabindex="-1">
                                     <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                     <svg class="eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -156,7 +157,7 @@
                         <div class="pw-group">
                             <label>Confirm New Password</label>
                             <div class="pw-input-wrap">
-                                <input type="password" id="inputConfirmPw" placeholder="Repeat new password"/>
+                                <input type="password" id="inputConfirmPw" placeholder="Repeat new password" autocomplete="new-password"/>
                                 <button type="button" class="pw-eye" onclick="togglePwVisibility('inputConfirmPw', this)" tabindex="-1">
                                     <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                     <svg class="eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -196,6 +197,17 @@
                 </button>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Reviews Tab -->
+    <div id="reviews" class="tab-panel">
+        <div class="profile-card">
+            <div class="reviews-header">
+                <h2 class="reviews-title">My Reviews</h2>
+                <span class="reviews-count" id="reviewsCount"></span>
+            </div>
+            <div id="reviewsList"></div>
         </div>
     </div>
 

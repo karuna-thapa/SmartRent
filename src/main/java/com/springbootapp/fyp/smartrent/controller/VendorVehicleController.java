@@ -1,10 +1,14 @@
 package com.springbootapp.fyp.smartrent.controller;
 
+import com.springbootapp.fyp.smartrent.dto.ReviewResponseDto;
 import com.springbootapp.fyp.smartrent.dto.VehicleRequestDto;
 import com.springbootapp.fyp.smartrent.dto.VehicleResponseDto;
 import com.springbootapp.fyp.smartrent.dto.VendorResponseDto;
 import com.springbootapp.fyp.smartrent.model.Vendor;
+import com.springbootapp.fyp.smartrent.repository.BookingRepository;
 import com.springbootapp.fyp.smartrent.repository.VendorRepository;
+import com.springbootapp.fyp.smartrent.repository.VehicleRepository;
+import com.springbootapp.fyp.smartrent.service.ReviewService;
 import com.springbootapp.fyp.smartrent.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,6 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +34,16 @@ public class VendorVehicleController {
     private VehicleService vehicleService;
 
     @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
     private VendorRepository vendorRepository;
+
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -135,6 +152,80 @@ public class VendorVehicleController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // GET /api/vendor/stats — dashboard stats + chart data
+    @GetMapping("/api/vendor/stats")
+    public ResponseEntity<?> getDashboardStats(Principal principal) {
+        String email = principal.getName();
+        Vendor vendor = vendorRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+        long vehicleCount       = vehicleRepository.findVendorVehicles(email, null, null, null).size();
+        long activeBookingCount = bookingRepository.countActiveByVendor(email);
+        long reviewCount        = vendor.getBrand() != null
+                ? reviewService.getReviewsByBrand(vendor.getBrand().getBrandId()).size() : 0;
+        BigDecimal totalRevenue = bookingRepository.sumRevenueByVendor(email);
+
+        // Monthly revenue — last 12 calendar months
+        List<Object[]> rawMonthly = bookingRepository.monthlyRevenueByVendor(email);
+        Map<String, BigDecimal> monthlyMap = new LinkedHashMap<>();
+        java.time.LocalDate now = java.time.LocalDate.now();
+        for (int i = 11; i >= 0; i--) {
+            java.time.LocalDate d = now.minusMonths(i);
+            String key = d.getYear() + "-" + String.format("%02d", d.getMonthValue());
+            monthlyMap.put(key, BigDecimal.ZERO);
+        }
+        for (Object[] row : rawMonthly) {
+            int y = ((Number) row[0]).intValue();
+            int m = ((Number) row[1]).intValue();
+            String key = y + "-" + String.format("%02d", m);
+            if (monthlyMap.containsKey(key)) monthlyMap.put(key, (BigDecimal) row[2]);
+        }
+        List<String>     monthLabels = new ArrayList<>();
+        List<BigDecimal> monthValues = new ArrayList<>();
+        String[] monthNames = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+        for (Map.Entry<String, BigDecimal> e : monthlyMap.entrySet()) {
+            int m = Integer.parseInt(e.getKey().split("-")[1]);
+            monthLabels.add(monthNames[m - 1]);
+            monthValues.add(e.getValue());
+        }
+
+        // Yearly revenue
+        List<Object[]> rawYearly = bookingRepository.yearlyRevenueByVendor(email);
+        List<String>     yearLabels = new ArrayList<>();
+        List<BigDecimal> yearValues = new ArrayList<>();
+        for (Object[] row : rawYearly) {
+            yearLabels.add(String.valueOf(((Number) row[0]).intValue()));
+            yearValues.add((BigDecimal) row[1]);
+        }
+        if (yearLabels.isEmpty()) {
+            yearLabels.add(String.valueOf(now.getYear()));
+            yearValues.add(BigDecimal.ZERO);
+        }
+
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("vehicleCount",       vehicleCount);
+        stats.put("activeBookingCount", activeBookingCount);
+        stats.put("reviewCount",        reviewCount);
+        stats.put("totalRevenue",       totalRevenue);
+        stats.put("monthlyLabels",      monthLabels);
+        stats.put("monthlyValues",      monthValues);
+        stats.put("yearlyLabels",       yearLabels);
+        stats.put("yearlyValues",       yearValues);
+
+        return ResponseEntity.ok(stats);
+    }
+
+    // GET /api/vendor/reviews — all reviews for the vendor's brand vehicles
+    @GetMapping("/api/vendor/reviews")
+    public ResponseEntity<?> getMyBrandReviews(Principal principal) {
+        Vendor vendor = vendorRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+        if (vendor.getBrand() == null)
+            return ResponseEntity.ok(List.of());
+        List<ReviewResponseDto> reviews = reviewService.getReviewsByBrand(vendor.getBrand().getBrandId());
+        return ResponseEntity.ok(reviews);
     }
 
     // PUT /api/vendor/profile

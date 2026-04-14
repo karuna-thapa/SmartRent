@@ -52,4 +52,20 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
     List<Vehicle> findByApprovalStatusAndActiveTrue(Vehicle.ApprovalStatus approvalStatus);
 
     long countByApprovalStatus(Vehicle.ApprovalStatus approvalStatus);
+
+    long countByVendor_VendorId(Integer vendorId);
+
+    // Admin: get ALL vehicles with optional filters
+    @Query("SELECT v FROM Vehicle v WHERE " +
+           "(:vendorId      IS NULL OR v.vendor.vendorId = :vendorId) " +
+           "AND (:brandId   IS NULL OR v.brand.brandId = :brandId) " +
+           "AND (:categoryId IS NULL OR v.vehicleCategory.vehicleCategoryId = :categoryId) " +
+           "AND (:approvalStatus IS NULL OR v.approvalStatus = :approvalStatus) " +
+           "AND (:active    IS NULL OR v.active = :active) " +
+           "ORDER BY v.createdAt DESC")
+    List<Vehicle> findAllForAdmin(@Param("vendorId")       Integer vendorId,
+                                  @Param("brandId")        Integer brandId,
+                                  @Param("categoryId")     Integer categoryId,
+                                  @Param("approvalStatus") Vehicle.ApprovalStatus approvalStatus,
+                                  @Param("active")         Boolean active);
 }

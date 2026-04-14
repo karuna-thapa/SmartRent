@@ -42,6 +42,34 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
+    // Get all reviews submitted by the currently logged-in customer
+    public List<ReviewResponseDto> getReviewsByCustomer(String customerEmail) {
+        return reviewRepository.findByCustomer_EmailOrderByCreatedAtDesc(customerEmail)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // Delete a review — only the customer who wrote it can delete it
+    public void deleteReview(Integer reviewId, String customerEmail) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getCustomer().getEmail().equals(customerEmail)) {
+            throw new RuntimeException("Not authorized to delete this review");
+        }
+
+        reviewRepository.delete(review);
+    }
+
+    // Get all reviews for vehicles belonging to a specific brand
+    public List<ReviewResponseDto> getReviewsByBrand(Integer brandId) {
+        return reviewRepository.findByVehicle_Brand_BrandIdOrderByCreatedAtDesc(brandId)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     // Submit a new review from an authenticated customer
     public ReviewResponseDto submitReview(ReviewRequestDto request, String customerEmail) {
         Customer customer = customerRepository.findByEmail(customerEmail)

@@ -44,6 +44,9 @@ public class Vendor {
 
     public enum Status { PENDING, APPROVED, REJECTED }
 
+    @Column(name = "active", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean active = true;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
