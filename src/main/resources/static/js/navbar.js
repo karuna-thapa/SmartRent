@@ -11,7 +11,18 @@
         navUser.style.display = 'flex';
         const initials = document.getElementById('navInitials');
         const nameEl   = document.getElementById('navUserName');
-        if (initials) initials.textContent = firstName.charAt(0).toUpperCase();
+        if (initials) {
+            const profileImage = localStorage.getItem('profileImage');
+            if (profileImage) {
+                initials.textContent = '';
+                const img = document.createElement('img');
+                img.src = profileImage;
+                img.alt = 'Profile';
+                initials.appendChild(img);
+            } else {
+                initials.textContent = firstName.charAt(0).toUpperCase();
+            }
+        }
         if (nameEl)   nameEl.textContent   = firstName;
     }
 })();
@@ -34,5 +45,6 @@ function navLogout(e) {
     localStorage.removeItem('role');
     localStorage.removeItem('email');
     localStorage.removeItem('firstName');
+    localStorage.removeItem('profileImage');
     window.location.href = '/home';
 }

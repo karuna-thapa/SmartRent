@@ -23,7 +23,8 @@ function switchTab(id, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     btn.classList.add('active');
-    if (id === 'reviews') loadMyReviews();
+    if (id === 'reviews')    loadMyReviews();
+    if (id === 'myBookings') loadMyBookings();
 }
 
 // ── Load profile ──────────────────────────────────────────────────────────────
@@ -65,6 +66,22 @@ function renderProfile(d) {
         if (cameraIcon) cameraIcon.style.display = 'none';
     } else {
         if (cameraIcon) cameraIcon.style.display = 'flex';
+    }
+
+    // Sync navbar profile image
+    const navInitials = document.getElementById('navInitials');
+    if (navInitials) {
+        navInitials.textContent = '';
+        if (d.profileImage) {
+            localStorage.setItem('profileImage', d.profileImage);
+            const navImg = document.createElement('img');
+            navImg.src = d.profileImage;
+            navImg.alt = 'Profile';
+            navInitials.appendChild(navImg);
+        } else {
+            localStorage.removeItem('profileImage');
+            navInitials.textContent = initial;
+        }
     }
 
     // License image
@@ -403,12 +420,128 @@ async function deleteMyReview(reviewId) {
     }
 }
 
+// ── My Bookings ───────────────────────────────────────────────────────────────
+async function loadMyBookings() {
+    const list = document.getElementById('bookingsList');
+    const countBadge = document.getElementById('bookingsCount');
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#bbb;font-size:13px;">Loading...</div>';
+    try {
+        const res = await fetch(`${API}/api/customer/bookings`, {
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        if (!res.ok) throw new Error('Failed');
+        const bookings = await res.json();
+        countBadge.textContent = bookings.length;
+        if (bookings.length === 0) {
+            list.innerHTML = `
+                <div class="bookings-empty">
+                    <svg viewBox="0 0 24 24" fill="#ccc" width="48" height="48"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                    <p>No bookings yet</p>
+                    <small>Your bookings will appear here after you book a vehicle.</small>
+                </div>`;
+            return;
+        }
+        list.innerHTML = bookings.map(b => buildBookingCard(b)).join('');
+    } catch (e) {
+        list.innerHTML = '<div style="text-align:center;padding:40px;color:#ef4444;font-size:13px;">Failed to load bookings.</div>';
+    }
+}
+
+function buildBookingCard(b) {
+    const statusColor = { CONFIRMED: '#22c55e', PENDING: '#f59e0b', CANCELLED: '#ef4444' };
+    const statusLabel = { CONFIRMED: 'Confirmed', PENDING: 'Pending', CANCELLED: 'Cancelled' };
+    const payColor    = b.paymentStatus === 'PAID' ? '#22c55e' : '#ef4444';
+    const payLabel    = b.paymentStatus === 'PAID' ? 'Paid' : 'Unpaid';
+    const fmtDate = d => d ? new Date(d).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+    const fmtAmt  = v => v ? 'NPR ' + Number(v).toLocaleString('en-NP', { minimumFractionDigits: 2 }) : '—';
+    const imgHtml = b.vehicleImageUrl
+        ? `<img src="${b.vehicleImageUrl}" alt="${b.vehicleName}" class="booking-card-img"/>`
+        : `<div class="booking-card-img-placeholder"><svg viewBox="0 0 24 24" fill="#c7d2fe" width="40" height="40"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-5h14v5z"/></svg></div>`;
+    const canCancel = b.bookingStatus !== 'CANCELLED';
+    const canPay    = b.paymentStatus !== 'PAID' && b.bookingStatus !== 'CANCELLED';
+    return `
+        <div class="booking-card" id="booking-${b.bookingId}">
+            <div class="booking-card-left">
+                ${imgHtml}
+                <div class="booking-vehicle-label">${b.vehicleName || 'Vehicle'}</div>
+            </div>
+            <div class="booking-card-mid">
+                <div class="booking-ref-row">
+                    <span class="booking-ref">#${b.bookingId}</span>
+                    <span class="booking-status-badge" style="background:${statusColor[b.bookingStatus] || '#94a3b8'}20;color:${statusColor[b.bookingStatus] || '#94a3b8'};border:1px solid ${statusColor[b.bookingStatus] || '#94a3b8'}40">
+                        ${statusLabel[b.bookingStatus] || b.bookingStatus}
+                    </span>
+                </div>
+                <div class="booking-meta-row"><span class="booking-meta-label">Start Date</span><span>${fmtDate(b.startDate)}</span></div>
+                <div class="booking-meta-row"><span class="booking-meta-label">End Date</span><span>${fmtDate(b.endDate)}</span></div>
+                <div class="booking-meta-row"><span class="booking-meta-label">Total Amount</span><strong>${fmtAmt(b.totalPrice)}</strong></div>
+            </div>
+            <div class="booking-card-right">
+                <div class="booking-meta-row">
+                    <span class="booking-meta-label">Payment</span>
+                    <span style="color:${payColor};font-weight:600;">${payLabel}</span>
+                </div>
+                ${b.pickupLocation  ? `<div class="booking-meta-row"><span class="booking-meta-label">From</span><span>${b.pickupLocation}</span></div>`  : ''}
+                ${b.dropoffLocation ? `<div class="booking-meta-row"><span class="booking-meta-label">To</span><span>${b.dropoffLocation}</span></div>` : ''}
+                <div class="booking-card-actions">
+                    ${canPay    ? `<button class="btn-pay-booking" id="pay-btn-${b.bookingId}" onclick="confirmPayBooking(${b.bookingId})">Pay Now</button>` : ''}
+                    ${canCancel ? `<button class="btn-cancel-booking" onclick="confirmCancelBooking(${b.bookingId})">Cancel</button>` : ''}
+                </div>
+            </div>
+        </div>`;
+}
+
+function confirmPayBooking(id) {
+    if (!confirm('Confirm payment for this booking?')) return;
+    payBooking(id);
+}
+
+async function payBooking(id) {
+    const btn = document.getElementById(`pay-btn-${id}`);
+    if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
+    try {
+        const res = await fetch(`${API}/api/customer/bookings/${id}/pay`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        if (!res.ok) throw new Error('Failed');
+        showToast('Payment confirmed!', 'success');
+        loadMyBookings();
+    } catch (e) {
+        showToast('Payment failed. Please try again.', 'error');
+        if (btn) { btn.disabled = false; btn.textContent = 'Pay Now'; }
+    }
+}
+
+function confirmCancelBooking(id) {
+    if (!confirm('Cancel this booking? This cannot be undone.')) return;
+    cancelBooking(id);
+}
+
+async function cancelBooking(id) {
+    showLoading(true);
+    try {
+        const res = await fetch(`${API}/api/customer/bookings/${id}/cancel`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        if (!res.ok) throw new Error('Failed');
+        showToast('Booking cancelled.', 'success');
+        loadMyBookings();
+    } catch (e) {
+        showToast('Failed to cancel booking.', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
 // ── Logout ────────────────────────────────────────────────────────────────────
 function doLogout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('email');
     localStorage.removeItem('firstName');
+    localStorage.removeItem('profileImage');
     window.location.href = '/home';
 }
 

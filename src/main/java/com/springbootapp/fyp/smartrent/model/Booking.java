@@ -48,6 +48,18 @@ public class Booking {
 
     public enum BookingStatus { PENDING, CONFIRMED, CANCELLED }
 
+    @Column(name = "pickup_location", length = 200)
+    private String pickupLocation;
+
+    @Column(name = "dropoff_location", length = 200)
+    private String dropoffLocation;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status", columnDefinition = "ENUM('UNPAID','PAID') DEFAULT 'UNPAID'")
+    private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
+
+    public enum PaymentStatus { UNPAID, PAID }
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

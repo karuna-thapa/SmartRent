@@ -165,9 +165,12 @@ function clearField(id) {
 }
 
 function searchVehicles() {
-    const pickup      = document.getElementById('pickupLocation')?.value?.trim();
-    const pickupDate  = document.getElementById('pickupDate')?.value;
-    const dropoffDate = document.getElementById('dropoffDate')?.value;
+    const pickup       = document.getElementById('pickupLocation')?.value?.trim();
+    const pickupDate   = document.getElementById('pickupDate')?.value;
+    const pickupTime   = document.getElementById('pickupTime')?.value  || '12:00';
+    const dropoffDate  = document.getElementById('dropoffDate')?.value;
+    const dropoffTime  = document.getElementById('dropoffTime')?.value || '12:00';
+    const dropoffLoc   = document.getElementById('dropoffLocation')?.value?.trim();
 
     if (!pickup) {
         showBookingError('Please enter a pick-up location.');
@@ -180,10 +183,19 @@ function searchVehicles() {
         return;
     }
 
-    if (new Date(dropoffDate) <= new Date(pickupDate)) {
-        showBookingError('Drop-off date must be after pick-up date.');
+    const pickupDT  = `${pickupDate}T${pickupTime}`;
+    const dropoffDT = `${dropoffDate}T${dropoffTime}`;
+
+    if (new Date(dropoffDT) <= new Date(pickupDT)) {
+        showBookingError('Drop-off date & time must be after pick-up.');
         return;
     }
+
+    // Save search details so the booking page can pre-fill them
+    sessionStorage.setItem('sr_pickupLocation',  pickup);
+    sessionStorage.setItem('sr_dropoffLocation', dropoffLoc || pickup);
+    sessionStorage.setItem('sr_pickupDatetime',  pickupDT);
+    sessionStorage.setItem('sr_dropoffDatetime', dropoffDT);
 
     window.location.href = `/vehicle-rentals`;
 }
@@ -208,10 +220,10 @@ function filterByBrand(brandId) {
 function bookVehicle(vehicleId) {
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = `/login?redirect=vehicles&vehicleId=${vehicleId}`;
+        window.location.href = `/login?redirect=vehicle-rentals`;
         return;
     }
-    window.location.href = `/booking.html?vehicleId=${vehicleId}`;
+    window.location.href = `/booking?vehicleId=${vehicleId}`;
 }
 
 // ===== HAMBURGER MENU =====

@@ -24,6 +24,7 @@ public class BookingResponseDto {
     private Integer vehicleId;
     private String  vehicleName;
     private String  vehicleNo;
+    private String  vehicleImageUrl;
 
     // Dates & pricing
     private LocalDate   startDate;
@@ -32,8 +33,13 @@ public class BookingResponseDto {
     private BigDecimal  totalPrice;
     private String      rentalDurationType;
 
+    // Locations
+    private String pickupLocation;
+    private String dropoffLocation;
+
     // Status & meta
     private String        bookingStatus;
+    private String        paymentStatus;
     private LocalDateTime createdAt;
 
     public static BookingResponseDto from(Booking b) {
@@ -66,6 +72,10 @@ public class BookingResponseDto {
                 b.getRentalDurationType() != null ? b.getRentalDurationType().name() : null);
         dto.setBookingStatus(
                 b.getBookingStatus() != null ? b.getBookingStatus().name() : "PENDING");
+        dto.setPaymentStatus(
+                b.getPaymentStatus() != null ? b.getPaymentStatus().name() : "UNPAID");
+        dto.setPickupLocation(b.getPickupLocation());
+        dto.setDropoffLocation(b.getDropoffLocation());
         dto.setCreatedAt(b.getCreatedAt());
 
         return dto;

@@ -430,6 +430,9 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 0.85rem;
 }
+.date-picker-row + .date-picker-row {
+  margin-top: 20px;
+}
 
 .date-picker-box {
   background: var(--bg);
@@ -449,12 +452,10 @@ body {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
 }
 
-.date-picker-box input[type="date"] {
+.date-picker-box input[type="date"],
+.date-picker-box input[type="datetime-local"] {
   border: none; outline: none;
   font-family: var(--font);
   font-size: 0.9rem;
@@ -464,7 +465,8 @@ body {
   cursor: pointer;
   width: 100%;
 }
-.date-picker-box input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
+.date-picker-box input[type="date"]::-webkit-calendar-picker-indicator,
+.date-picker-box input[type="datetime-local"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
 
 /* ── Booking Summary ── */
 .summary-card {
@@ -472,6 +474,7 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
+  margin-top: 20px;
   margin-bottom: 1rem;
 }
 
@@ -543,15 +546,19 @@ body {
   border-radius: 20px;
 }
 
-/* ── Proceed Button ── */
+/* ── Action Buttons Row ── */
+.booking-action-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
 .proceed-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  width: 100%;
+  flex: 1;
   padding: 1rem;
-  background: var(--primary);
   color: var(--white);
   border: none;
   border-radius: var(--radius-md);
@@ -562,23 +569,28 @@ body {
   transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
   letter-spacing: 0.02em;
   box-shadow: var(--shadow-md);
-  margin-top: 0.5rem;
 }
-.proceed-btn:hover {
+.btn-book-pay {
+  background: var(--primary);
+}
+.btn-book-pay:hover {
   background: var(--primary-dark);
   transform: translateY(-1px);
   box-shadow: var(--shadow-lg);
 }
-.proceed-btn:active { transform: translateY(0); }
-.proceed-btn:disabled {
-  background: #cbd5e1;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.btn-book-only {
+  background: #f5a623;
 }
+.btn-book-only:hover {
+  background: #e09415;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+.proceed-btn:active { transform: translateY(0); }
+.proceed-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
 
-/* ── Location select inside date-picker-box ── */
-.date-picker-box select {
+/* ── Location text input inside date-picker-box ── */
+.date-picker-box input[type="text"] {
   border: none;
   outline: none;
   font-family: var(--font);
@@ -586,17 +598,10 @@ body {
   font-weight: 500;
   color: var(--text-main);
   background: transparent;
-  cursor: pointer;
   width: 100%;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.25rem center;
-  padding-right: 1.25rem;
 }
-.date-picker-box select:focus { outline: none; }
-.date-picker-box select option[value=""] { color: var(--text-light); }
+.date-picker-box input[type="text"]::placeholder { color: var(--text-light); font-weight: 400; }
+.date-picker-box input[type="text"]:focus { outline: none; }
 
 /* ── Field errors ── */
 .field-error {
@@ -621,24 +626,6 @@ body {
 .footer-bottom { text-align: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; }
 .footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.35); }
 
-/* ── Location select inside date-picker-box ── */
-.date-picker-box select {
-  border: none; outline: none;
-  font-family: var(--font);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-main);
-  background: transparent;
-  cursor: pointer;
-  width: 100%;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.25rem center;
-  padding-right: 1.25rem;
-}
-.date-picker-box select:focus { outline: none; }
 
 /* ── Responsive ── */
 @media (max-width: 700px) {

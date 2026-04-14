@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ReviewRequestDto {
     private Integer vehicleId;
-    private Integer rating;   // 1–5
+    private Integer rating;   
     private String comment;
 }
