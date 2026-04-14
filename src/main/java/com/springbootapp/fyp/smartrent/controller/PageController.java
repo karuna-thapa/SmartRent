@@ -55,4 +55,9 @@ public class PageController {
     public String booking() {
         return "booking";
     }
+
+    @GetMapping("/verify-otp")
+    public String verifyOtp() {
+        return "otp";
+    }
 }

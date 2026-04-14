@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SmartRent — Verify Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/otp.css"/>
+</head>
+<body>
+
+<div class="card">
+
+    <div class="logo">
+        <img src="/images/SmartRentLogo.png" alt="SmartRent" class="auth-logo-img"/>
+    </div>
+
+    <h1 class="otp-title" id="pageTitle">Verify Your Email</h1>
+
+    <div class="alert" id="alert"></div>
+
+    <!-- 6-box OTP input -->
+    <div class="otp-boxes" id="otpBoxes">
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="b0"/>
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="b1"/>
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="b2"/>
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="b3"/>
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="b4"/>
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="b5"/>
+    </div>
+
+    <button class="btn" id="verifyBtn" onclick="verifyOtp()">
+        <span id="verifyBtnText">Verify OTP</span>
+        <div class="spinner" id="verifySpinner"></div>
+    </button>
+
+    <div class="resend-row">
+        Didn't receive the code?
+        <a id="resendLink" onclick="resendOtp()">Resend</a>
+        <span class="countdown" id="countdown"></span>
+    </div>
+
+    <br/>
+    <a class="back-link" id="backLink" href="/login">← Back to Login</a>
+
+</div>
+
+<!-- Success popup -->
+<div class="popup-overlay" id="successPopup">
+    <div class="popup-box">
+        <div class="popup-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none"
+                 stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                 viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>
+        </div>
+        <p class="popup-msg">Email Verification Successful</p>
+    </div>
+</div>
+
+<script src="/js/otp.js"></script>
+</body>
+</html>

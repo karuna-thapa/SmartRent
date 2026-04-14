@@ -1,0 +1,213 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f0f4ff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 36px 36px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.logo { margin-bottom: 28px; display: flex; justify-content: center; }
+
+.auth-logo-img {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+/* Icon circle */
+.otp-icon {
+  width: 64px;
+  height: 64px;
+  background: #eef1ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.otp-icon svg { color: #4a6cf7; }
+
+.otp-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+.otp-subtitle {
+  font-size: 13px;
+  color: #777;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.otp-subtitle strong { color: #1a1a2e; }
+
+/* 6-box OTP input row */
+.otp-boxes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.otp-box {
+  width: 48px;
+  height: 56px;
+  background: #f4f6fb;
+  border: 2px solid #e0e6f5;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  caret-color: #4a6cf7;
+}
+
+.otp-box:focus {
+  border-color: #4a6cf7;
+  box-shadow: 0 0 0 3px rgba(74,108,247,0.12);
+  background: #fff;
+}
+
+.otp-box.filled {
+  border-color: #4a6cf7;
+  background: #fff;
+}
+
+/* Alert */
+.alert {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-bottom: 16px;
+  display: none;
+  text-align: left;
+}
+.alert.error   { background: #fff0f0; border: 1px solid #ffcccc; color: #e53935; display: block; }
+.alert.success { background: #f0fff4; border: 1px solid #b2dfdb; color: #2e7d32; display: block; }
+
+/* Verify button */
+.btn {
+  width: 100%;
+  background: #4a6cf7;
+  border: none;
+  border-radius: 50px;
+  padding: 13px;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.btn:hover { background: #3a5ce5; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+.spinner {
+  display: none;
+  width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Resend row */
+.resend-row {
+  font-size: 12px;
+  color: #999;
+}
+
+.resend-row a {
+  color: #4a6cf7;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.resend-row a:hover { text-decoration: underline; }
+.resend-row a.disabled { color: #bbb; pointer-events: none; cursor: default; }
+
+.countdown { color: #f5a623; font-weight: 600; }
+
+.back-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12px;
+  color: #aaa;
+  text-decoration: none;
+}
+.back-link:hover { color: #4a6cf7; text-decoration: underline; }
+
+/* Success popup */
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-overlay.show { display: flex; }
+
+.popup-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 40px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  animation: popIn 0.25s ease;
+}
+
+.popup-icon {
+  width: 56px;
+  height: 56px;
+  background: #f0fff4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.popup-msg {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}

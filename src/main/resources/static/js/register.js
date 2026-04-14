@@ -108,6 +108,11 @@ async function submitCustomer() {
     showAlert('Please fill in all required fields.', 'error'); return;
   }
 
+  // Email format validation
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showAlert('Please enter a valid email address (e.g. name@example.com).', 'error'); return;
+  }
+
   // 18+ age check
   const birthDate = new Date(dob);
   const minDate = new Date();
@@ -130,7 +135,9 @@ async function submitCustomer() {
     if (res.ok || res.status === 201) {
       clearCustomerForm();
       showAlert('Account created successfully! Redirecting to login…', 'success');
-      setTimeout(() => { window.location.href = '/login'; }, 1800);
+      setTimeout(() => {
+        window.location.href = `/login?email=${encodeURIComponent(email)}`;
+      }, 1500);
     } else {
       showAlert(data || 'Registration failed. Please try again.', 'error');
     }

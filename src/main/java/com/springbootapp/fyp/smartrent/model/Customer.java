@@ -54,6 +54,9 @@ public class Customer {
     @Column(name = "active", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean active = true;
 
+    @Column(name = "is_verified", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean emailVerified = false;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", columnDefinition = "ENUM('admin','vendor','customer') DEFAULT 'customer'")
     private Role role = Role.customer;

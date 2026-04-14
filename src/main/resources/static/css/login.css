@@ -110,3 +110,34 @@ body {
 .register-link { margin-top: 16px; font-size: 12px; color: #999; }
 .register-link a { color: #4a6cf7; font-weight: 600; text-decoration: none; }
 .register-link a:hover { text-decoration: underline; }
+
+/* Password show/hide toggle */
+.pw-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.pw-input-wrap input { width: 100%; padding-right: 42px; }
+.pw-eye {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: #bbb;
+  transition: color 0.2s;
+}
+.pw-eye:hover { color: #555; }
+.pw-eye svg { width: 18px; height: 18px; }
+
+/* OTP step info text */
+.otp-info {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  text-align: left;
+}

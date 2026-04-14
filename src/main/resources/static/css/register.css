@@ -186,3 +186,5 @@ body {
 }
 
 .dob-hint { font-size: 0.72rem; font-weight: 400; color: #888; margin-left: 4px; }
+
+.otp-info { font-size: 13px; color: #555; margin-bottom: 20px; line-height: 1.6; text-align: left; }

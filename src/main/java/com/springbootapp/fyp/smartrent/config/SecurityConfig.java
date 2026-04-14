@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Allow page routes and static files
                         .requestMatchers(
-                                "/", "/home", "/login", "/register",
+                                "/", "/home", "/login", "/register", "/verify-otp",
                                 "/vehicle-rentals", "/about", "/contact", "/profile",
                                 "/booking",
                                 "/vendor/dashboard", "/admin/dashboard",
