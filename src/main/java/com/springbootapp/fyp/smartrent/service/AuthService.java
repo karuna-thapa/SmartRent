@@ -117,11 +117,7 @@ public class AuthService {
         }
 
         // First login — send OTP so the customer proves they own the email
-        try {
-            otpService.generateAndSendLoginOtp(customer.getEmail());
-        } catch (Exception mailEx) {
-            throw new RuntimeException("MAIL_ERROR:" + customer.getEmail());
-        }
+        otpService.generateAndSendLoginOtp(customer.getEmail());
 
         return Map.of("requiresOtp", true, "email", customer.getEmail());
     }
@@ -150,10 +146,6 @@ public class AuthService {
     public void resendLoginOtp(String email) {
         customerRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("No account found with that email."));
-        try {
-            otpService.generateAndSendLoginOtp(email);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not send code. Please check mail configuration.");
-        }
+        otpService.generateAndSendLoginOtp(email);
     }
 }

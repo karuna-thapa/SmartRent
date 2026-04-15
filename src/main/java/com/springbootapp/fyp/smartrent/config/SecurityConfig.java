@@ -42,7 +42,9 @@ public class SecurityConfig {
                                 "/booking",
                                 "/vendor/dashboard", "/admin/dashboard",
                                 "/home.html", "/login.html", "/register.html",
-                                "/css/**", "/js/**", "/images/**", "/static/**"
+                                "/css/**", "/js/**", "/images/**", "/static/**",
+                                // eSewa callback URLs (public — eSewa redirects here)
+                                "/payment/success", "/payment/failure"
                         ).permitAll()
                         // Allow auth APIs (includes /api/auth/register-vendor)
                         .requestMatchers("/api/auth/**").permitAll()
@@ -54,6 +56,7 @@ public class SecurityConfig {
                         // Uploaded files (vehicle images)
                         .requestMatchers("/uploads/**").permitAll()
                         // Role based
+                        .requestMatchers("/api/payment/esewa/**").hasRole("CUSTOMER")
                         .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
                         .requestMatchers("/api/vendor/**").hasRole("VENDOR")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

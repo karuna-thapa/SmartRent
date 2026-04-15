@@ -192,8 +192,7 @@
         <!-- Action Buttons -->
         <p class="field-error" id="bookingError" style="display:none;"></p>
         <div class="booking-action-row">
-            <button class="proceed-btn btn-book-pay" id="bookPayBtn" onclick="proceedToBooking('pay')">Book &amp; Pay</button>
-            <button class="proceed-btn btn-book-only" id="bookOnlyBtn" onclick="proceedToBooking('book')">Book</button>
+            <button class="proceed-btn btn-book-only" id="bookOnlyBtn" onclick="proceedToBooking()">Book</button>
         </div>
 
     </div><!-- /bookingContent -->
@@ -405,7 +404,7 @@ function updateSummary() {
 }
 
 // ── Proceed ───────────────────────────────────────────────────────────────────
-async function proceedToBooking(mode) {
+async function proceedToBooking() {
     const token = localStorage.getItem('token');
     if (!token) { window.location.href = '/login?redirect=vehicle-rentals'; return; }
 
@@ -437,9 +436,7 @@ async function proceedToBooking(mode) {
         return;
     }
 
-    const btn = mode === 'pay'
-        ? document.getElementById('bookPayBtn')
-        : document.getElementById('bookOnlyBtn');
+    const btn = document.getElementById('bookOnlyBtn');
     btn.disabled = true;
     btn.textContent = 'Booking...';
 
@@ -456,7 +453,7 @@ async function proceedToBooking(mode) {
                 endDate:         dropoff,
                 pickupLocation:  pickupLoc,
                 dropoffLocation: dropoffLoc,
-                paymentMode:     mode
+                paymentMode:     'book'
             })
         });
         if (!res.ok) {
@@ -464,15 +461,13 @@ async function proceedToBooking(mode) {
             alert('Booking failed: ' + msg);
             return;
         }
-        alert(mode === 'pay'
-            ? 'Booking & payment confirmed! View it in My Profile → My Bookings.'
-            : 'Booking confirmed! Pay at pickup. View it in My Profile → My Bookings.');
+        sessionStorage.setItem('bookingSuccess', '1');
         window.location.href = '/profile';
     } catch (e) {
         alert('Something went wrong. Please try again.');
     } finally {
         btn.disabled = false;
-        btn.textContent = mode === 'pay' ? 'Book & Pay' : 'Book Only';
+        btn.textContent = 'Book';
     }
 }
 

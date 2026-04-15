@@ -99,10 +99,10 @@ function startCountdown(seconds) {
     const display = document.getElementById('countdown');
     link.classList.add('disabled');
     let remaining = seconds;
-    display.textContent =  (s);
+    display.textContent = `(${remaining}s)`;
     countdownTimer = setInterval(() => {
         remaining--;
-        display.textContent =  (s);
+        display.textContent = `(${remaining}s)`;
         if (remaining <= 0) {
             clearInterval(countdownTimer);
             display.textContent = '';

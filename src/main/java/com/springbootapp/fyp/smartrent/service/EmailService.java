@@ -1,5 +1,7 @@
 package com.springbootapp.fyp.smartrent.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
+    private static final Logger log = LoggerFactory.getLogger(EmailService.class);
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -16,6 +20,7 @@ public class EmailService {
     private String from;
 
     public void sendVerificationOtp(String to, String otp) {
+        log.info("Sending verification OTP to: {}", to);
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom(from);
         msg.setTo(to);
@@ -27,10 +32,17 @@ public class EmailService {
             "This code expires in 5 minutes.\n\n" +
             "If you did not register on SmartRent, please ignore this email."
         );
-        mailSender.send(msg);
+        try {
+            mailSender.send(msg);
+            log.info("Verification OTP sent successfully to: {}", to);
+        } catch (Exception e) {
+            log.error("SMTP ERROR sending to {}: {}", to, e.getMessage(), e);
+            throw e;
+        }
     }
 
     public void sendLoginOtp(String to, String otp) {
+        log.info("Sending login OTP to: {}", to);
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom(from);
         msg.setTo(to);
@@ -41,6 +53,12 @@ public class EmailService {
             "This code expires in 5 minutes.\n\n" +
             "If you did not attempt to log in, please change your password immediately."
         );
-        mailSender.send(msg);
+        try {
+            mailSender.send(msg);
+            log.info("Login OTP sent successfully to: {}", to);
+        } catch (Exception e) {
+            log.error("SMTP ERROR sending to {}: {}", to, e.getMessage(), e);
+            throw e;
+        }
     }
 }

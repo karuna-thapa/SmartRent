@@ -152,7 +152,7 @@ function buildReviewCard(r) {
 
 function buildStars(rating) {
     const filled = `<svg viewBox="0 0 20 20" fill="#f5a623"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>`;
-    const empty  = `<svg viewBox="0 0 20 20" fill="#ddd"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>`;
+    const empty  = `<svg viewBox="0 0 20 20" fill="#ffffff" stroke="#d1d5db" stroke-width="1"><path d="M10 1l2.5 5 5.5.8-4 3.9.9 5.5L10 13.5l-4.9 2.6.9-5.5L2 6.8l5.5-.8z"/></svg>`;
     let html = '';
     for (let i = 1; i <= 5; i++) html += i <= rating ? filled : empty;
     return html;

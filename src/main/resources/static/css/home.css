@@ -1013,7 +1013,8 @@ svg { fill: currentColor; }
     margin-bottom: 14px;
 }
 
-.review-stars svg { width: 16px; height: 16px; }
+.review-stars svg { width: 16px; height: 16px; fill: #f5a623; }
+.review-stars svg[fill="#ffffff"] { fill: #ffffff; stroke: #d1d5db; }
 
 .review-text {
     font-size: 13px;

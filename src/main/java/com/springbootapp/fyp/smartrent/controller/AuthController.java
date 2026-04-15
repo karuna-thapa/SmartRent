@@ -60,19 +60,18 @@ public class AuthController {
             String msg = e.getMessage();
             if (msg == null) msg = "Login failed.";
 
-            // Mail misconfigured but credentials are valid — still go to OTP page
-            if (msg.startsWith("MAIL_ERROR:")) {
-                String email = msg.substring("MAIL_ERROR:".length());
-                return ResponseEntity.ok(Map.of("requiresOtp", true, "email", email));
-            }
-
             // Map to user-friendly messages
-            if (msg.contains("No account found"))   msg = "No account found with this email. Please register first.";
+            if (msg.contains("No account found"))      msg = "No account found with this email. Please register first.";
             else if (msg.contains("Invalid password")) msg = "Incorrect password. Please try again.";
             else if (msg.contains("pending admin"))    msg = "Your vendor account is awaiting admin approval.";
             else if (msg.contains("rejected"))         msg = "Your vendor application was not approved.";
+            else if (msg.contains("Mail") || msg.contains("mail") || msg.contains("SMTP") || msg.contains("smtp"))
+                msg = "Could not send verification code. Please try again.";
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(msg);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not send verification code. Please try again.");
         }
     }
 

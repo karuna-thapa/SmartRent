@@ -15,6 +15,32 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     loadProfile();
+
+    // ── Auto-open My Bookings + show success popup if redirected from booking page
+    if (sessionStorage.getItem('bookingSuccess')) {
+        sessionStorage.removeItem('bookingSuccess');
+        const bookingsTab = document.querySelector('.tab-btn[onclick*="myBookings"]');
+        if (bookingsTab) switchTab('myBookings', bookingsTab);
+        const popup = document.getElementById('bookingSuccessPopup');
+        if (popup) popup.style.display = 'flex';
+    }
+
+    // ── Handle eSewa payment callback result (?payment=success|failed)
+    const urlParams   = new URLSearchParams(window.location.search);
+    const payResult   = urlParams.get('payment');
+    if (payResult) {
+        const bookingsTab = document.querySelector('.tab-btn[onclick*="myBookings"]');
+        if (bookingsTab) switchTab('myBookings', bookingsTab);
+        if (payResult === 'success') {
+            const popup = document.getElementById('paySuccessPopup');
+            if (popup) popup.style.display = 'flex';
+        } else {
+            const popup = document.getElementById('payFailedPopup');
+            if (popup) popup.style.display = 'flex';
+        }
+        // Clean URL
+        window.history.replaceState({}, '', '/profile');
+    }
 });
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
@@ -449,7 +475,7 @@ async function loadMyBookings() {
 
 function buildBookingCard(b) {
     const statusColor = { CONFIRMED: '#22c55e', PENDING: '#f59e0b', CANCELLED: '#ef4444' };
-    const statusLabel = { CONFIRMED: 'Confirmed', PENDING: 'Pending', CANCELLED: 'Cancelled' };
+    const statusLabel = { CONFIRMED: 'Approved', PENDING: 'Pending', CANCELLED: 'Cancelled' };
     const payColor    = b.paymentStatus === 'PAID' ? '#22c55e' : '#ef4444';
     const payLabel    = b.paymentStatus === 'PAID' ? 'Paid' : 'Unpaid';
     const fmtDate = d => d ? new Date(d).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
@@ -457,8 +483,18 @@ function buildBookingCard(b) {
     const imgHtml = b.vehicleImageUrl
         ? `<img src="${b.vehicleImageUrl}" alt="${b.vehicleName}" class="booking-card-img"/>`
         : `<div class="booking-card-img-placeholder"><svg viewBox="0 0 24 24" fill="#c7d2fe" width="40" height="40"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-5h14v5z"/></svg></div>`;
-    const canCancel = b.bookingStatus !== 'CANCELLED';
-    const canPay    = b.paymentStatus !== 'PAID' && b.bookingStatus !== 'CANCELLED';
+    const canCancel   = b.bookingStatus !== 'CANCELLED';
+    const isApproved  = b.bookingStatus === 'CONFIRMED';
+    const canPay      = isApproved && b.paymentStatus !== 'PAID';
+    const showPayLocked = !isApproved && b.bookingStatus !== 'CANCELLED' && b.paymentStatus !== 'PAID';
+
+    let payBtn = '';
+    if (canPay) {
+        payBtn = `<button class="btn-pay-booking" id="pay-btn-${b.bookingId}" onclick="confirmPayBooking(${b.bookingId})">Pay Now</button>`;
+    } else if (showPayLocked) {
+        payBtn = `<button class="btn-pay-booking" style="opacity:0.5;cursor:not-allowed;background:#94a3b8;border-color:#94a3b8;" onclick="showPayLockedMsg()" disabled>Pay Now</button>`;
+    }
+
     return `
         <div class="booking-card" id="booking-${b.bookingId}">
             <div class="booking-card-left">
@@ -467,7 +503,6 @@ function buildBookingCard(b) {
             </div>
             <div class="booking-card-mid">
                 <div class="booking-ref-row">
-                    <span class="booking-ref">#${b.bookingId}</span>
                     <span class="booking-status-badge" style="background:${statusColor[b.bookingStatus] || '#94a3b8'}20;color:${statusColor[b.bookingStatus] || '#94a3b8'};border:1px solid ${statusColor[b.bookingStatus] || '#94a3b8'}40">
                         ${statusLabel[b.bookingStatus] || b.bookingStatus}
                     </span>
@@ -484,32 +519,60 @@ function buildBookingCard(b) {
                 ${b.pickupLocation  ? `<div class="booking-meta-row"><span class="booking-meta-label">From</span><span>${b.pickupLocation}</span></div>`  : ''}
                 ${b.dropoffLocation ? `<div class="booking-meta-row"><span class="booking-meta-label">To</span><span>${b.dropoffLocation}</span></div>` : ''}
                 <div class="booking-card-actions">
-                    ${canPay    ? `<button class="btn-pay-booking" id="pay-btn-${b.bookingId}" onclick="confirmPayBooking(${b.bookingId})">Pay Now</button>` : ''}
+                    ${payBtn}
                     ${canCancel ? `<button class="btn-cancel-booking" onclick="confirmCancelBooking(${b.bookingId})">Cancel</button>` : ''}
                 </div>
             </div>
         </div>`;
 }
 
-function confirmPayBooking(id) {
-    if (!confirm('Confirm payment for this booking?')) return;
-    payBooking(id);
+function showPayLockedMsg() {
+    const popup = document.getElementById('payLockedPopup');
+    if (popup) popup.style.display = 'flex';
 }
 
-async function payBooking(id) {
-    const btn = document.getElementById(`pay-btn-${id}`);
-    if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
+// Opens eSewa confirmation modal
+function confirmPayBooking(id) {
+    document.getElementById('esewaBookingId').value = id;
+    document.getElementById('esewaConfirmModal').style.display = 'flex';
+}
+
+// Called when user clicks "Pay via eSewa" inside the modal
+async function proceedEsewaPayment() {
+    const id  = document.getElementById('esewaBookingId').value;
+    const btn = document.getElementById('esewaConfirmBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Loading...';
+
     try {
-        const res = await fetch(`${API}/api/customer/bookings/${id}/pay`, {
-            method: 'PUT',
+        const res = await fetch(`${API}/api/payment/esewa/initiate/${id}`, {
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
         });
-        if (!res.ok) throw new Error('Failed');
-        showToast('Payment confirmed!', 'success');
-        loadMyBookings();
+        if (!res.ok) {
+            const msg = await res.text();
+            showToast(msg || 'Could not initiate payment.', 'error');
+            return;
+        }
+        const data = await res.json();
+
+        // Build a hidden form and submit to eSewa
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = data.esewaUrl;
+        form.style.display = 'none';
+        Object.entries(data.fields).forEach(([key, val]) => {
+            const input = document.createElement('input');
+            input.type  = 'hidden';
+            input.name  = key;
+            input.value = val;
+            form.appendChild(input);
+        });
+        document.body.appendChild(form);
+        form.submit();
     } catch (e) {
-        showToast('Payment failed. Please try again.', 'error');
-        if (btn) { btn.disabled = false; btn.textContent = 'Pay Now'; }
+        showToast('Something went wrong. Please try again.', 'error');
+        btn.disabled    = false;
+        btn.textContent = 'Pay via eSewa';
     }
 }
 

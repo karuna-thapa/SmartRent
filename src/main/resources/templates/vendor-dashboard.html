@@ -63,7 +63,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" id="navPayments" onclick="showSection('payments', this)">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <rect x="2" y="5" width="20" height="14" rx="2"/>
                         <path d="M2 10h20"/>
@@ -563,6 +563,63 @@
     </div>
 </div>
 
+<!-- ===== PAYMENTS SECTION ===== -->
+<div class="page-body" id="sectionPayments" style="display:none;">
+    <div style="margin-bottom:20px;">
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">My Payments</h2>
+        <p style="font-size:0.8rem;color:var(--text-light);">eSewa transactions for your vehicles — you receive 90% of each payment</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" style="margin-bottom:20px;">
+        <div class="stat-card">
+            <div class="stat-icon green">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-label">Total Earned (90%)</div>
+                <div class="stat-value" id="vpStatEarned">—</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-label">Total Transactions</div>
+                <div class="stat-value" id="vpStatCount">—</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h3>Transaction History</h3>
+            <span id="vpCount" style="font-size:0.78rem;color:var(--text-light);"></span>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Total Paid</th>
+                        <th>Your Earnings (90%)</th>
+                        <th>Method</th>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="vpTableBody">
+                    <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div><!-- /sectionPayments -->
+
 <!-- ===== TOAST ===== -->
 <div id="vendorToast" class="admin-toast"></div>
 
@@ -591,7 +648,7 @@ function logout() {
 
 // ── Section switching ─────────────────────────────────────────────────────
 function showSection(name, linkEl) {
-    ['dashboard','vehicles','bookings','reviews','profile'].forEach(s => {
+    ['dashboard','vehicles','bookings','reviews','profile','payments'].forEach(s => {
         const el = document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1));
         if (el) el.style.display = (s === name) ? '' : 'none';
     });
@@ -602,6 +659,7 @@ function showSection(name, linkEl) {
     if (name === 'bookings') loadBookings();
     if (name === 'reviews')  loadVendorReviews();
     if (name === 'profile')  loadProfile();
+    if (name === 'payments') loadVendorPayments();
 }
 
 // Set default active
@@ -1447,6 +1505,53 @@ async function handleBookingAction(bookingId, action) {
         loadDashboardStats();
     } catch (e) {
         showToast(e.message || 'Action failed.', 'error');
+    }
+}
+
+// ── Vendor Payments ───────────────────────────────────────────────────────
+function fmtNpr(v) {
+    return v != null ? 'NPR ' + Number(v).toLocaleString('en-NP', { minimumFractionDigits: 2 }) : '—';
+}
+
+async function loadVendorPayments() {
+    // Stats
+    try {
+        const res = await fetch('/api/vendor/payments/stats', { headers: { 'Authorization': 'Bearer ' + TOKEN() } });
+        if (res.ok) {
+            const s = await res.json();
+            document.getElementById('vpStatEarned').textContent = fmtNpr(s.totalEarned);
+            document.getElementById('vpStatCount').textContent  = s.totalTransactions ?? '0';
+        }
+    } catch (_) {}
+
+    // Table
+    const tbody = document.getElementById('vpTableBody');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+    try {
+        const res = await fetch('/api/vendor/payments', { headers: { 'Authorization': 'Bearer ' + TOKEN() } });
+        const payments = res.ok ? await res.json() : [];
+        document.getElementById('vpCount').textContent = payments.length + ' transactions';
+        if (!payments.length) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">No payments yet.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = payments.map((p, i) => `
+            <tr>
+                <td style="color:#6b7280;font-size:0.78rem;">${i + 1}</td>
+                <td>
+                    <div style="font-weight:600;font-size:0.85rem;">${p.customerName || '—'}</div>
+                    <div style="font-size:0.75rem;color:#6b7280;">${p.customerEmail || ''}</div>
+                </td>
+                <td style="font-weight:500;">${p.vehicleName || '—'}</td>
+                <td style="font-weight:600;color:#111;">${fmtNpr(p.totalAmount)}</td>
+                <td style="font-weight:700;color:#22c55e;">${fmtNpr(p.vendorAmount)}</td>
+                <td><span style="background:#eef0ff;color:#4a6cf7;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;text-transform:uppercase;">${p.paymentMethod || '—'}</span></td>
+                <td style="font-size:0.75rem;color:#6b7280;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p.transactionId || ''}">${p.transactionId || '—'}</td>
+                <td style="font-size:0.8rem;color:#6b7280;white-space:nowrap;">${p.paidAt ? p.paidAt.slice(0,10) : '—'}</td>
+            </tr>
+        `).join('');
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
     }
 }
 
