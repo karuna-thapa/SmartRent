@@ -133,9 +133,12 @@ public class VehicleService {
         if (dto.getSeatsCapacity() != null) vehicle.setSeatsCapacity(dto.getSeatsCapacity());
         if (dto.getRentalPrice() != null) vehicle.setRentalPrice(dto.getRentalPrice());
         if (dto.getDescription() != null) vehicle.setDescription(dto.getDescription());
-        if (dto.getStatus() != null) {
-            try { vehicle.setStatus(Vehicle.Status.valueOf(dto.getStatus())); }
-            catch (IllegalArgumentException ignored) {}
+        if (dto.getStatus() != null && !dto.getStatus().isBlank()) {
+            try {
+                vehicle.setStatus(Vehicle.Status.valueOf(dto.getStatus()));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid status value '" + dto.getStatus() + "'. Allowed: available, not_available");
+            }
         }
 
         // If previously rejected, reset to PENDING so admin can re-review
@@ -270,9 +273,12 @@ public class VehicleService {
                     .orElseThrow(() -> new RuntimeException("Category not found"));
             vehicle.setVehicleCategory(category);
         }
-        if (dto.getStatus() != null) {
-            try { vehicle.setStatus(Vehicle.Status.valueOf(dto.getStatus())); }
-            catch (IllegalArgumentException ignored) {}
+        if (dto.getStatus() != null && !dto.getStatus().isBlank()) {
+            try {
+                vehicle.setStatus(Vehicle.Status.valueOf(dto.getStatus()));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid status value '" + dto.getStatus() + "'. Allowed: available, not_available");
+            }
         }
 
         return toDto(vehicleRepository.save(vehicle));

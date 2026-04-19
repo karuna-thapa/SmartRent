@@ -34,7 +34,7 @@ public class Vehicle {
     private BigDecimal rentalPrice;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "ENUM('available','not_available') DEFAULT 'available'")
     private Status status = Status.available;
 
     @Column(name = "seats_capacity")

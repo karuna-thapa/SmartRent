@@ -46,6 +46,15 @@
                 </a>
             </li>
             <li>
+                <a href="#" id="navRequests" onclick="showSection('requests',this)">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+                    </svg>
+                    Requests
+                    <span id="navRequestsBadge" style="display:none;background:#ef4444;color:white;font-size:0.6rem;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:4px;"></span>
+                </a>
+            </li>
+            <li>
                 <a href="#" id="navReviews" onclick="showSection('reviews',this)">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -202,8 +211,8 @@
                     <button class="period-tab" onclick="switchPeriod('yearly', this)">Yearly</button>
                 </div>
             </div>
-            <div class="chart-container">
-                <canvas id="revenueChart"></canvas>
+            <div class="chart-container" style="overflow:visible;">
+                <canvas id="revenueChart" style="overflow:visible;"></canvas>
             </div>
         </div>
 
@@ -360,6 +369,43 @@
         </div>
     </div><!-- /sectionBookings -->
 
+    <!-- ===== REQUESTS SECTION ===== -->
+    <div class="page-body" id="sectionRequests" style="display:none;">
+        <div style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+            <div>
+                <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">Booking Requests</h2>
+                <p style="font-size:0.8rem;color:var(--text-light);">Review and approve or reject customer booking requests</p>
+            </div>
+            <span id="reqPendingBadge" style="display:none;background:#fef3c7;color:#d97706;padding:4px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;"></span>
+        </div>
+
+        <div class="table-card">
+            <div class="table-card-header">
+                <h3>Pending Requests</h3>
+                <span id="reqCount" style="font-size:0.78rem;color:var(--text-light);"></span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Pickup</th>
+                            <th>Dates</th>
+                            <th>Duration</th>
+                            <th>Total</th>
+                            <th>Requested</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reqTableBody">
+                        <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /sectionRequests -->
+
     <!-- ===== REVIEWS SECTION ===== -->
     <div class="page-body" id="sectionReviews" style="display:none;">
 
@@ -470,6 +516,74 @@
 
     </div><!-- /sectionProfile -->
 
+    <!-- ===== PAYMENTS SECTION ===== -->
+    <div class="page-body" id="sectionPayments" style="display:none;">
+
+        <!-- Header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+            <div>
+                <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 4px;">My Payments</h2>
+                <p style="font-size:0.82rem;color:var(--text-light);margin:0;">eSewa transactions for your vehicles — you receive 90% of each payment</p>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:20px;font-size:0.76rem;font-weight:600;color:#16a34a;">
+                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                eSewa Verified
+            </span>
+        </div>
+
+        <!-- Stats (2 cards) -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:24px;">
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Total Earned (90%)</div>
+                    <div class="stat-value" id="vpStatEarned">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Total Transactions</div>
+                    <div class="stat-value" id="vpStatCount">—</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <div>
+                    <h3 style="margin:0 0 2px;font-size:1rem;font-weight:700;color:var(--text);">Transaction History</h3>
+                    <span id="vpCount" style="font-size:0.78rem;color:var(--text-light);"></span>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Total Paid</th>
+                            <th>Your Earnings (90%)</th>
+                            <th>Method</th>
+                            <th>Transaction ID</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vpTableBody">
+                        <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /sectionPayments -->
+
 </div><!-- /main-content -->
 
 <!-- ===== BOOKING DETAIL MODAL ===== -->
@@ -563,63 +677,6 @@
     </div>
 </div>
 
-<!-- ===== PAYMENTS SECTION ===== -->
-<div class="page-body" id="sectionPayments" style="display:none;">
-    <div style="margin-bottom:20px;">
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:4px;">My Payments</h2>
-        <p style="font-size:0.8rem;color:var(--text-light);">eSewa transactions for your vehicles — you receive 90% of each payment</p>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-grid" style="margin-bottom:20px;">
-        <div class="stat-card">
-            <div class="stat-icon green">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-            </div>
-            <div class="stat-info">
-                <div class="stat-label">Total Earned (90%)</div>
-                <div class="stat-value" id="vpStatEarned">—</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon blue">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
-            </div>
-            <div class="stat-info">
-                <div class="stat-label">Total Transactions</div>
-                <div class="stat-value" id="vpStatCount">—</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Table -->
-    <div class="table-card">
-        <div class="table-card-header">
-            <h3>Transaction History</h3>
-            <span id="vpCount" style="font-size:0.78rem;color:var(--text-light);"></span>
-        </div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Customer</th>
-                        <th>Vehicle</th>
-                        <th>Total Paid</th>
-                        <th>Your Earnings (90%)</th>
-                        <th>Method</th>
-                        <th>Transaction ID</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody id="vpTableBody">
-                    <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div><!-- /sectionPayments -->
-
 <!-- ===== TOAST ===== -->
 <div id="vendorToast" class="admin-toast"></div>
 
@@ -648,7 +705,7 @@ function logout() {
 
 // ── Section switching ─────────────────────────────────────────────────────
 function showSection(name, linkEl) {
-    ['dashboard','vehicles','bookings','reviews','profile','payments'].forEach(s => {
+    ['dashboard','vehicles','bookings','requests','reviews','profile','payments'].forEach(s => {
         const el = document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1));
         if (el) el.style.display = (s === name) ? '' : 'none';
     });
@@ -657,6 +714,7 @@ function showSection(name, linkEl) {
 
     if (name === 'vehicles') loadVehicles();
     if (name === 'bookings') loadBookings();
+    if (name === 'requests') loadRequests();
     if (name === 'reviews')  loadVendorReviews();
     if (name === 'profile')  loadProfile();
     if (name === 'payments') loadVendorPayments();
@@ -991,10 +1049,37 @@ const darkTooltipPlugin = {
         const pad={x:12,y:8};
         ctx.save();ctx.font='600 12px Poppins,sans-serif';
         const tw=ctx.measureText(text).width;
-        const bw=tw+pad.x*2,bh=32,bx=caretX-bw/2,by=caretY-bh-14,r=8;
-        ctx.beginPath();ctx.moveTo(bx+r,by);ctx.lineTo(bx+bw-r,by);ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);ctx.lineTo(bx+bw,by+bh-r);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);ctx.lineTo(caretX+7,by+bh);ctx.lineTo(caretX,by+bh+8);ctx.lineTo(caretX-7,by+bh);ctx.lineTo(bx+r,by+bh);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);ctx.lineTo(bx,by+r);ctx.quadraticCurveTo(bx,by,bx+r,by);ctx.closePath();
+        const bw=tw+pad.x*2,bh=32,r=8;
+        // Clamp horizontally so tooltip never overflows left/right
+        const chartW=chart.width;
+        let bx=caretX-bw/2;
+        if(bx<4)bx=4;
+        if(bx+bw>chartW-4)bx=chartW-bw-4;
+        // Place above bar; if it would go off-canvas top, place below instead
+        const aboveY=caretY-bh-14;
+        const belowBase=caretY+14;
+        const showAbove=aboveY>=4;
+        const by=showAbove?aboveY:belowBase;
+        ctx.beginPath();
+        if(showAbove){
+            // Arrow pointing down
+            ctx.moveTo(bx+r,by);ctx.lineTo(bx+bw-r,by);ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
+            ctx.lineTo(bx+bw,by+bh-r);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
+            ctx.lineTo(caretX+7,by+bh);ctx.lineTo(caretX,by+bh+8);ctx.lineTo(caretX-7,by+bh);
+            ctx.lineTo(bx+r,by+bh);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
+            ctx.lineTo(bx,by+r);ctx.quadraticCurveTo(bx,by,bx+r,by);
+        } else {
+            // Arrow pointing up
+            ctx.moveTo(caretX-7,by);ctx.lineTo(caretX,by-8);ctx.lineTo(caretX+7,by);
+            ctx.lineTo(bx+bw-r,by);ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
+            ctx.lineTo(bx+bw,by+bh-r);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
+            ctx.lineTo(bx+r,by+bh);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
+            ctx.lineTo(bx,by+r);ctx.quadraticCurveTo(bx,by,bx+r,by);
+        }
+        ctx.closePath();
         ctx.fillStyle='#1e293b';ctx.fill();
-        ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,caretX,by+bh/2);ctx.restore();
+        ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(text,bx+bw/2,by+bh/2);ctx.restore();
     }
 };
 
@@ -1403,69 +1488,38 @@ function renderNotifications() {
     const list    = document.getElementById('notifList');
     const badge   = document.getElementById('notifBadge');
     const counter = document.getElementById('notifPendingCount');
+    const navBadge = document.getElementById('navRequestsBadge');
 
     const pending = notifData.filter(b => b.bookingStatus === 'PENDING');
     if (pending.length > 0) {
-        badge.style.display = '';
-        badge.textContent   = pending.length > 9 ? '9+' : pending.length;
+        badge.style.display    = '';
+        badge.textContent      = pending.length > 9 ? '9+' : pending.length;
+        navBadge.textContent   = pending.length > 9 ? '9+' : pending.length;
+        navBadge.style.display = '';
     } else {
-        badge.style.display = 'none';
+        badge.style.display    = 'none';
+        navBadge.style.display = 'none';
     }
-    counter.textContent = pending.length > 0 ? `${pending.length} pending` : 'All resolved';
+    counter.textContent = pending.length > 0 ? `${pending.length} pending` : 'No new requests';
 
-    if (!notifData.length) {
-        list.innerHTML = '<div style="padding:24px;text-align:center;color:#9ca3af;font-size:0.85rem;">No booking requests yet.</div>';
-        return;
-    }
-
-    list.innerHTML = notifData.map(b => buildNotifCard(b)).join('');
+    const cards = pending.map(b => buildNotifCard(b)).join('');
+    list.innerHTML = cards || '<div style="padding:24px;text-align:center;color:#9ca3af;font-size:0.85rem;">No pending booking requests.</div>';
 }
 
 function buildNotifCard(b) {
-    const isPending   = b.bookingStatus === 'PENDING';
-    const isConfirmed = b.bookingStatus === 'CONFIRMED';
-    const date = b.createdAt ? b.createdAt.slice(0, 10) : '—';
-
-    const statusBadge = isPending
-        ? `<span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;">PENDING</span>`
-        : isConfirmed
-            ? `<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;">APPROVED</span>`
-            : `<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;">REJECTED</span>`;
-
-    const actionButtons = isPending ? `
-        <div style="display:flex;gap:8px;margin-top:10px;">
-            <button onclick="handleBookingAction(${b.bookingId},'approve')" style="flex:1;padding:7px 0;background:#4a6cf7;color:white;border:none;border-radius:7px;font-size:0.8rem;font-weight:600;cursor:pointer;">
-                ✓ Approve
-            </button>
-            <button onclick="handleBookingAction(${b.bookingId},'reject')" style="flex:1;padding:7px 0;background:white;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:0.8rem;font-weight:600;cursor:pointer;">
-                ✕ Reject
-            </button>
-        </div>` : '';
-
-    const licenseHtml = b.customerLicenseImage
-        ? `<img src="http://localhost:8081${b.customerLicenseImage}" alt="License" style="width:100%;max-height:120px;object-fit:contain;border-radius:6px;border:1px solid #e5e7eb;background:#f9fafb;margin-top:6px;"/>`
-        : '';
-
+    const isPending = b.bookingStatus === 'PENDING';
+    if (!isPending) return ''; // only show pending requests in notification dropdown
     return `
-        <div id="notif-${b.bookingId}" style="padding:14px 16px;border-bottom:1px solid #f3f4f6;">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;">
-                <div>
-                    <div style="font-weight:600;font-size:0.85rem;color:#111827;">${b.customerName || 'Customer'}</div>
-                    <div style="font-size:0.72rem;color:#6b7280;">${b.customerEmail || ''} ${b.customerPhone ? '· ' + b.customerPhone : ''}</div>
+        <div style="padding:13px 16px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:0.84rem;color:#111827;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    <strong>${b.customerName || 'A customer'}</strong> wants to book <strong>${b.vehicleName || 'your vehicle'}</strong>
                 </div>
-                ${statusBadge}
+                <div style="font-size:0.72rem;color:#9ca3af;margin-top:2px;">${b.createdAt ? b.createdAt.slice(0,10) : ''}</div>
             </div>
-            <div style="font-size:0.8rem;color:#374151;margin-bottom:4px;">
-                <strong>${b.vehicleName || '—'}</strong> &nbsp;·&nbsp; <code style="font-size:0.72rem;">${b.vehicleNo || ''}</code>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:0.75rem;color:#6b7280;">
-                <span>📅 ${b.startDate || '—'} → ${b.endDate || '—'}</span>
-                <span>⏱ ${b.durationDays != null ? b.durationDays + ' day(s)' : '—'}</span>
-                <span>💰 NPR ${b.totalPrice != null ? Number(b.totalPrice).toLocaleString('en-NP') : '—'}</span>
-                <span>🕒 Booked: ${date}</span>
-            </div>
-            ${licenseHtml}
-            ${actionButtons}
+            <button onclick="goToRequests()" style="flex-shrink:0;padding:6px 14px;background:#4a6cf7;color:white;border:none;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+                View
+            </button>
         </div>
     `;
 }
@@ -1508,6 +1562,142 @@ async function handleBookingAction(bookingId, action) {
     }
 }
 
+// ── Requests Section ──────────────────────────────────────────────────────
+function goToRequests() {
+    // Close notification dropdown
+    document.getElementById('notifDropdown').style.display = 'none';
+    showSection('requests', document.getElementById('navRequests'));
+}
+
+function buildRequestActionCell(b) {
+    if (b.bookingStatus === 'PENDING') {
+        return `<div style="display:flex;gap:6px;">
+            <button id="approve-${b.bookingId}" onclick="handleRequest(${b.bookingId},'approve')"
+                style="padding:6px 14px;background:#4a6cf7;color:white;border:none;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;">
+                Approve
+            </button>
+            <button id="reject-${b.bookingId}" onclick="handleRequest(${b.bookingId},'reject')"
+                style="padding:6px 14px;background:white;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;">
+                Reject
+            </button>
+        </div>`;
+    }
+    if (b.bookingStatus === 'CONFIRMED') {
+        return `<span style="display:inline-block;padding:5px 12px;background:#dcfce7;color:#16a34a;border-radius:20px;font-size:0.76rem;font-weight:600;">Approved</span>`;
+    }
+    if (b.bookingStatus === 'CANCELLED') {
+        return `<span style="display:inline-block;padding:5px 12px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:0.76rem;font-weight:600;">Rejected</span>`;
+    }
+    return `<span style="display:inline-block;padding:5px 12px;background:#f3f4f6;color:#6b7280;border-radius:20px;font-size:0.76rem;font-weight:600;">${b.bookingStatus || '—'}</span>`;
+}
+
+async function loadRequests() {
+    const tbody = document.getElementById('reqTableBody');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+    try {
+        const res = await fetch('/api/vendor/bookings', {
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        if (!res.ok) throw new Error('Failed to load requests');
+        const requests = await res.json();
+
+        const pendingCount = requests.filter(b => b.bookingStatus === 'PENDING').length;
+        const badge = document.getElementById('reqPendingBadge');
+        const navBadge = document.getElementById('navRequestsBadge');
+        document.getElementById('reqCount').textContent = pendingCount + ' pending';
+
+        if (pendingCount > 0) {
+            badge.textContent = pendingCount + ' pending approval';
+            badge.style.display = '';
+            navBadge.textContent = pendingCount > 9 ? '9+' : pendingCount;
+            navBadge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+            navBadge.style.display = 'none';
+        }
+
+        if (!requests.length) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af;">No booking requests yet.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = requests.map(b => {
+            const fmtD = d => d ? new Date(d).toLocaleDateString('en-US',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+            return `
+            <tr id="req-row-${b.bookingId}">
+                <td>
+                    <div style="font-weight:600;font-size:0.85rem;">${b.customerName || '—'}</div>
+                    <div style="font-size:0.75rem;color:#6b7280;">${b.customerEmail || ''}</div>
+                    ${b.customerPhone ? `<div style="font-size:0.75rem;color:#6b7280;">${b.customerPhone}</div>` : ''}
+                    ${b.customerLicenseImage ? `<a href="http://localhost:8081${b.customerLicenseImage}" target="_blank" style="font-size:0.72rem;color:#4a6cf7;text-decoration:none;">View License</a>` : ''}
+                </td>
+                <td>
+                    <div style="font-weight:600;">${b.vehicleName || '—'}</div>
+                    <div style="font-size:0.75rem;color:#6b7280;">${b.vehicleNo || ''}</div>
+                </td>
+                <td style="font-size:0.83rem;">${b.pickupLocation || '—'}</td>
+                <td style="font-size:0.82rem;white-space:nowrap;">${fmtD(b.startDate)} → ${fmtD(b.endDate)}</td>
+                <td style="font-size:0.82rem;">${b.durationDays != null ? b.durationDays + 'd' : '—'}</td>
+                <td style="font-weight:700;">NPR ${b.totalPrice != null ? Number(b.totalPrice).toLocaleString('en-NP') : '—'}</td>
+                <td style="font-size:0.78rem;color:#6b7280;white-space:nowrap;">${b.createdAt ? b.createdAt.slice(0,10) : '—'}</td>
+                <td id="action-cell-${b.bookingId}">${buildRequestActionCell(b)}</td>
+            </tr>`;
+        }).join('');
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+    }
+}
+
+async function handleRequest(bookingId, action) {
+    const approveBtn = document.getElementById(`approve-${bookingId}`);
+    const rejectBtn  = document.getElementById(`reject-${bookingId}`);
+    if (approveBtn) approveBtn.disabled = true;
+    if (rejectBtn)  rejectBtn.disabled  = true;
+
+    try {
+        const res = await fetch(`/api/vendor/bookings/${bookingId}/${action}`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + TOKEN() }
+        });
+        if (!res.ok) throw new Error(await res.text());
+
+        const actionCell = document.getElementById(`action-cell-${bookingId}`);
+        if (actionCell) {
+            if (action === 'approve') {
+                actionCell.innerHTML = `<span style="display:inline-block;padding:5px 12px;background:#dcfce7;color:#16a34a;border-radius:20px;font-size:0.76rem;font-weight:600;">Approved</span>`;
+            } else {
+                actionCell.innerHTML = `<span style="display:inline-block;padding:5px 12px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:0.76rem;font-weight:600;">Rejected</span>`;
+            }
+        }
+        refreshRequestCount();
+        showToast(action === 'approve' ? 'Booking approved!' : 'Booking rejected.', action === 'approve' ? 'success' : 'error');
+
+        // Refresh notification badge
+        loadNotifications();
+    } catch (e) {
+        showToast('Failed: ' + e.message, 'error');
+        if (approveBtn) approveBtn.disabled = false;
+        if (rejectBtn)  rejectBtn.disabled  = false;
+    }
+}
+
+function refreshRequestCount() {
+    // Count rows that still have approve/reject buttons (i.e. still PENDING)
+    const remaining = document.querySelectorAll('[id^="approve-"]').length;
+    document.getElementById('reqCount').textContent = remaining + ' pending';
+    const badge = document.getElementById('reqPendingBadge');
+    const navBadge = document.getElementById('navRequestsBadge');
+    if (remaining > 0) {
+        badge.textContent = remaining + ' pending approval';
+        badge.style.display = '';
+        navBadge.textContent = remaining > 9 ? '9+' : remaining;
+        navBadge.style.display = '';
+    } else {
+        badge.style.display = 'none';
+        navBadge.style.display = 'none';
+    }
+}
+
 // ── Vendor Payments ───────────────────────────────────────────────────────
 function fmtNpr(v) {
     return v != null ? 'NPR ' + Number(v).toLocaleString('en-NP', { minimumFractionDigits: 2 }) : '—';
@@ -1530,23 +1720,23 @@ async function loadVendorPayments() {
     try {
         const res = await fetch('/api/vendor/payments', { headers: { 'Authorization': 'Bearer ' + TOKEN() } });
         const payments = res.ok ? await res.json() : [];
-        document.getElementById('vpCount').textContent = payments.length + ' transactions';
+        document.getElementById('vpCount').textContent = payments.length + ' transaction' + (payments.length !== 1 ? 's' : '');
         if (!payments.length) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">No payments yet.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af;">No payments yet.</td></tr>';
             return;
         }
         tbody.innerHTML = payments.map((p, i) => `
             <tr>
-                <td style="color:#6b7280;font-size:0.78rem;">${i + 1}</td>
+                <td style="color:#9ca3af;font-size:0.78rem;font-weight:500;">${i + 1}</td>
                 <td>
-                    <div style="font-weight:600;font-size:0.85rem;">${p.customerName || '—'}</div>
+                    <div style="font-weight:600;font-size:0.85rem;color:#111827;">${p.customerName || '—'}</div>
                     <div style="font-size:0.75rem;color:#6b7280;">${p.customerEmail || ''}</div>
                 </td>
-                <td style="font-weight:500;">${p.vehicleName || '—'}</td>
-                <td style="font-weight:600;color:#111;">${fmtNpr(p.totalAmount)}</td>
-                <td style="font-weight:700;color:#22c55e;">${fmtNpr(p.vendorAmount)}</td>
-                <td><span style="background:#eef0ff;color:#4a6cf7;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;text-transform:uppercase;">${p.paymentMethod || '—'}</span></td>
-                <td style="font-size:0.75rem;color:#6b7280;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p.transactionId || ''}">${p.transactionId || '—'}</td>
+                <td style="font-weight:600;font-size:0.85rem;">${p.vehicleName || '—'}</td>
+                <td style="font-weight:600;color:#374151;">${fmtNpr(p.totalAmount)}</td>
+                <td style="font-weight:700;color:#16a34a;font-size:0.92rem;">${fmtNpr(p.vendorAmount)}</td>
+                <td><span style="background:#eef0ff;color:#4a6cf7;padding:4px 10px;border-radius:20px;font-size:0.74rem;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;">${p.paymentMethod || '—'}</span></td>
+                <td style="font-size:0.75rem;color:#6b7280;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;" title="${p.transactionId || ''}">${p.transactionId || '—'}</td>
                 <td style="font-size:0.8rem;color:#6b7280;white-space:nowrap;">${p.paidAt ? p.paidAt.slice(0,10) : '—'}</td>
             </tr>
         `).join('');
