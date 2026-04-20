@@ -368,13 +368,14 @@
                             <th>End Date</th>
                             <th>Duration</th>
                             <th>Total Amount</th>
+                            <th>Payment Status</th>
                             <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody id="bookingsTableBody">
                         <tr id="bookingsLoadingRow">
-                            <td colspan="9" style="text-align:center;padding:40px;color:#9ca3af;">Loading bookings...</td>
+                            <td colspan="10" style="text-align:center;padding:40px;color:#9ca3af;">Loading bookings...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1452,10 +1453,18 @@ function bkStatusBadge(status) {
     return `<span class="bk-badge ${cls[status] || ''}">${status || '—'}</span>`;
 }
 
+function paymentStatusBadge(paymentStatus) {
+    const status = (paymentStatus || 'UNPAID').toUpperCase();
+    const isPaid = status === 'PAID';
+    const bg = isPaid ? '#dcfce7' : '#fee2e2';
+    const color = isPaid ? '#166534' : '#991b1b';
+    return `<span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;background:${bg};color:${color};">${isPaid ? 'Paid' : 'Unpaid'}</span>`;
+}
+
 function renderBookingsTable(bookings) {
     const tbody = document.getElementById('bookingsTableBody');
     if (!bookings.length) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#9ca3af;">No bookings found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:#9ca3af;">No bookings found.</td></tr>';
         return;
     }
     tbody.innerHTML = bookings.map((b, i) => `
@@ -1473,6 +1482,7 @@ function renderBookingsTable(bookings) {
             <td>${b.endDate   || '—'}</td>
             <td>${b.durationDays != null ? b.durationDays + ' day' + (b.durationDays !== 1 ? 's' : '') : '—'}</td>
             <td style="font-weight:600;">NPR ${b.totalPrice != null ? Number(b.totalPrice).toLocaleString('en-NP') : '—'}</td>
+            <td>${paymentStatusBadge(b.paymentStatus)}</td>
             <td>${bkStatusBadge(b.bookingStatus)}</td>
             <td>
                 <button class="vv-btn-edit" onclick="openBookingDetail(${b.bookingId})">Details</button>
