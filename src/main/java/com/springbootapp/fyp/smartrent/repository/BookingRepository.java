@@ -34,10 +34,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             @Param("status")      Booking.BookingStatus status
     );
 
-    @Query("SELECT COUNT(b) FROM Booking b WHERE b.vehicle.vendor.email = :vendorEmail AND b.bookingStatus = 'CONFIRMED'")
+    @Query("SELECT COUNT(b) FROM Booking b WHERE b.vehicle.vendor.email = :vendorEmail AND (b.bookingStatus = 'CONFIRMED' OR b.bookingStatus = 'REFUNDED')")
     long countActiveByVendor(@Param("vendorEmail") String vendorEmail);
 
-    @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.vehicle.vendor.email = :vendorEmail AND b.bookingStatus = 'CONFIRMED'")
+    @Query("SELECT (COALESCE(SUM(b.totalPrice), 0) - (SELECT COALESCE(SUM(r.refundAmount), 0) FROM Refund r WHERE r.booking.vehicle.vendor.email = :vendorEmail)) FROM Booking b WHERE b.vehicle.vendor.email = :vendorEmail AND (b.bookingStatus = 'CONFIRMED' OR b.bookingStatus = 'REFUNDED')")
     java.math.BigDecimal sumRevenueByVendor(@Param("vendorEmail") String vendorEmail);
 
     @Query("""

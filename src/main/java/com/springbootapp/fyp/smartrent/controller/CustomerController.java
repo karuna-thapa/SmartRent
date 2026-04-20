@@ -2,22 +2,20 @@ package com.springbootapp.fyp.smartrent.controller;
 
 import com.springbootapp.fyp.smartrent.dto.BookingResponseDto;
 import com.springbootapp.fyp.smartrent.dto.CustomerProfileDto;
-import com.springbootapp.fyp.smartrent.model.Booking;
-import com.springbootapp.fyp.smartrent.model.Customer;
-import com.springbootapp.fyp.smartrent.model.Vehicle;
-import com.springbootapp.fyp.smartrent.repository.BookingRepository;
-import com.springbootapp.fyp.smartrent.repository.CustomerRepository;
-import com.springbootapp.fyp.smartrent.repository.VehicleImageRepository;
-import com.springbootapp.fyp.smartrent.repository.VehicleRepository;
+import com.springbootapp.fyp.smartrent.model.*;
+import com.springbootapp.fyp.smartrent.repository.*;
 import com.springbootapp.fyp.smartrent.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,9 @@ public class CustomerController {
     @Autowired private BookingRepository bookingRepository;
     @Autowired private VehicleRepository vehicleRepository;
     @Autowired private VehicleImageRepository vehicleImageRepository;
+    @Autowired private RefundRepository refundRepository;
+    @Autowired private PaymentRepository paymentRepository;
+    @Autowired private com.springbootapp.fyp.smartrent.service.BookingService bookingService;
 
     // GET /api/customer/profile
     @GetMapping("/profile")
@@ -152,76 +153,95 @@ public class CustomerController {
         return ResponseEntity.ok(dtos);
     }
 
-    // POST /api/customer/bookings
+        // POST /api/customer/bookings
     @PostMapping("/bookings")
     public ResponseEntity<?> createBooking(@RequestBody Map<String, Object> body) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            Customer customer = customerRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Integer vehicleId = (Integer) body.get("vehicleId");
-        String startDateStr  = (String) body.get("startDate");
-        String endDateStr    = (String) body.get("endDate");
-        String pickupLoc     = (String) body.get("pickupLocation");
-        String dropoffLoc    = (String) body.get("dropoffLocation");
-        String paymentMode   = (String) body.get("paymentMode"); // "pay" or "book"
+            Integer vehicleId = (Integer) body.get("vehicleId");
+            String startDateStr  = (String) body.get("startDate");
+            String endDateStr    = (String) body.get("endDate");
+            String pickupLoc     = (String) body.get("pickupLocation");
+            String dropoffLoc    = (String) body.get("dropoffLocation");
+            String paymentMode   = (String) body.get("paymentMode"); // "pay" or "book"
 
-        if (vehicleId == null || startDateStr == null || endDateStr == null)
-            return ResponseEntity.badRequest().body("Missing required fields.");
+            if (vehicleId == null || startDateStr == null || endDateStr == null)
+                return ResponseEntity.badRequest().body("Missing required fields.");
 
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElse(null);
-        if (vehicle == null)
-            return ResponseEntity.badRequest().body("Vehicle not found.");
+            Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                    .orElse(null);
+            if (vehicle == null)
+                return ResponseEntity.badRequest().body("Vehicle not found.");
 
-        // datetime-local sends "2026-04-15T14:00" — strip the time part if present
-        LocalDate startDate = LocalDate.parse(startDateStr.length() > 10 ? startDateStr.substring(0, 10) : startDateStr);
-        LocalDate endDate   = LocalDate.parse(endDateStr.length()   > 10 ? endDateStr.substring(0, 10)   : endDateStr);
-        if (!endDate.isAfter(startDate))
-            return ResponseEntity.badRequest().body("End date must be after start date.");
+            // datetime-local sends "2026-04-15T14:00" — strip the time part if present
+            LocalDate startDate = LocalDate.parse(startDateStr.length() > 10 ? startDateStr.substring(0, 10) : startDateStr);
+            LocalDate endDate   = LocalDate.parse(endDateStr.length()   > 10 ? endDateStr.substring(0, 10)   : endDateStr);
+            if (!endDate.isAfter(startDate))
+                return ResponseEntity.badRequest().body("End date must be after start date.");
 
-        long days = Math.max(1, ChronoUnit.DAYS.between(startDate, endDate));
-        BigDecimal price    = vehicle.getRentalPrice().multiply(BigDecimal.valueOf(days));
-        BigDecimal fee      = price.multiply(BigDecimal.valueOf(0.05)).setScale(2, java.math.RoundingMode.HALF_UP);
-        BigDecimal total    = price.add(fee);
+            long days = Math.max(1, ChronoUnit.DAYS.between(startDate, endDate));
+            BigDecimal price    = vehicle.getRentalPrice().multiply(BigDecimal.valueOf(days));
+            BigDecimal fee      = price.multiply(BigDecimal.valueOf(0.05)).setScale(2, java.math.RoundingMode.HALF_UP);
+            BigDecimal total    = price.add(fee);
 
-        Booking booking = new Booking();
-        booking.setCustomer(customer);
-        booking.setVehicle(vehicle);
-        booking.setStartDate(startDate);
-        booking.setEndDate(endDate);
-        booking.setTotalPrice(total);
-        booking.setPickupLocation(pickupLoc);
-        booking.setDropoffLocation(dropoffLoc);
-        booking.setBookingStatus(Booking.BookingStatus.PENDING);
-        booking.setPaymentStatus("pay".equals(paymentMode)
-                ? Booking.PaymentStatus.PAID : Booking.PaymentStatus.UNPAID);
+            Booking booking = new Booking();
+            booking.setCustomer(customer);
+            booking.setVehicle(vehicle);
+            booking.setStartDate(startDate);
+            booking.setEndDate(endDate);
+            booking.setTotalPrice(total);
+            booking.setPickupLocation(pickupLoc);
+            booking.setDropoffLocation(dropoffLoc);
+            booking.setBookingStatus(Booking.BookingStatus.PENDING);
+            // Explicitly cast paymentStatus to Booking.PaymentStatus enum
+            booking.setPaymentStatus("pay".equals(paymentMode)
+                    ? Booking.PaymentStatus.PAID : Booking.PaymentStatus.UNPAID);
 
-        bookingRepository.save(booking);
+            bookingRepository.save(booking);
 
-        BookingResponseDto dto = BookingResponseDto.from(booking);
-        List<com.springbootapp.fyp.smartrent.model.VehicleImage> images =
-                vehicleImageRepository.findByVehicle_VehicleId(vehicleId);
-        if (!images.isEmpty()) dto.setVehicleImageUrl(images.get(0).getImageUrl());
+            BookingResponseDto dto = BookingResponseDto.from(booking);
+            List<com.springbootapp.fyp.smartrent.model.VehicleImage> images =
+                    vehicleImageRepository.findByVehicle_VehicleId(vehicleId);
+            if (!images.isEmpty()) dto.setVehicleImageUrl(images.get(0).getImageUrl());
 
-        return ResponseEntity.status(201).body(dto);
+            return ResponseEntity.status(201).body(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Internal Server Error: " + e.getMessage());
+        }
     }
 
     // PUT /api/customer/bookings/{id}/cancel
     @PutMapping("/bookings/{id}/cancel")
     public ResponseEntity<?> cancelMyBooking(@PathVariable Integer id) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return bookingRepository.findById(id).map(b -> {
-            if (!b.getCustomer().getCustomerId().equals(customer.getCustomerId()))
-                return ResponseEntity.status(403).body("Not your booking.");
-            if (b.getBookingStatus() == Booking.BookingStatus.CANCELLED)
-                return ResponseEntity.badRequest().body("Already cancelled.");
-            b.setBookingStatus(Booking.BookingStatus.CANCELLED);
-            bookingRepository.save(b);
-            return ResponseEntity.ok("Booking cancelled.");
-        }).orElse(ResponseEntity.notFound().build());
+        try {
+            // Get current user email from security context
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String email;
+            if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
+                email = ((org.springframework.security.core.userdetails.UserDetails) principal).getUsername();
+            } else {
+                email = principal.toString();
+            }
+
+            Customer customer = customerRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found: " + email));
+
+            String message = bookingService.cancelBooking(id, customer.getCustomerId());
+            return ResponseEntity.ok(message);
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body("Cancellation failed due to booking/refund schema mismatch. Please restart the server so DB updates apply, then retry.");
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
     }
 
     // PUT /api/customer/bookings/{id}/pay

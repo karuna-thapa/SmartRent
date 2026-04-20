@@ -43,10 +43,10 @@ public class Booking {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "booking_status", columnDefinition = "ENUM('PENDING','CONFIRMED','CANCELLED') DEFAULT 'PENDING'")
+    @Column(name = "booking_status", columnDefinition = "ENUM('PENDING','CONFIRMED','CANCELLED','REFUNDED') DEFAULT 'PENDING'")
     private BookingStatus bookingStatus = BookingStatus.PENDING;
 
-    public enum BookingStatus { PENDING, CONFIRMED, CANCELLED }
+    public enum BookingStatus { PENDING, CONFIRMED, CANCELLED, REFUNDED }
 
     @Column(name = "pickup_location", length = 200)
     private String pickupLocation;
@@ -55,10 +55,13 @@ public class Booking {
     private String dropoffLocation;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status", columnDefinition = "ENUM('UNPAID','PAID') DEFAULT 'UNPAID'")
+    @Column(name = "payment_status", columnDefinition = "ENUM('UNPAID','PAID','REFUNDED') DEFAULT 'UNPAID'")
     private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
 
-    public enum PaymentStatus { UNPAID, PAID }
+    public enum PaymentStatus { UNPAID, PAID, REFUNDED }
+
+    @Column(name = "warning_sent", nullable = false)
+    private Boolean warningSent = false;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

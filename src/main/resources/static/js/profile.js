@@ -598,11 +598,14 @@ async function cancelBooking(id) {
             method: 'PUT',
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
         });
-        if (!res.ok) throw new Error('Failed');
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || 'Failed to cancel booking.');
+        }
         showToast('Booking cancelled.', 'success');
         loadMyBookings();
     } catch (e) {
-        showToast('Failed to cancel booking.', 'error');
+        showToast(e.message || 'Failed to cancel booking.', 'error');
     } finally {
         showLoading(false);
     }

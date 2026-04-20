@@ -2,7 +2,9 @@ package com.springbootapp.fyp.smartrent.controller;
 
 import com.springbootapp.fyp.smartrent.dto.BookingResponseDto;
 import com.springbootapp.fyp.smartrent.model.Booking;
+import com.springbootapp.fyp.smartrent.model.CancellationRequest;
 import com.springbootapp.fyp.smartrent.repository.BookingRepository;
+import com.springbootapp.fyp.smartrent.repository.CancellationRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -19,6 +22,9 @@ public class VendorBookingController {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private CancellationRequestRepository cancellationRequestRepository;
 
     /**
      * GET /api/vendor/bookings
@@ -90,8 +96,41 @@ public class VendorBookingController {
         if (!booking.getVehicle().getVendor().getEmail().equals(principal.getName())) {
             return ResponseEntity.status(403).body("Not authorized.");
         }
+
+        if (booking.getPaymentStatus() == Booking.PaymentStatus.PAID) {
+            return ResponseEntity.badRequest().body("Client has already paid. You must request cancellation from admin.");
+        }
+
         booking.setBookingStatus(Booking.BookingStatus.CANCELLED);
         bookingRepository.save(booking);
         return ResponseEntity.ok(BookingResponseDto.from(booking));
+    }
+
+    /**
+     * POST /api/vendor/bookings/{id}/cancel-request
+     */
+    @PostMapping("/{id}/cancel-request")
+    public ResponseEntity<?> requestCancellation(@PathVariable Integer id, @RequestBody Map<String, String> body, Principal principal) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        if (!booking.getVehicle().getVendor().getEmail().equals(principal.getName())) {
+            return ResponseEntity.status(403).body("Not authorized.");
+        }
+
+        if (booking.getPaymentStatus() != Booking.PaymentStatus.PAID) {
+            return ResponseEntity.badRequest().body("Cancellation request only needed for paid bookings. Use reject for unpaid ones.");
+        }
+
+        if (cancellationRequestRepository.findByBooking(booking).isPresent()) {
+            return ResponseEntity.badRequest().body("Cancellation request already exists for this booking.");
+        }
+
+        CancellationRequest request = new CancellationRequest();
+        request.setBooking(booking);
+        request.setReason(body.get("reason"));
+        request.setStatus(CancellationRequest.RequestStatus.PENDING);
+        cancellationRequestRepository.save(request);
+
+        return ResponseEntity.ok("Cancellation request sent to admin.");
     }
 }

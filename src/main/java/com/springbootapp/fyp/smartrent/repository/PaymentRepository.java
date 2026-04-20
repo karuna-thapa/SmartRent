@@ -39,7 +39,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     long countPaid();
 
     // Vendor stats
-    @Query("SELECT COALESCE(SUM(p.vendorAmount), 0) FROM Payment p WHERE p.paymentStatus = 'paid' AND p.booking.vehicle.vendor.email = :vendorEmail")
+    @Query("SELECT (COALESCE(SUM(p.vendorAmount), 0) - (SELECT COALESCE(SUM(r.refundAmount), 0) FROM Refund r WHERE r.booking.vehicle.vendor.email = :vendorEmail AND r.refundStatus = 'PROCESSED')) FROM Payment p WHERE p.paymentStatus = 'paid' AND p.booking.vehicle.vendor.email = :vendorEmail")
     BigDecimal sumVendorRevenue(@Param("vendorEmail") String vendorEmail);
 
     @Query("SELECT COUNT(p) FROM Payment p WHERE p.paymentStatus = 'paid' AND p.booking.vehicle.vendor.email = :vendorEmail")
