@@ -348,7 +348,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>S.N.</th>
                             <th>Customer</th>
                             <th>Vehicle</th>
                             <th>Start Date</th>
@@ -395,7 +395,7 @@
                             <th>Duration</th>
                             <th>Total</th>
                             <th>Requested</th>
-                            <th>Action</th>
+                            <th style="text-align:right;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="reqTableBody">
@@ -565,7 +565,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>S.N.</th>
                             <th>Customer</th>
                             <th>Vehicle</th>
                             <th>Total Paid</th>
@@ -680,6 +680,38 @@
 <!-- ===== TOAST ===== -->
 <div id="vendorToast" class="admin-toast"></div>
 
+<!-- ===== LOGIN POPUP MODAL ===== -->
+<div class="vv-modal-overlay" id="loginPopupOverlay" onclick="closeLoginPopupOnOverlay(event)">
+    <div class="vv-modal" style="width:480px; padding:0; border-radius:16px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.15);">
+        <div style="padding:20px 24px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between;">
+            <h3 style="margin:0; font-size:1.1rem; font-weight:700; color:#111827;">Booking Requests</h3>
+            <span id="loginPopupPendingCount" style="font-size:0.85rem; color:#6b7280;">0 pending</span>
+        </div>
+        <div id="loginPopupList" style="max-height:400px; overflow-y:auto;">
+            <!-- Notif cards will be injected here -->
+        </div>
+        <div style="padding:16px 24px; border-top:1px solid #f3f4f6; background:#f9fafb; display:flex; justify-content:flex-end;">
+            <button class="btn-action" onclick="closeLoginPopup()" style="padding:8px 20px; font-weight:600;">Dismiss</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== BOOKING DETAIL MODAL (Enhanced) ===== -->
+<div class="vv-modal-overlay" id="requestDetailOverlay" onclick="closeRequestDetailOnOverlay(event)">
+    <div class="vv-modal" style="width:640px;">
+        <div class="vv-modal-header">
+            <h3 id="reqDetailTitle">Booking Request Details</h3>
+            <button class="vv-modal-close" onclick="closeRequestDetail()">✕</button>
+        </div>
+        <div class="vv-modal-body" id="requestDetailBody" style="padding:0;">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+        <div class="vv-modal-footer" id="reqDetailFooter" style="padding:16px 24px;border-top:1px solid #f3f4f6;display:flex;justify-content:flex-end;gap:12px;">
+            <!-- Buttons will be injected -->
+        </div>
+    </div>
+</div>
+
 <script>
 // ── Auth guard ────────────────────────────────────────────────────────────
 (function () {
@@ -694,9 +726,55 @@
         document.getElementById('vendorName').textContent = name;
         document.getElementById('topbarWelcome').textContent = 'Welcome back, ' + name + '!';
     }
+
+    // Check if we should show the login popup (only once per session)
+    if (!sessionStorage.getItem('loginPopupShown')) {
+        setTimeout(showLoginPopup, 1500);
+        sessionStorage.setItem('loginPopupShown', 'true');
+    }
 })();
 
 const TOKEN = () => localStorage.getItem('token');
+
+function showLoginPopup() {
+    fetch('/api/vendor/bookings/notifications', {
+        headers: { 'Authorization': 'Bearer ' + TOKEN() }
+    })
+    .then(res => res.json())
+    .then(data => {
+        const pendingItems = data.filter(b => b.bookingStatus === 'PENDING');
+        if (pendingItems.length > 0) {
+            document.getElementById('loginPopupPendingCount').textContent = `${pendingItems.length} pending`;
+            const listContainer = document.getElementById('loginPopupList');
+            listContainer.innerHTML = pendingItems.map(b => `
+                <div style="padding:16px 24px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-size:0.95rem; color:#111827; font-weight:700; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            ${b.customerName || 'A customer'} <span style="font-weight:400; color:#374151;">wants to book</span> ${b.vehicleName || 'Vehicle'}
+                        </div>
+                        <div style="font-size:0.8rem; color:#9ca3af;">${b.createdAt ? b.createdAt.slice(0,10) : ''}</div>
+                    </div>
+                    <button onclick="closeLoginPopup(); goToRequests();" style="flex-shrink:0; padding:8px 22px; background:#4a6cf7; color:white; border:none; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:inherit;">
+                        View
+                    </button>
+                </div>
+            `).join('');
+            
+            document.getElementById('loginPopupOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+    })
+    .catch(() => {});
+}
+
+function closeLoginPopup() {
+    document.getElementById('loginPopupOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function closeLoginPopupOnOverlay(e) {
+    if (e.target === document.getElementById('loginPopupOverlay')) closeLoginPopup();
+}
 
 function logout() {
     localStorage.clear();
@@ -1152,7 +1230,7 @@ function renderDashRecentBookings(bookings) {
     const statusCls = { PENDING: 'pending', CONFIRMED: 'confirmed', CANCELLED: 'cancelled' };
     tbody.innerHTML = bookings.map(b => `
         <tr>
-            <td style="font-weight:600;color:#6b7280;font-size:0.78rem;">#${b.bookingId}</td>
+            <td style="color:#9ca3af;font-size:0.78rem;font-weight:500;">${i + 1}</td>
             <td style="font-weight:600;">${b.vehicleName || '—'}</td>
             <td>${b.customerName || '—'}</td>
             <td>${b.startDate || '—'}</td>
@@ -1231,9 +1309,9 @@ function renderBookingsTable(bookings) {
         tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#9ca3af;">No bookings found.</td></tr>';
         return;
     }
-    tbody.innerHTML = bookings.map(b => `
+    tbody.innerHTML = bookings.map((b, i) => `
         <tr>
-            <td style="font-weight:600;color:#6b7280;font-size:0.78rem;">#${b.bookingId}</td>
+            <td style="color:#9ca3af;font-size:0.78rem;font-weight:500;">${i + 1}</td>
             <td>
                 <div style="font-weight:600;font-size:0.85rem;">${b.customerName || '—'}</div>
                 <div style="font-size:0.72rem;color:#6b7280;">${b.customerEmail || ''}</div>
@@ -1570,26 +1648,32 @@ function goToRequests() {
 }
 
 function buildRequestActionCell(b) {
+    let btns = '';
     if (b.bookingStatus === 'PENDING') {
-        return `<div style="display:flex;gap:6px;">
+        btns = `
             <button id="approve-${b.bookingId}" onclick="handleRequest(${b.bookingId},'approve')"
-                style="padding:6px 14px;background:#4a6cf7;color:white;border:none;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;">
+                style="padding:6px 12px;background:#4a6cf7;color:white;border:none;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;">
                 Approve
             </button>
             <button id="reject-${b.bookingId}" onclick="handleRequest(${b.bookingId},'reject')"
-                style="padding:6px 14px;background:white;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;">
+                style="padding:6px 12px;background:white;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;">
                 Reject
-            </button>
-        </div>`;
+            </button>`;
+    } else if (b.bookingStatus === 'CONFIRMED') {
+        btns = `<span style="display:inline-block;padding:5px 12px;background:#dcfce7;color:#16a34a;border-radius:20px;font-size:0.76rem;font-weight:600;">Approved</span>`;
+    } else if (b.bookingStatus === 'CANCELLED') {
+        btns = `<span style="display:inline-block;padding:5px 12px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:0.76rem;font-weight:600;">Rejected</span>`;
+    } else {
+        btns = `<span style="display:inline-block;padding:5px 12px;background:#f3f4f6;color:#6b7280;border-radius:20px;font-size:0.76rem;font-weight:600;">${b.bookingStatus || '—'}</span>`;
     }
-    if (b.bookingStatus === 'CONFIRMED') {
-        return `<span style="display:inline-block;padding:5px 12px;background:#dcfce7;color:#16a34a;border-radius:20px;font-size:0.76rem;font-weight:600;">Approved</span>`;
-    }
-    if (b.bookingStatus === 'CANCELLED') {
-        return `<span style="display:inline-block;padding:5px 12px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:0.76rem;font-weight:600;">Rejected</span>`;
-    }
-    return `<span style="display:inline-block;padding:5px 12px;background:#f3f4f6;color:#6b7280;border-radius:20px;font-size:0.76rem;font-weight:600;">${b.bookingStatus || '—'}</span>`;
+
+    return `<div style="display:flex;gap:6px;justify-content:flex-end;align-items:center;">
+        <button onclick="openRequestDetail(${b.bookingId})" style="padding:6px 12px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;">View Details</button>
+        ${btns}
+    </div>`;
 }
+
+let allRequests = []; // To store loaded requests for detail view
 
 async function loadRequests() {
     const tbody = document.getElementById('reqTableBody');
@@ -1600,6 +1684,7 @@ async function loadRequests() {
         });
         if (!res.ok) throw new Error('Failed to load requests');
         const requests = await res.json();
+        allRequests = requests;
 
         const pendingCount = requests.filter(b => b.bookingStatus === 'PENDING').length;
         const badge = document.getElementById('reqPendingBadge');
@@ -1646,6 +1731,125 @@ async function loadRequests() {
     } catch (e) {
         tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
     }
+}
+
+// ── Request Detail Modal ──────────────────────────────────────────────────
+function openRequestDetail(bookingId) {
+    const b = allRequests.find(x => x.bookingId === bookingId);
+    if (!b) return;
+
+    const body = document.getElementById('requestDetailBody');
+    const footer = document.getElementById('reqDetailFooter');
+    
+    body.style.padding = '20px 24px';
+    body.innerHTML = `
+        <p class="bk-section-title">Booking Info</p>
+        <div class="bk-detail-grid">
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Booking ID</span>
+                <span class="bk-detail-value">#${b.bookingId}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Status</span>
+                <span class="bk-detail-value">${bkStatusBadge(b.bookingStatus)}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Start Date</span>
+                <span class="bk-detail-value">${b.startDate || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">End Date</span>
+                <span class="bk-detail-value">${b.endDate || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Duration</span>
+                <span class="bk-detail-value">${b.durationDays != null ? b.durationDays + ' day(s)' : '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Total Amount</span>
+                <span class="bk-detail-value" style="color:var(--primary);font-weight:700;">NPR ${b.totalPrice != null ? Number(b.totalPrice).toLocaleString('en-NP') : '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Rental Type</span>
+                <span class="bk-detail-value">${b.rentalDurationType || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Booked On</span>
+                <span class="bk-detail-value">${b.createdAt ? b.createdAt.slice(0,10) : '—'}</span>
+            </div>
+        </div>
+
+        <p class="bk-section-title">Vehicle</p>
+        <div class="bk-detail-grid">
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Vehicle</span>
+                <span class="bk-detail-value">${b.vehicleName || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Vehicle No.</span>
+                <span class="bk-detail-value">${b.vehicleNo || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Pickup Location</span>
+                <span class="bk-detail-value">${b.pickupLocation || '—'}</span>
+            </div>
+        </div>
+
+        <p class="bk-section-title">Customer</p>
+        <div class="bk-detail-grid">
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Name</span>
+                <span class="bk-detail-value">${b.customerName || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Email</span>
+                <span class="bk-detail-value">${b.customerEmail || '—'}</span>
+            </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Phone</span>
+                <span class="bk-detail-value">${b.customerPhone || '—'}</span>
+            </div>
+        </div>
+
+        <p class="bk-section-title">Customer License</p>
+        ${b.customerLicenseImage
+            ? `<div style="margin-top:8px;">
+                <img src="http://localhost:8081${b.customerLicenseImage}" alt="Customer License"
+                     style="width:100%;max-height:220px;object-fit:contain;border-radius:10px;border:1px solid #e5e7eb;background:#f9fafb;"/>
+               </div>`
+            : `<p style="font-size:0.85rem;color:#9ca3af;margin-top:4px;">No license photo uploaded by this customer.</p>`
+        }
+    `;
+
+    if (b.bookingStatus === 'PENDING') {
+        footer.innerHTML = `
+            <button class="btn-action" onclick="closeRequestDetail()" style="border:none;background:none;color:#64748b;font-weight:600;">Cancel</button>
+            <button class="btn-action" onclick="handleRequestFromModal(${b.bookingId}, 'reject')" style="background:#fff;color:#dc2626;border:1px solid #fca5a5;">Reject Request</button>
+            <button class="btn-action primary" onclick="handleRequestFromModal(${b.bookingId}, 'approve')">Approve Request</button>
+        `;
+    } else {
+        footer.innerHTML = `
+            <button class="btn-action primary" onclick="closeRequestDetail()">Close</button>
+        `;
+    }
+
+    document.getElementById('requestDetailOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeRequestDetail() {
+    document.getElementById('requestDetailOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function closeRequestDetailOnOverlay(e) {
+    if (e.target === document.getElementById('requestDetailOverlay')) closeRequestDetail();
+}
+
+async function handleRequestFromModal(bookingId, action) {
+    await handleRequest(bookingId, action);
+    closeRequestDetail();
+    loadRequests(); // Refresh table
 }
 
 async function handleRequest(bookingId, action) {

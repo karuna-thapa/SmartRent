@@ -488,6 +488,15 @@ function buildBookingCard(b) {
     const canPay      = isApproved && b.paymentStatus !== 'PAID';
     const showPayLocked = !isApproved && b.bookingStatus !== 'CANCELLED' && b.paymentStatus !== 'PAID';
 
+    // Deadline Calculation: 24 hours before startDate
+    let deadlineMsg = '';
+    if (b.paymentStatus !== 'PAID' && b.bookingStatus !== 'CANCELLED') {
+        const start = new Date(b.startDate);
+        const deadline = new Date(start);
+        deadline.setDate(start.getDate() - 1); // 24 hours before
+        deadlineMsg = `<div class="booking-deadline">Deadline: Pay before ${fmtDate(deadline)}</div>`;
+    }
+
     let payBtn = '';
     if (canPay) {
         payBtn = `<button class="btn-pay-booking" id="pay-btn-${b.bookingId}" onclick="confirmPayBooking(${b.bookingId})">Pay Now</button>`;
@@ -522,6 +531,7 @@ function buildBookingCard(b) {
                     ${payBtn}
                     ${canCancel ? `<button class="btn-cancel-booking" onclick="confirmCancelBooking(${b.bookingId})">Cancel</button>` : ''}
                 </div>
+                ${deadlineMsg}
             </div>
         </div>`;
 }
