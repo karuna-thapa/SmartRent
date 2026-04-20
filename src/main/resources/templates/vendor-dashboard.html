@@ -531,8 +531,14 @@
             </span>
         </div>
 
-        <!-- Stats (2 cards) -->
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:24px;">
+        <!-- Payment / Refund Option Switcher -->
+        <div style="display:flex;gap:8px;margin:-8px 0 18px;flex-wrap:wrap;">
+            <button id="vpOptionPayments" class="btn-action primary" type="button" onclick="switchVendorPaymentPane('payments')" style="padding:8px 16px;font-size:0.8rem;">Payments</button>
+            <button id="vpOptionRefunds" class="btn-action" type="button" onclick="switchVendorPaymentPane('refunds')" style="padding:8px 16px;font-size:0.8rem;">Refunds</button>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-bottom:24px;">
             <div class="stat-card">
                 <div class="stat-icon green">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
@@ -551,10 +557,19 @@
                     <div class="stat-value" id="vpStatCount">—</div>
                 </div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fee2e2;color:#dc2626;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7L9 18l-5-5"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Total Refunded</div>
+                    <div class="stat-value" id="vpStatRefunded">—</div>
+                </div>
+            </div>
         </div>
 
         <!-- Table -->
-        <div class="table-card">
+        <div class="table-card" id="vpPaymentsPane">
             <div class="table-card-header">
                 <div>
                     <h3 style="margin:0 0 2px;font-size:1rem;font-weight:700;color:var(--text);">Transaction History</h3>
@@ -576,6 +591,60 @@
                         </tr>
                     </thead>
                     <tbody id="vpTableBody">
+                        <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-card" id="vpRefundsPane" style="margin-top:18px;display:none;">
+            <div class="table-card-header">
+                <div>
+                    <h3 style="margin:0 0 2px;font-size:1rem;font-weight:700;color:var(--text);">Refund Request Status</h3>
+                    <span id="vrrCount" style="font-size:0.78rem;color:var(--text-light);"></span>
+                </div>
+            </div>
+            <div class="table-wrapper" style="margin-bottom:14px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.N.</th>
+                            <th>Request ID</th>
+                            <th>Booking ID</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Status</th>
+                            <th>Requested</th>
+                            <th>Processed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vrrTableBody">
+                        <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-card-header">
+                <div>
+                    <h3 style="margin:0 0 2px;font-size:1rem;font-weight:700;color:var(--text);">Refund History</h3>
+                    <span id="vrCount" style="font-size:0.78rem;color:var(--text-light);"></span>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.N.</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Refund Amount</th>
+                            <th>Rate</th>
+                            <th>Initiated By</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vrTableBody">
                         <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
                     </tbody>
                 </table>
@@ -708,6 +777,31 @@
         </div>
         <div class="vv-modal-footer" id="reqDetailFooter" style="padding:16px 24px;border-top:1px solid #f3f4f6;display:flex;justify-content:flex-end;gap:12px;">
             <!-- Buttons will be injected -->
+        </div>
+    </div>
+</div>
+
+<!-- ===== REFUND REQUEST MODAL ===== -->
+<div class="vv-modal-overlay" id="refundRequestOverlay" onclick="closeRefundRequestOnOverlay(event)">
+    <div class="vv-modal" style="width:520px;">
+        <div class="vv-modal-header">
+            <h3>Request Cancellation & Refund</h3>
+            <button class="vv-modal-close" onclick="closeRefundRequestModal()">✕</button>
+        </div>
+        <div class="vv-modal-body">
+            <input type="hidden" id="refundBookingId"/>
+            <p style="font-size:0.84rem;color:#6b7280;line-height:1.6;margin:0 0 14px;">
+                For paid bookings, cancellation needs admin approval. Provide a clear reason below to submit a refund request.
+            </p>
+            <div class="vv-form-group" style="margin-bottom:10px;">
+                <label>Reason <span class="req">*</span></label>
+                <textarea id="refundReason" rows="4" placeholder="Explain why this paid booking needs to be cancelled" style="width:100%;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:0.9rem;"></textarea>
+            </div>
+            <div id="refundRequestMsg" style="display:none;font-size:0.82rem;margin-top:6px;"></div>
+            <div class="vv-modal-actions" style="margin-top:14px;">
+                <button type="button" class="btn-action" onclick="closeRefundRequestModal()">Cancel</button>
+                <button type="button" class="btn-action primary" id="refundSubmitBtn" onclick="submitRefundRequest()">Send Request</button>
+            </div>
         </div>
     </div>
 </div>
@@ -1660,7 +1754,15 @@ function buildRequestActionCell(b) {
                 Reject
             </button>`;
     } else if (b.bookingStatus === 'CONFIRMED') {
-        btns = `<span style="display:inline-block;padding:5px 12px;background:#dcfce7;color:#16a34a;border-radius:20px;font-size:0.76rem;font-weight:600;">Approved</span>`;
+        if (b.paymentStatus === 'PAID') {
+            btns = `
+                <span style="display:inline-block;padding:5px 12px;background:#dcfce7;color:#16a34a;border-radius:20px;font-size:0.76rem;font-weight:600;">Approved</span>
+                <button onclick="openRefundRequestModal(${b.bookingId})" style="padding:6px 12px;background:#fff7ed;color:#c2410c;border:1px solid #fdba74;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;">
+                    Request Refund
+                </button>`;
+        } else {
+            btns = `<span style="display:inline-block;padding:5px 12px;background:#dcfce7;color:#16a34a;border-radius:20px;font-size:0.76rem;font-weight:600;">Approved</span>`;
+        }
     } else if (b.bookingStatus === 'CANCELLED') {
         btns = `<span style="display:inline-block;padding:5px 12px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:0.76rem;font-weight:600;">Rejected</span>`;
     } else {
@@ -1777,6 +1879,10 @@ function openRequestDetail(bookingId) {
                 <span class="bk-detail-label">Booked On</span>
                 <span class="bk-detail-value">${b.createdAt ? b.createdAt.slice(0,10) : '—'}</span>
             </div>
+            <div class="bk-detail-item">
+                <span class="bk-detail-label">Payment Status</span>
+                <span class="bk-detail-value">${b.paymentStatus || 'UNPAID'}</span>
+            </div>
         </div>
 
         <p class="bk-section-title">Vehicle</p>
@@ -1827,6 +1933,11 @@ function openRequestDetail(bookingId) {
             <button class="btn-action" onclick="handleRequestFromModal(${b.bookingId}, 'reject')" style="background:#fff;color:#dc2626;border:1px solid #fca5a5;">Reject Request</button>
             <button class="btn-action primary" onclick="handleRequestFromModal(${b.bookingId}, 'approve')">Approve Request</button>
         `;
+    } else if (b.bookingStatus === 'CONFIRMED' && b.paymentStatus === 'PAID') {
+        footer.innerHTML = `
+            <button class="btn-action" onclick="closeRequestDetail()" style="border:none;background:none;color:#64748b;font-weight:600;">Close</button>
+            <button class="btn-action" onclick="openRefundRequestModal(${b.bookingId});" style="background:#fff7ed;color:#c2410c;border:1px solid #fdba74;">Request Refund</button>
+        `;
     } else {
         footer.innerHTML = `
             <button class="btn-action primary" onclick="closeRequestDetail()">Close</button>
@@ -1844,6 +1955,67 @@ function closeRequestDetail() {
 
 function closeRequestDetailOnOverlay(e) {
     if (e.target === document.getElementById('requestDetailOverlay')) closeRequestDetail();
+}
+
+function openRefundRequestModal(bookingId) {
+    document.getElementById('refundBookingId').value = bookingId;
+    document.getElementById('refundReason').value = '';
+    const msg = document.getElementById('refundRequestMsg');
+    msg.style.display = 'none';
+    msg.textContent = '';
+    closeRequestDetail();
+    document.getElementById('refundRequestOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeRefundRequestModal() {
+    document.getElementById('refundRequestOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function closeRefundRequestOnOverlay(e) {
+    if (e.target === document.getElementById('refundRequestOverlay')) closeRefundRequestModal();
+}
+
+async function submitRefundRequest() {
+    const bookingId = document.getElementById('refundBookingId').value;
+    const reason = document.getElementById('refundReason').value.trim();
+    const msg = document.getElementById('refundRequestMsg');
+    const btn = document.getElementById('refundSubmitBtn');
+
+    if (!reason) {
+        msg.style.display = '';
+        msg.style.color = '#dc2626';
+        msg.textContent = 'Please provide a reason for the refund request.';
+        return;
+    }
+
+    btn.disabled = true;
+    try {
+        const res = await fetch(`/api/vendor/bookings/${bookingId}/cancel-request`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ reason })
+        });
+        const text = await res.text();
+        if (!res.ok) throw new Error(text || 'Failed to send cancellation request.');
+
+        msg.style.display = '';
+        msg.style.color = '#16a34a';
+        msg.textContent = 'Request sent to admin for approval.';
+        showToast('Refund request sent to admin.', 'success');
+        loadRequests();
+        setTimeout(() => closeRefundRequestModal(), 700);
+    } catch (e) {
+        msg.style.display = '';
+        msg.style.color = '#dc2626';
+        msg.textContent = e.message;
+    } finally {
+        btn.disabled = false;
+    }
 }
 
 async function handleRequestFromModal(bookingId, action) {
@@ -1907,6 +2079,20 @@ function fmtNpr(v) {
     return v != null ? 'NPR ' + Number(v).toLocaleString('en-NP', { minimumFractionDigits: 2 }) : '—';
 }
 
+function switchVendorPaymentPane(type) {
+    const paymentsPane = document.getElementById('vpPaymentsPane');
+    const refundsPane = document.getElementById('vpRefundsPane');
+    const paymentsBtn = document.getElementById('vpOptionPayments');
+    const refundsBtn = document.getElementById('vpOptionRefunds');
+
+    const showPayments = type !== 'refunds';
+    paymentsPane.style.display = showPayments ? '' : 'none';
+    refundsPane.style.display = showPayments ? 'none' : '';
+
+    paymentsBtn.classList.toggle('primary', showPayments);
+    refundsBtn.classList.toggle('primary', !showPayments);
+}
+
 async function loadVendorPayments() {
     // Stats
     try {
@@ -1915,6 +2101,7 @@ async function loadVendorPayments() {
             const s = await res.json();
             document.getElementById('vpStatEarned').textContent = fmtNpr(s.totalEarned);
             document.getElementById('vpStatCount').textContent  = s.totalTransactions ?? '0';
+            document.getElementById('vpStatRefunded').textContent = fmtNpr(s.totalRefunded);
         }
     } catch (_) {}
 
@@ -1946,6 +2133,69 @@ async function loadVendorPayments() {
         `).join('');
     } catch (e) {
         tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+    }
+
+    // Refund request status table
+    const reqBody = document.getElementById('vrrTableBody');
+    reqBody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+    try {
+        const res = await fetch('/api/vendor/bookings/cancel-requests', { headers: { 'Authorization': 'Bearer ' + TOKEN() } });
+        const requests = res.ok ? await res.json() : [];
+        document.getElementById('vrrCount').textContent = requests.length + ' request' + (requests.length !== 1 ? 's' : '');
+        if (!requests.length) {
+            reqBody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">No refund requests yet.</td></tr>';
+        } else {
+            const statusStyle = (s) => {
+                if (s === 'APPROVED') return 'background:#dcfce7;color:#16a34a;';
+                if (s === 'REJECTED') return 'background:#fee2e2;color:#dc2626;';
+                return 'background:#fef9c3;color:#ca8a04;';
+            };
+            reqBody.innerHTML = requests.map((r, i) => `
+                <tr>
+                    <td style="color:#9ca3af;font-size:0.78rem;font-weight:500;">${i + 1}</td>
+                    <td style="font-weight:600;">#${r.requestId ?? '—'}</td>
+                    <td>#${r.bookingId ?? '—'}</td>
+                    <td style="font-weight:600;font-size:0.85rem;color:#111827;">${r.customerName || '—'}</td>
+                    <td style="font-weight:600;font-size:0.85rem;">${r.vehicleName || '—'}</td>
+                    <td><span style="padding:4px 10px;border-radius:20px;font-size:0.74rem;font-weight:600;${statusStyle(r.status)}">${r.status || '—'}</span></td>
+                    <td style="font-size:0.8rem;color:#6b7280;white-space:nowrap;">${r.requestedAt ? String(r.requestedAt).slice(0,10) : '—'}</td>
+                    <td style="font-size:0.8rem;color:#6b7280;white-space:nowrap;">${r.processedAt ? String(r.processedAt).slice(0,10) : '—'}</td>
+                </tr>
+            `).join('');
+        }
+    } catch (e) {
+        reqBody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+    }
+
+    // Refund table
+    const refundBody = document.getElementById('vrTableBody');
+    refundBody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+    try {
+        const res = await fetch('/api/vendor/refunds', { headers: { 'Authorization': 'Bearer ' + TOKEN() } });
+        const refunds = res.ok ? await res.json() : [];
+        document.getElementById('vrCount').textContent = refunds.length + ' refund' + (refunds.length !== 1 ? 's' : '');
+        if (!refunds.length) {
+            refundBody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">No refunds yet.</td></tr>';
+            return;
+        }
+        refundBody.innerHTML = refunds.map((r, i) => {
+            const statusStyle = r.refundStatus === 'PROCESSED'
+                ? 'background:#dcfce7;color:#16a34a;'
+                : 'background:#fef9c3;color:#ca8a04;';
+            return `
+            <tr>
+                <td style="color:#9ca3af;font-size:0.78rem;font-weight:500;">${i + 1}</td>
+                <td style="font-weight:600;font-size:0.85rem;color:#111827;">${r.customerName || '—'}</td>
+                <td style="font-weight:600;font-size:0.85rem;">${r.vehicleName || '—'}</td>
+                <td style="font-weight:700;color:#dc2626;">${fmtNpr(r.refundAmount)}</td>
+                <td style="font-size:0.8rem;color:#6b7280;">${r.refundPercentage != null ? Number(r.refundPercentage).toFixed(2) + '%' : '—'}</td>
+                <td style="font-size:0.76rem;color:#6b7280;">${r.initiatedBy || '—'}</td>
+                <td><span style="padding:4px 10px;border-radius:20px;font-size:0.74rem;font-weight:600;${statusStyle}">${r.refundStatus || '—'}</span></td>
+                <td style="font-size:0.8rem;color:#6b7280;white-space:nowrap;">${r.refundTimestamp ? String(r.refundTimestamp).slice(0,10) : '—'}</td>
+            </tr>`;
+        }).join('');
+    } catch (e) {
+        refundBody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
     }
 }
 

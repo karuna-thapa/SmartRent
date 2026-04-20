@@ -133,4 +133,31 @@ public class VendorBookingController {
 
         return ResponseEntity.ok("Cancellation request sent to admin.");
     }
+
+    /**
+     * GET /api/vendor/bookings/cancel-requests
+     */
+    @GetMapping("/cancel-requests")
+    public ResponseEntity<?> getMyCancellationRequests(Principal principal) {
+        List<Map<String, Object>> result = cancellationRequestRepository
+                .findByBooking_Vehicle_Vendor_EmailOrderByRequestedAtDesc(principal.getName())
+                .stream()
+                .map(r -> {
+                    Map<String, Object> m = new java.util.HashMap<>();
+                    m.put("requestId", r.getRequestId());
+                    m.put("bookingId", r.getBooking() != null ? r.getBooking().getBookingId() : null);
+                    m.put("vehicleName", r.getBooking() != null && r.getBooking().getVehicle() != null
+                            ? r.getBooking().getVehicle().getVehicleName() : null);
+                    m.put("customerName", r.getBooking() != null && r.getBooking().getCustomer() != null
+                            ? (r.getBooking().getCustomer().getFirstName() + " " + r.getBooking().getCustomer().getLastName()).trim()
+                            : null);
+                    m.put("reason", r.getReason());
+                    m.put("status", r.getStatus() != null ? r.getStatus().name() : null);
+                    m.put("requestedAt", r.getRequestedAt());
+                    m.put("processedAt", r.getProcessedAt());
+                    return m;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
+    }
 }

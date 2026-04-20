@@ -6,6 +6,8 @@ import com.springbootapp.fyp.smartrent.dto.VehicleResponseDto;
 import com.springbootapp.fyp.smartrent.dto.VendorResponseDto;
 import com.springbootapp.fyp.smartrent.model.Vendor;
 import com.springbootapp.fyp.smartrent.repository.BookingRepository;
+import com.springbootapp.fyp.smartrent.repository.PaymentRepository;
+import com.springbootapp.fyp.smartrent.repository.RefundRepository;
 import com.springbootapp.fyp.smartrent.repository.VendorRepository;
 import com.springbootapp.fyp.smartrent.repository.VehicleRepository;
 import com.springbootapp.fyp.smartrent.service.ReviewService;
@@ -44,6 +46,12 @@ public class VendorVehicleController {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private RefundRepository refundRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -165,10 +173,11 @@ public class VendorVehicleController {
         long activeBookingCount = bookingRepository.countActiveByVendor(email);
         long reviewCount        = vendor.getBrand() != null
                 ? reviewService.getReviewsByBrand(vendor.getBrand().getBrandId()).size() : 0;
-        BigDecimal totalRevenue = bookingRepository.sumRevenueByVendor(email);
+        BigDecimal totalRevenue = paymentRepository.sumVendorRevenue(email);
 
-        // Monthly revenue — last 12 calendar months
-        List<Object[]> rawMonthly = bookingRepository.monthlyRevenueByVendor(email);
+        // Monthly net revenue (payments minus refunds) — last 12 calendar months
+        List<Object[]> rawMonthlyPayments = paymentRepository.monthlyVendorEarningsByVendor(email);
+        List<Object[]> rawMonthlyRefunds = refundRepository.monthlyRefundsByVendorEmail(email);
         Map<String, BigDecimal> monthlyMap = new LinkedHashMap<>();
         java.time.LocalDate now = java.time.LocalDate.now();
         for (int i = 11; i >= 0; i--) {
@@ -176,11 +185,19 @@ public class VendorVehicleController {
             String key = d.getYear() + "-" + String.format("%02d", d.getMonthValue());
             monthlyMap.put(key, BigDecimal.ZERO);
         }
-        for (Object[] row : rawMonthly) {
+        for (Object[] row : rawMonthlyPayments) {
             int y = ((Number) row[0]).intValue();
             int m = ((Number) row[1]).intValue();
             String key = y + "-" + String.format("%02d", m);
             if (monthlyMap.containsKey(key)) monthlyMap.put(key, (BigDecimal) row[2]);
+        }
+        for (Object[] row : rawMonthlyRefunds) {
+            int y = ((Number) row[0]).intValue();
+            int m = ((Number) row[1]).intValue();
+            String key = y + "-" + String.format("%02d", m);
+            if (monthlyMap.containsKey(key)) {
+                monthlyMap.put(key, monthlyMap.get(key).subtract((BigDecimal) row[2]));
+            }
         }
         List<String>     monthLabels = new ArrayList<>();
         List<BigDecimal> monthValues = new ArrayList<>();
@@ -191,13 +208,23 @@ public class VendorVehicleController {
             monthValues.add(e.getValue());
         }
 
-        // Yearly revenue
-        List<Object[]> rawYearly = bookingRepository.yearlyRevenueByVendor(email);
+        // Yearly net revenue (payments minus refunds)
+        List<Object[]> rawYearlyPayments = paymentRepository.yearlyVendorEarningsByVendor(email);
+        List<Object[]> rawYearlyRefunds = refundRepository.yearlyRefundsByVendorEmail(email);
+        Map<Integer, BigDecimal> yearlyMap = new LinkedHashMap<>();
+        for (Object[] row : rawYearlyPayments) {
+            yearlyMap.put(((Number) row[0]).intValue(), (BigDecimal) row[1]);
+        }
+        for (Object[] row : rawYearlyRefunds) {
+            int year = ((Number) row[0]).intValue();
+            BigDecimal refund = (BigDecimal) row[1];
+            yearlyMap.put(year, yearlyMap.getOrDefault(year, BigDecimal.ZERO).subtract(refund));
+        }
         List<String>     yearLabels = new ArrayList<>();
         List<BigDecimal> yearValues = new ArrayList<>();
-        for (Object[] row : rawYearly) {
-            yearLabels.add(String.valueOf(((Number) row[0]).intValue()));
-            yearValues.add((BigDecimal) row[1]);
+        for (Map.Entry<Integer, BigDecimal> entry : yearlyMap.entrySet()) {
+            yearLabels.add(String.valueOf(entry.getKey()));
+            yearValues.add(entry.getValue());
         }
         if (yearLabels.isEmpty()) {
             yearLabels.add(String.valueOf(now.getYear()));

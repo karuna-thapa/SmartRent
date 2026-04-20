@@ -13,4 +13,5 @@ public interface CancellationRequestRepository extends JpaRepository<Cancellatio
     Optional<CancellationRequest> findByBooking_BookingId(Integer bookingId);
     Optional<CancellationRequest> findByBooking_BookingIdAndStatus(Integer bookingId, CancellationRequest.RequestStatus status);
     List<CancellationRequest> findByStatus(CancellationRequest.RequestStatus status);
+    List<CancellationRequest> findByBooking_Vehicle_Vendor_EmailOrderByRequestedAtDesc(String vendorEmail);
 }

@@ -521,6 +521,15 @@
                     <div class="stat-value" id="pmStatCount">—</div>
                 </div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fee2e2;color:#dc2626;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7L9 18l-5-5"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Total Refunded</div>
+                    <div class="stat-value" id="pmStatRefunded">—</div>
+                </div>
+            </div>
         </div>
 
         <!-- Payments table -->
@@ -547,6 +556,63 @@
                     </thead>
                     <tbody id="pmTableBody">
                         <tr><td colspan="10" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Refund Request table -->
+        <div class="table-card" style="margin-top:18px;">
+            <div class="table-card-header">
+                <h3>Vendor Refund Requests</h3>
+                <span id="pmRefundReqCount" style="font-size:0.78rem;color:var(--text-light);"></span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Request ID</th>
+                            <th>Booking ID</th>
+                            <th>Vendor</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Requested At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pmRefundReqBody">
+                        <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-card" style="margin-top:18px;">
+            <div class="table-card-header">
+                <h3>Refund Records</h3>
+                <span id="pmRefundCount" style="font-size:0.78rem;color:var(--text-light);"></span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Refund ID</th>
+                            <th>Booking</th>
+                            <th>Vendor</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Amount</th>
+                            <th>Rate</th>
+                            <th>Initiated By</th>
+                            <th>Status</th>
+                            <th>Request</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pmRefundBody">
+                        <tr><td colspan="12" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -2694,6 +2760,7 @@
                 document.getElementById('pmStatTotal').textContent  = fmtNpr(s.totalCollected);
                 document.getElementById('pmStatAdmin').textContent  = fmtNpr(s.adminEarnings);
                 document.getElementById('pmStatCount').textContent  = s.totalTransactions ?? '0';
+                document.getElementById('pmStatRefunded').textContent = fmtNpr(s.totalRefunded);
             }
         } catch (_) {}
 
@@ -2727,6 +2794,124 @@
             `).join('');
         } catch (e) {
             tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+        }
+
+        await loadAdminCancellationRequests(token);
+        await loadAdminRefundRecords(token);
+    }
+
+    async function loadAdminCancellationRequests(token) {
+        const tbody = document.getElementById('pmRefundReqBody');
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+
+        try {
+            const res = await fetch('/api/admin/bookings/cancellation-requests', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const requests = res.ok ? await res.json() : [];
+
+            const pendingCount = requests.filter(r => r.status === 'PENDING').length;
+            document.getElementById('pmRefundReqCount').textContent =
+                `${pendingCount} pending · ${requests.length} total`;
+
+            if (!requests.length) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">No refund requests yet.</td></tr>';
+                return;
+            }
+
+            const statusStyle = (s) => {
+                if (s === 'APPROVED') return 'background:#dcfce7;color:#16a34a;';
+                if (s === 'REJECTED') return 'background:#fee2e2;color:#dc2626;';
+                return 'background:#fef9c3;color:#ca8a04;';
+            };
+
+            tbody.innerHTML = requests.map((r, i) => {
+                const canAct = r.status === 'PENDING';
+                return `
+                <tr>
+                    <td style="color:#6b7280;font-size:0.78rem;">${i + 1}</td>
+                    <td style="font-weight:600;">#${r.requestId}</td>
+                    <td>#${r.bookingId}</td>
+                    <td style="font-weight:500;">${r.vendorName || '—'}</td>
+                    <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r.reason || ''}">${r.reason || '—'}</td>
+                    <td><span style="padding:4px 10px;border-radius:18px;font-size:0.74rem;font-weight:600;${statusStyle(r.status)}">${r.status || '—'}</span></td>
+                    <td style="font-size:0.8rem;color:#6b7280;white-space:nowrap;">${r.requestedAt ? String(r.requestedAt).slice(0,10) : '—'}</td>
+                    <td>
+                        ${canAct ? `
+                            <button class="vbtn-approve" style="padding:4px 9px;font-size:0.72rem;" onclick="handleAdminCancellationRequest(${r.requestId}, 'approve')">Approve</button>
+                            <button class="vbtn-reject" style="padding:4px 9px;font-size:0.72rem;" onclick="handleAdminCancellationRequest(${r.requestId}, 'reject')">Reject</button>
+                        ` : '<span style="font-size:0.76rem;color:#6b7280;">Processed</span>'}
+                    </td>
+                </tr>`;
+            }).join('');
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
+        }
+    }
+
+    async function handleAdminCancellationRequest(id, action) {
+        const token = localStorage.getItem('token');
+        const endpoint = action === 'approve' ? 'approve' : 'reject';
+        try {
+            const res = await fetch(`/api/admin/bookings/cancellation-requests/${id}/${endpoint}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const text = await res.text();
+            if (!res.ok) {
+                showToast(text || 'Action failed.', 'reject');
+                return;
+            }
+            showToast(action === 'approve' ? '✔ Refund request approved.' : '✔ Refund request rejected.', 'approve');
+            await loadAdminPayments();
+        } catch (e) {
+            showToast('Error: ' + e.message, 'reject');
+        }
+    }
+
+    async function loadAdminRefundRecords(token) {
+        const tbody = document.getElementById('pmRefundBody');
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:30px;color:#9ca3af;">Loading...</td></tr>';
+        try {
+            const res = await fetch('/api/admin/refunds', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const refunds = res.ok ? await res.json() : [];
+            document.getElementById('pmRefundCount').textContent = refunds.length + ' records';
+            if (!refunds.length) {
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:30px;color:#9ca3af;">No refunds yet.</td></tr>';
+                return;
+            }
+
+            const badgeStyle = (status) => {
+                if (status === 'PROCESSED') return 'background:#dcfce7;color:#16a34a;';
+                return 'background:#fef9c3;color:#ca8a04;';
+            };
+            const reqStyle = (status) => {
+                if (status === 'APPROVED') return 'background:#dcfce7;color:#16a34a;';
+                if (status === 'REJECTED') return 'background:#fee2e2;color:#dc2626;';
+                if (status === 'PENDING') return 'background:#fef9c3;color:#ca8a04;';
+                return 'background:#f3f4f6;color:#6b7280;';
+            };
+
+            tbody.innerHTML = refunds.map((r, i) => `
+                <tr>
+                    <td style="color:#6b7280;font-size:0.78rem;">${i + 1}</td>
+                    <td style="font-weight:600;">#${r.refundId ?? '—'}</td>
+                    <td>#${r.bookingId ?? '—'}</td>
+                    <td>${r.vendorName || '—'}</td>
+                    <td>${r.customerName || '—'}</td>
+                    <td>${r.vehicleName || '—'}</td>
+                    <td style="font-weight:700;color:#dc2626;">${fmtNpr(r.refundAmount)}</td>
+                    <td>${r.refundPercentage != null ? Number(r.refundPercentage).toFixed(2) + '%' : '—'}</td>
+                    <td>${r.initiatedBy || '—'}</td>
+                    <td><span style="padding:4px 10px;border-radius:16px;font-size:0.74rem;font-weight:600;${badgeStyle(r.refundStatus)}">${r.refundStatus || '—'}</span></td>
+                    <td><span style="padding:4px 10px;border-radius:16px;font-size:0.74rem;font-weight:600;${reqStyle(r.requestStatus)}">${r.requestStatus || 'N/A'}</span></td>
+                    <td style="font-size:0.8rem;color:#6b7280;white-space:nowrap;">${r.refundTimestamp ? String(r.refundTimestamp).slice(0,10) : '—'}</td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:30px;color:#ef4444;">${e.message}</td></tr>`;
         }
     }
 </script>

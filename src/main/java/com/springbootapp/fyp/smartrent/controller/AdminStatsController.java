@@ -2,6 +2,8 @@ package com.springbootapp.fyp.smartrent.controller;
 
 import com.springbootapp.fyp.smartrent.repository.BookingRepository;
 import com.springbootapp.fyp.smartrent.repository.CustomerRepository;
+import com.springbootapp.fyp.smartrent.repository.PaymentRepository;
+import com.springbootapp.fyp.smartrent.repository.RefundRepository;
 import com.springbootapp.fyp.smartrent.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ public class AdminStatsController {
     @Autowired private BookingRepository  bookingRepository;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private VehicleRepository  vehicleRepository;
+    @Autowired private PaymentRepository  paymentRepository;
+    @Autowired private RefundRepository   refundRepository;
 
     // GET /api/admin/stats — summary cards
     @GetMapping("/stats")
@@ -26,7 +30,7 @@ public class AdminStatsController {
         stats.put("totalBookings", bookingRepository.countAllBookings());
         stats.put("totalUsers",    customerRepository.count());
         stats.put("totalVehicles", vehicleRepository.count());
-        stats.put("totalRevenue",  bookingRepository.sumTotalRevenue());
+        stats.put("totalRevenue",  paymentRepository.sumTotalCollected().subtract(refundRepository.sumAllRefunds()));
         return ResponseEntity.ok(stats);
     }
 
