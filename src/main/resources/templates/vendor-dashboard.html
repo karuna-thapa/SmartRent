@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/css/admin-dashboard.css"/>
     <link rel="stylesheet" href="/css/vendor-vehicles.css"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -78,6 +80,17 @@
                         <path d="M2 10h20"/>
                     </svg>
                     Payments
+                </a>
+            </li>
+            <li>
+                <a href="#" id="navReports" onclick="showSection('reports', this)">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    Reports
                 </a>
             </li>
         </ul>
@@ -653,6 +666,47 @@
 
     </div><!-- /sectionPayments -->
 
+    <!-- ===== REPORTS SECTION ===== -->
+    <div class="page-body" id="sectionReports" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+            <div>
+                <h2 style="font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 4px;">Reports</h2>
+                <p style="font-size:0.82rem;color:var(--text-light);margin:0;">Generate downloadable PDF reports for bookings, payments, and refunds.</p>
+            </div>
+            <button class="btn-action primary" id="vendorReportBtn" onclick="generateVendorReportPdf()">Generate PDF</button>
+        </div>
+
+        <div class="table-card" style="margin-bottom:16px;">
+            <div class="table-card-header">
+                <h3 style="margin:0;">Report Filters</h3>
+            </div>
+            <div style="padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+                <div>
+                    <label style="display:block;font-size:0.78rem;color:#6b7280;margin-bottom:6px;">From Date</label>
+                    <input type="date" id="vrFromDate" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;font-family:inherit;"/>
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.78rem;color:#6b7280;margin-bottom:6px;">To Date</label>
+                    <input type="date" id="vrToDate" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;font-family:inherit;"/>
+                </div>
+                <div style="display:flex;align-items:flex-end;">
+                    <button class="btn-action" type="button" onclick="clearVendorReportFilters()">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-card-header">
+                <h3 style="margin:0;">Includes</h3>
+            </div>
+            <div style="padding:16px;font-size:0.86rem;color:#4b5563;line-height:1.8;">
+                <div>1. Booking summary and latest bookings</div>
+                <div>2. Payment summary and recent transactions</div>
+                <div>3. Refund summary and recent refunds</div>
+            </div>
+        </div>
+    </div><!-- /sectionReports -->
+
 </div><!-- /main-content -->
 
 <!-- ===== BOOKING DETAIL MODAL ===== -->
@@ -836,7 +890,7 @@ function showLoginPopup() {
     })
     .then(res => res.json())
     .then(data => {
-        const pendingItems = data.filter(b => b.bookingStatus === 'PENDING');
+        const pendingItems = data.filter(n => n.type === 'BOOKING_REQUEST' && n.bookingStatus === 'PENDING');
         if (pendingItems.length > 0) {
             document.getElementById('loginPopupPendingCount').textContent = `${pendingItems.length} pending`;
             const listContainer = document.getElementById('loginPopupList');
@@ -877,7 +931,7 @@ function logout() {
 
 // ── Section switching ─────────────────────────────────────────────────────
 function showSection(name, linkEl) {
-    ['dashboard','vehicles','bookings','requests','reviews','profile','payments'].forEach(s => {
+    ['dashboard','vehicles','bookings','requests','reviews','profile','payments','reports'].forEach(s => {
         const el = document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1));
         if (el) el.style.display = (s === name) ? '' : 'none';
     });
@@ -890,6 +944,7 @@ function showSection(name, linkEl) {
     if (name === 'reviews')  loadVendorReviews();
     if (name === 'profile')  loadProfile();
     if (name === 'payments') loadVendorPayments();
+    if (name === 'reports')  initVendorReportDefaults();
 }
 
 // Set default active
@@ -1662,12 +1717,21 @@ function renderNotifications() {
     const counter = document.getElementById('notifPendingCount');
     const navBadge = document.getElementById('navRequestsBadge');
 
-    const pending = notifData.filter(b => b.bookingStatus === 'PENDING');
+    const pending = notifData.filter(n =>
+        (n.type === 'BOOKING_REQUEST' && n.bookingStatus === 'PENDING') ||
+        (n.type === 'REFUND_REQUEST' && n.refundStatus === 'PENDING')
+    );
+
+    const pendingBookingCount = pending.filter(n => n.type === 'BOOKING_REQUEST').length;
     if (pending.length > 0) {
         badge.style.display    = '';
         badge.textContent      = pending.length > 9 ? '9+' : pending.length;
-        navBadge.textContent   = pending.length > 9 ? '9+' : pending.length;
-        navBadge.style.display = '';
+        if (pendingBookingCount > 0) {
+            navBadge.textContent   = pendingBookingCount > 9 ? '9+' : pendingBookingCount;
+            navBadge.style.display = '';
+        } else {
+            navBadge.style.display = 'none';
+        }
     } else {
         badge.style.display    = 'none';
         navBadge.style.display = 'none';
@@ -1675,12 +1739,30 @@ function renderNotifications() {
     counter.textContent = pending.length > 0 ? `${pending.length} pending` : 'No new requests';
 
     const cards = pending.map(b => buildNotifCard(b)).join('');
-    list.innerHTML = cards || '<div style="padding:24px;text-align:center;color:#9ca3af;font-size:0.85rem;">No pending booking requests.</div>';
+    list.innerHTML = cards || '<div style="padding:24px;text-align:center;color:#9ca3af;font-size:0.85rem;">No pending notifications.</div>';
 }
 
 function buildNotifCard(b) {
-    const isPending = b.bookingStatus === 'PENDING';
-    if (!isPending) return ''; // only show pending requests in notification dropdown
+    const isBookingPending = b.type === 'BOOKING_REQUEST' && b.bookingStatus === 'PENDING';
+    const isRefundPending = b.type === 'REFUND_REQUEST' && b.refundStatus === 'PENDING';
+    if (!isBookingPending && !isRefundPending) return '';
+
+    if (isRefundPending) {
+        return `
+            <div style="padding:13px 16px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:0.84rem;color:#111827;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        <strong>${b.customerName || 'A customer'}</strong> requested refund for <strong>${b.vehicleName || 'your vehicle'}</strong>
+                    </div>
+                    <div style="font-size:0.72rem;color:#9ca3af;margin-top:2px;">${b.createdAt ? String(b.createdAt).slice(0,10) : ''}</div>
+                </div>
+                <button onclick="goToRefunds()" style="flex-shrink:0;padding:6px 14px;background:#4a6cf7;color:white;border:none;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+                    View
+                </button>
+            </div>
+        `;
+    }
+
     return `
         <div style="padding:13px 16px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;gap:10px;">
             <div style="flex:1;min-width:0;">
@@ -1739,6 +1821,12 @@ function goToRequests() {
     // Close notification dropdown
     document.getElementById('notifDropdown').style.display = 'none';
     showSection('requests', document.getElementById('navRequests'));
+}
+
+function goToRefunds() {
+    document.getElementById('notifDropdown').style.display = 'none';
+    showSection('payments', document.getElementById('navPayments'));
+    switchVendorPaymentPane('refunds');
 }
 
 function buildRequestActionCell(b) {
@@ -2233,6 +2321,152 @@ async function loadVendorReviews() {
         }).join('');
     } catch (e) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:#ef4444;">${e.message}</td></tr>`;
+    }
+}
+
+function initVendorReportDefaults() {
+    const from = document.getElementById('vrFromDate');
+    const to = document.getElementById('vrToDate');
+    if (!to.value) to.value = new Date().toISOString().slice(0, 10);
+    if (!from.value) {
+        const d = new Date();
+        d.setDate(d.getDate() - 30);
+        from.value = d.toISOString().slice(0, 10);
+    }
+}
+
+function clearVendorReportFilters() {
+    document.getElementById('vrFromDate').value = '';
+    document.getElementById('vrToDate').value = '';
+}
+
+function inRange(isoLike, from, to) {
+    if (!isoLike) return false;
+    const d = new Date(String(isoLike).slice(0, 10));
+    if (Number.isNaN(d.getTime())) return false;
+    if (from && d < from) return false;
+    if (to && d > to) return false;
+    return true;
+}
+
+async function generateVendorReportPdf() {
+    const btn = document.getElementById('vendorReportBtn');
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+
+    try {
+        const token = TOKEN();
+        const fromVal = document.getElementById('vrFromDate').value;
+        const toVal = document.getElementById('vrToDate').value;
+
+        const from = fromVal ? new Date(fromVal) : null;
+        const to = toVal ? new Date(toVal) : null;
+        if (to) to.setHours(23, 59, 59, 999);
+
+        const [bookingsRes, paymentsRes, refundsRes] = await Promise.all([
+            fetch('/api/vendor/bookings', { headers: { 'Authorization': 'Bearer ' + token } }),
+            fetch('/api/vendor/payments', { headers: { 'Authorization': 'Bearer ' + token } }),
+            fetch('/api/vendor/refunds', { headers: { 'Authorization': 'Bearer ' + token } })
+        ]);
+
+        if (!bookingsRes.ok || !paymentsRes.ok || !refundsRes.ok) {
+            throw new Error('Failed to load report data.');
+        }
+
+        const bookings = (await bookingsRes.json()).filter(b => inRange(b.createdAt, from, to));
+        const payments = (await paymentsRes.json()).filter(p => inRange(p.paidAt, from, to));
+        const refunds = (await refundsRes.json()).filter(r => inRange(r.refundTimestamp, from, to));
+
+        const totalPaid = payments.reduce((s, p) => s + Number(p.totalAmount || 0), 0);
+        const totalEarned = payments.reduce((s, p) => s + Number(p.vendorAmount || 0), 0);
+        const totalRefunded = refunds.reduce((s, r) => s + Number(r.refundAmount || 0), 0);
+
+        const doc = new window.jspdf.jsPDF({ orientation: 'landscape' });
+        const generatedAt = new Date().toLocaleString('en-GB');
+        const rangeText = `${fromVal || 'All'} to ${toVal || 'All'}`;
+
+        doc.setFontSize(18);
+        doc.text('SmartRent Vendor Report', 14, 16);
+        doc.setFontSize(10);
+        doc.text(`Generated: ${generatedAt}`, 14, 23);
+        doc.text(`Range: ${rangeText}`, 14, 28);
+
+        doc.autoTable({
+            startY: 34,
+            head: [ ['Metric', 'Value'] ],
+            body: [
+                ['Bookings', String(bookings.length)],
+                ['Transactions', String(payments.length)],
+                ['Total Paid', `NPR ${totalPaid.toLocaleString('en-NP', { minimumFractionDigits: 2 })}`],
+                ['Vendor Earnings', `NPR ${totalEarned.toLocaleString('en-NP', { minimumFractionDigits: 2 })}`],
+                ['Refund Count', String(refunds.length)],
+                ['Refunded Amount', `NPR ${totalRefunded.toLocaleString('en-NP', { minimumFractionDigits: 2 })}`]
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [74, 108, 247] }
+        });
+
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 8,
+            head: [ ['Booking ID', 'Customer', 'Vehicle', 'Status', 'Payment', 'Created'] ],
+            body: bookings.slice(0, 25).map(b => [
+                `#${b.bookingId || '—'}`,
+                b.customerName || '—',
+                b.vehicleName || '—',
+                b.bookingStatus || '—',
+                b.paymentStatus || '—',
+                b.createdAt ? String(b.createdAt).slice(0, 10) : '—'
+            ]),
+            theme: 'striped',
+            headStyles: { fillColor: [31, 41, 55] }
+        });
+
+        doc.addPage('landscape');
+        doc.setFontSize(13);
+        doc.text('Payment Transactions', 14, 14);
+        doc.autoTable({
+            startY: 18,
+            head: [ ['Customer', 'Vehicle', 'Total', 'Vendor', 'Method', 'Transaction ID', 'Date'] ],
+            body: payments.slice(0, 35).map(p => [
+                p.customerName || '—',
+                p.vehicleName || '—',
+                `NPR ${Number(p.totalAmount || 0).toLocaleString('en-NP', { minimumFractionDigits: 2 })}`,
+                `NPR ${Number(p.vendorAmount || 0).toLocaleString('en-NP', { minimumFractionDigits: 2 })}`,
+                p.paymentMethod || '—',
+                p.transactionId || '—',
+                p.paidAt ? String(p.paidAt).slice(0, 10) : '—'
+            ]),
+            theme: 'striped',
+            headStyles: { fillColor: [31, 41, 55] }
+        });
+
+        doc.addPage('landscape');
+        doc.setFontSize(13);
+        doc.text('Refund Records', 14, 14);
+        doc.autoTable({
+            startY: 18,
+            head: [ ['Customer', 'Vehicle', 'Amount', 'Rate', 'Initiated By', 'Status', 'Date'] ],
+            body: refunds.slice(0, 35).map(r => [
+                r.customerName || '—',
+                r.vehicleName || '—',
+                `NPR ${Number(r.refundAmount || 0).toLocaleString('en-NP', { minimumFractionDigits: 2 })}`,
+                r.refundPercentage != null ? `${Number(r.refundPercentage).toFixed(2)}%` : '—',
+                r.initiatedBy || '—',
+                r.refundStatus || '—',
+                r.refundTimestamp ? String(r.refundTimestamp).slice(0, 10) : '—'
+            ]),
+            theme: 'striped',
+            headStyles: { fillColor: [31, 41, 55] }
+        });
+
+        const dateTag = new Date().toISOString().slice(0, 10);
+        doc.save(`vendor-report-${dateTag}.pdf`);
+        showToast('Vendor report generated successfully.', 'success');
+    } catch (e) {
+        showToast(e.message || 'Failed to generate report.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate PDF';
     }
 }
 </script>

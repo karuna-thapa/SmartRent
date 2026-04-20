@@ -27,6 +27,19 @@ public interface RefundRepository extends JpaRepository<Refund, Integer> {
     @Query("SELECT r FROM Refund r WHERE r.booking.vehicle.vendor.email = :vendorEmail ORDER BY r.refundTimestamp DESC")
     List<Refund> findByVendorEmailOrderByRefundTimestampDesc(@Param("vendorEmail") String vendorEmail);
 
+        @Query("""
+                SELECT r FROM Refund r
+                WHERE r.booking.vehicle.vendor.email = :vendorEmail
+                    AND r.initiatedBy = :initiatedBy
+                    AND r.refundStatus = :refundStatus
+                ORDER BY r.refundTimestamp DESC
+        """)
+        List<Refund> findPendingByVendorAndInitiator(
+                        @Param("vendorEmail") String vendorEmail,
+                        @Param("initiatedBy") String initiatedBy,
+                        @Param("refundStatus") Refund.RefundStatus refundStatus
+        );
+
     @Query("""
         SELECT YEAR(r.refundTimestamp), MONTH(r.refundTimestamp), COALESCE(SUM(r.refundAmount), 0)
         FROM Refund r

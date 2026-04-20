@@ -20,6 +20,7 @@ public class DatabaseSchemaFixRunner implements ApplicationRunner {
         // Align booking enums so paid-cancel refund flow can persist REFUNDED states.
         runSafe("ALTER TABLE booking MODIFY COLUMN booking_status ENUM('PENDING','CONFIRMED','CANCELLED','REFUNDED') DEFAULT 'PENDING'");
         runSafe("ALTER TABLE booking MODIFY COLUMN payment_status ENUM('UNPAID','PAID','REFUNDED') DEFAULT 'UNPAID'");
+        runSafe("ALTER TABLE booking ADD COLUMN warning_sent BIT(1) NOT NULL DEFAULT b'0'");
     }
 
     private void runSafe(String sql) {

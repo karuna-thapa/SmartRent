@@ -2,6 +2,7 @@ package com.springbootapp.fyp.smartrent.controller;
 
 import com.springbootapp.fyp.smartrent.model.*;
 import com.springbootapp.fyp.smartrent.repository.*;
+import com.springbootapp.fyp.smartrent.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class AdminBookingController {
     @Autowired private BookingRepository bookingRepository;
     @Autowired private CancellationRequestRepository cancellationRequestRepository;
     @Autowired private RefundRepository refundRepository;
+    @Autowired private EmailService emailService;
 
     // GET /api/admin/bookings — filtered list
     @GetMapping
@@ -97,6 +99,27 @@ public class AdminBookingController {
         return ResponseEntity.ok(result);
     }
 
+    // GET /api/admin/bookings/notifications/refund-requests
+    @GetMapping("/notifications/refund-requests")
+    public ResponseEntity<?> getPendingRefundRequestNotifications() {
+        List<Map<String, Object>> result = cancellationRequestRepository.findAll().stream()
+                .filter(r -> r.getStatus() == CancellationRequest.RequestStatus.PENDING)
+                .sorted(Comparator.comparing(CancellationRequest::getRequestedAt, Comparator.nullsLast(LocalDateTime::compareTo)).reversed())
+                .map(r -> {
+                    Map<String, Object> m = new HashMap<>();
+                    m.put("type", "VENDOR_REFUND_REQUEST");
+                    m.put("requestId", r.getRequestId());
+                    m.put("bookingId", r.getBooking() != null ? r.getBooking().getBookingId() : null);
+                    m.put("vendorName", r.getBooking() != null && r.getBooking().getVehicle() != null && r.getBooking().getVehicle().getVendor() != null
+                            ? r.getBooking().getVehicle().getVendor().getVendorName() : null);
+                    m.put("reason", r.getReason());
+                    m.put("createdAt", r.getRequestedAt());
+                    return m;
+                })
+                .toList();
+        return ResponseEntity.ok(result);
+    }
+
     // PUT /api/admin/bookings/cancellation-requests/{id}/approve
     @PutMapping("/cancellation-requests/{id}/approve")
     public ResponseEntity<?> approveCancellation(@PathVariable Integer id) {
@@ -125,6 +148,8 @@ public class AdminBookingController {
             r.setProcessedAt(LocalDateTime.now());
             cancellationRequestRepository.save(r);
 
+            notifyDecisionEmails(b, r, true, refund.getRefundAmount());
+
             return ResponseEntity.ok("Cancellation approved and 100% refund initiated.");
         }).orElse(ResponseEntity.notFound().build());
     }
@@ -139,8 +164,39 @@ public class AdminBookingController {
             r.setStatus(CancellationRequest.RequestStatus.REJECTED);
             r.setProcessedAt(LocalDateTime.now());
             cancellationRequestRepository.save(r);
+
+            notifyDecisionEmails(r.getBooking(), r, false, BigDecimal.ZERO);
             return ResponseEntity.ok("Cancellation request rejected.");
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    private void notifyDecisionEmails(Booking booking, CancellationRequest request, boolean approved, BigDecimal refundAmount) {
+        if (booking == null) return;
+
+        String vendorEmail = booking.getVehicle() != null && booking.getVehicle().getVendor() != null
+                ? booking.getVehicle().getVendor().getEmail() : null;
+        String customerEmail = booking.getCustomer() != null ? booking.getCustomer().getEmail() : null;
+        String reason = request != null ? request.getReason() : null;
+
+        try {
+            if (vendorEmail != null && !vendorEmail.isBlank()) {
+                emailService.sendVendorCancellationRequestDecision(vendorEmail, booking.getBookingId(), approved, reason);
+                if (approved) {
+                    emailService.sendRefundInitiatedNotice(vendorEmail, booking.getBookingId(), refundAmount, "VENDOR");
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        try {
+            if (customerEmail != null && !customerEmail.isBlank()) {
+                emailService.sendCancellationSuccessNotice(customerEmail, booking.getBookingId(), approved);
+                if (approved) {
+                    emailService.sendRefundInitiatedNotice(customerEmail, booking.getBookingId(), refundAmount, "VENDOR");
+                }
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

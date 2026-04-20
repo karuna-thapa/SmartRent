@@ -3,14 +3,21 @@ package com.springbootapp.fyp.smartrent.controller;
 import com.springbootapp.fyp.smartrent.dto.BookingResponseDto;
 import com.springbootapp.fyp.smartrent.model.Booking;
 import com.springbootapp.fyp.smartrent.model.CancellationRequest;
+import com.springbootapp.fyp.smartrent.model.Refund;
 import com.springbootapp.fyp.smartrent.repository.BookingRepository;
 import com.springbootapp.fyp.smartrent.repository.CancellationRequestRepository;
+import com.springbootapp.fyp.smartrent.repository.RefundRepository;
+import com.springbootapp.fyp.smartrent.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,6 +32,12 @@ public class VendorBookingController {
 
     @Autowired
     private CancellationRequestRepository cancellationRequestRepository;
+
+    @Autowired
+    private RefundRepository refundRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     /**
      * GET /api/vendor/bookings
@@ -57,17 +70,63 @@ public class VendorBookingController {
 
     /**
      * GET /api/vendor/notifications
-     * Returns the 30 most recent bookings for this vendor's vehicles (newest first).
-     * PENDING = requires action; CONFIRMED / CANCELLED = resolved.
+         * Returns recent actionable items for vendor:
+         * 1) Pending booking requests from customers
+         * 2) Pending customer-initiated refund requests
      */
     @GetMapping("/notifications")
-    public ResponseEntity<List<BookingResponseDto>> getNotifications(Principal principal) {
-        List<BookingResponseDto> result = bookingRepository
+        public ResponseEntity<List<Map<String, Object>>> getNotifications(Principal principal) {
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        List<Booking> bookingRequests = bookingRepository
                 .findVendorBookings(principal.getName(), null, null, null, null)
                 .stream()
-                .limit(30)
-                .map(BookingResponseDto::from)
+            .filter(b -> b.getBookingStatus() == Booking.BookingStatus.PENDING)
+            .collect(Collectors.toList());
+
+        for (Booking b : bookingRequests) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("type", "BOOKING_REQUEST");
+            m.put("bookingId", b.getBookingId());
+            m.put("customerName", b.getCustomer() != null
+                ? (b.getCustomer().getFirstName() + " " + b.getCustomer().getLastName()).trim()
+                : null);
+            m.put("vehicleName", b.getVehicle() != null ? b.getVehicle().getVehicleName() : null);
+            m.put("bookingStatus", b.getBookingStatus() != null ? b.getBookingStatus().name() : null);
+            m.put("createdAt", b.getCreatedAt());
+            result.add(m);
+        }
+
+        List<Refund> customerRefundRequests = refundRepository.findPendingByVendorAndInitiator(
+            principal.getName(),
+            "CUSTOMER",
+            Refund.RefundStatus.PENDING
+        );
+
+        for (Refund r : customerRefundRequests) {
+            Booking b = r.getBooking();
+            Map<String, Object> m = new HashMap<>();
+            m.put("type", "REFUND_REQUEST");
+            m.put("refundId", r.getRefundId());
+            m.put("bookingId", b != null ? b.getBookingId() : null);
+            m.put("customerName", b != null && b.getCustomer() != null
+                ? (b.getCustomer().getFirstName() + " " + b.getCustomer().getLastName()).trim()
+                : null);
+            m.put("vehicleName", b != null && b.getVehicle() != null ? b.getVehicle().getVehicleName() : null);
+            m.put("refundAmount", r.getRefundAmount());
+            m.put("refundStatus", r.getRefundStatus() != null ? r.getRefundStatus().name() : null);
+            m.put("createdAt", r.getRefundTimestamp());
+            result.add(m);
+        }
+
+        result = result.stream()
+            .sorted(Comparator.<Map<String, Object>, LocalDateTime>comparing(
+                m -> (LocalDateTime) m.get("createdAt"),
+                Comparator.nullsLast(LocalDateTime::compareTo)
+            ).reversed())
+            .limit(30)
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(result);
     }
 
@@ -130,6 +189,11 @@ public class VendorBookingController {
         request.setReason(body.get("reason"));
         request.setStatus(CancellationRequest.RequestStatus.PENDING);
         cancellationRequestRepository.save(request);
+
+        try {
+            emailService.sendVendorCancellationRequestSubmitted(principal.getName(), booking.getBookingId());
+        } catch (Exception ignored) {
+        }
 
         return ResponseEntity.ok("Cancellation request sent to admin.");
     }

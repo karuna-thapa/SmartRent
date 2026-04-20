@@ -27,6 +27,9 @@ public class BookingService {
     @Autowired
     private CancellationRequestRepository cancellationRequestRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @Transactional
     public String cancelBooking(Integer id, Integer customerId) {
         System.out.println("Processing cancellation for Booking ID: " + id + ", Customer ID: " + customerId);
@@ -53,15 +56,18 @@ public class BookingService {
             throw new IllegalStateException("A vendor cancellation request is already pending for this booking. Please wait for admin approval.");
         }
 
+        boolean refundInitiated = false;
         if (booking.getPaymentStatus() == Booking.PaymentStatus.PAID) {
             processRefund(booking);
             booking.setBookingStatus(Booking.BookingStatus.REFUNDED);
             booking.setPaymentStatus(Booking.PaymentStatus.REFUNDED);
+            refundInitiated = true;
         } else {
             booking.setBookingStatus(Booking.BookingStatus.CANCELLED);
         }
 
         bookingRepository.save(booking);
+        notifyCancellationAndRefund(booking, refundInitiated);
         return "Booking cancelled. Refund " + (booking.getBookingStatus() == Booking.BookingStatus.REFUNDED ? "initiated" : "not applicable") + ".";
     }
 
@@ -95,5 +101,44 @@ public class BookingService {
         refund.setRefundStatus(Refund.RefundStatus.PENDING);
         
         refundRepository.save(refund);
+    }
+
+    private void notifyCancellationAndRefund(Booking booking, boolean refundInitiated) {
+        String customerEmail = booking.getCustomer() != null ? booking.getCustomer().getEmail() : null;
+        String vendorEmail = booking.getVehicle() != null && booking.getVehicle().getVendor() != null
+                ? booking.getVehicle().getVendor().getEmail() : null;
+
+        try {
+            if (customerEmail != null && !customerEmail.isBlank()) {
+                emailService.sendCancellationSuccessNotice(customerEmail, booking.getBookingId(), refundInitiated);
+            }
+        } catch (Exception ignored) {
+        }
+
+        try {
+            if (vendorEmail != null && !vendorEmail.isBlank()) {
+                emailService.sendCancellationSuccessNotice(vendorEmail, booking.getBookingId(), refundInitiated);
+            }
+        } catch (Exception ignored) {
+        }
+
+        if (refundInitiated) {
+            BigDecimal refundAmount = refundRepository.findByBooking_BookingId(booking.getBookingId())
+                    .map(Refund::getRefundAmount)
+                    .orElse(BigDecimal.ZERO);
+            try {
+                if (customerEmail != null && !customerEmail.isBlank()) {
+                    emailService.sendRefundInitiatedNotice(customerEmail, booking.getBookingId(), refundAmount, "CUSTOMER");
+                }
+            } catch (Exception ignored) {
+            }
+
+            try {
+                if (vendorEmail != null && !vendorEmail.isBlank()) {
+                    emailService.sendRefundInitiatedNotice(vendorEmail, booking.getBookingId(), refundAmount, "CUSTOMER");
+                }
+            } catch (Exception ignored) {
+            }
+        }
     }
 }

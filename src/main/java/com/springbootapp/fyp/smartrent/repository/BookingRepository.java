@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -69,6 +71,19 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     long countActiveBookingsByCustomer(@Param("customerId") Integer customerId);
 
     List<Booking> findByCustomer_CustomerIdOrderByCreatedAtDesc(Integer customerId);
+
+        List<Booking> findByPaymentStatusAndBookingStatusInAndWarningSentFalseAndCreatedAtBetween(
+            Booking.PaymentStatus paymentStatus,
+            Collection<Booking.BookingStatus> bookingStatuses,
+            LocalDateTime start,
+            LocalDateTime end
+        );
+
+        List<Booking> findByPaymentStatusAndBookingStatusInAndCreatedAtBefore(
+            Booking.PaymentStatus paymentStatus,
+            Collection<Booking.BookingStatus> bookingStatuses,
+            LocalDateTime before
+        );
 
     // ── Admin vendor stats (by vendorId) ─────────────────────────────────────
 
