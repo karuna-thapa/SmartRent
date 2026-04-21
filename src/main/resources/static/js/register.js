@@ -39,6 +39,14 @@ function showAlert(msg, type) {
 
 function clearAlert() { document.getElementById('alert').className = 'alert'; }
 
+function togglePwVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  btn.querySelector('.eye-show').style.display = isHidden ? 'none' : '';
+  btn.querySelector('.eye-hide').style.display = isHidden ? '' : 'none';
+}
+
 function setLoading(btnId, textId, spinnerId, val) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
