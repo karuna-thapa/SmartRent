@@ -134,9 +134,9 @@ async function submitCustomer() {
     const data = await res.text();
     if (res.ok || res.status === 201) {
       clearCustomerForm();
-      showAlert('Account created successfully! Redirecting to login…', 'success');
+      showAlert('Account created successfully! Redirecting to verification…', 'success');
       setTimeout(() => {
-        window.location.href = `/login?email=${encodeURIComponent(email)}`;
+        window.location.href = `/verify-otp?email=${encodeURIComponent(email)}`;
       }, 1500);
     } else {
       showAlert(data || 'Registration failed. Please try again.', 'error');

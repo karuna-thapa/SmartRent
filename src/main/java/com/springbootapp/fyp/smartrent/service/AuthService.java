@@ -29,7 +29,7 @@ public class AuthService {
     @Autowired private OtpService otpService;
 
     // ===================== REGISTER =====================
-    // Just save the account — no OTP on registration.
+    // Save account and immediately send OTP for first-time verification.
     public String registerCustomer(CustomerDto dto) {
         if (customerRepository.existsByEmail(dto.getEmail())) {
             return "Email already registered!";
@@ -48,6 +48,7 @@ public class AuthService {
         customer.setRole(Customer.Role.customer);
 
         customerRepository.save(customer);
+        otpService.generateAndSendLoginOtp(customer.getEmail());
         return "Customer registered successfully!";
     }
 
