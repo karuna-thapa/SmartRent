@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -37,9 +38,11 @@ public class AuthController {
 
     // ===================== REGISTER VENDOR =====================
     @PostMapping("/register-vendor")
-    public ResponseEntity<?> registerVendor(@RequestBody VendorDto vendorDto) {
+    public ResponseEntity<?> registerVendor(
+            @ModelAttribute VendorDto vendorDto,
+            @RequestParam(value = "registrationDocument", required = false) MultipartFile registrationDocument) {
         try {
-            String result = authService.registerVendor(vendorDto);
+            String result = authService.registerVendor(vendorDto, registrationDocument);
             if (result.equals("Email already registered!")) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
             }

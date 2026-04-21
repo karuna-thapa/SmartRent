@@ -62,6 +62,10 @@ public class FileStorageService {
         return "/uploads/licenses/" + filename;
     }
 
+    public String storeVendorRegistrationDocument(MultipartFile file) throws IOException {
+        return storeLicenseImage(file);
+    }
+
     public void deleteFile(String fileUrl) {
         if (fileUrl == null || fileUrl.isBlank()) return;
         try {

@@ -15,6 +15,7 @@ import com.springbootapp.fyp.smartrent.security.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -27,6 +28,7 @@ public class AuthService {
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private AuthUtil authUtil;
     @Autowired private OtpService otpService;
+    @Autowired private FileStorageService fileStorageService;
 
     // ===================== REGISTER =====================
     // Save account and immediately send OTP for first-time verification.
@@ -53,7 +55,7 @@ public class AuthService {
     }
 
     // ===================== REGISTER VENDOR =====================
-    public String registerVendor(VendorDto dto) {
+    public String registerVendor(VendorDto dto, MultipartFile registrationDocument) {
         if (vendorRepository.existsByEmail(dto.getEmail())) {
             return "Email already registered!";
         }
@@ -66,6 +68,15 @@ public class AuthService {
         vendor.setPhoneNumber(dto.getPhoneNumber());
         vendor.setRegistrationNo(dto.getRegistrationNo());
         vendor.setStatus(Vendor.Status.PENDING);
+
+        if (registrationDocument != null && !registrationDocument.isEmpty()) {
+            try {
+                String documentPath = fileStorageService.storeVendorRegistrationDocument(registrationDocument);
+                vendor.setRegistrationDocument(documentPath);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to upload registration document.");
+            }
+        }
 
         if (dto.getBrandName() != null && !dto.getBrandName().isBlank()) {
             Brand brand = brandRepository.findByBrandNameIgnoreCase(dto.getBrandName())

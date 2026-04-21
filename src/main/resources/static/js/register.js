@@ -18,6 +18,8 @@ function clearVendorForm() {
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   const brand = document.getElementById('brandName');
   if (brand) brand.selectedIndex = 0;
+  const doc = document.getElementById('vendorRegistrationDoc');
+  if (doc) doc.value = '';
 }
 
 function switchRole(role, el) {
@@ -157,21 +159,34 @@ async function submitVendor() {
   const phoneNumber   = v('vendorPhone');
   const registrationNo = v('registrationNo');
   const brandName     = v('brandName');
+  const registrationDocument = document.getElementById('vendorRegistrationDoc').files[0];
   const password      = document.getElementById('vendorPassword').value;
   const confirmPw     = document.getElementById('vendorConfirmPassword').value;
 
   if (!vendorName || !companyName || !email || !phoneNumber || !registrationNo || !password || !confirmPw) {
     showAlert('Please fill in all required fields.', 'error'); return;
   }
+  if (!registrationDocument) {
+    showAlert('Please upload your company registration document.', 'error'); return;
+  }
   if (password.length < 6) { showAlert('Password must be at least 6 characters.', 'error'); return; }
   if (password !== confirmPw) { showAlert('Passwords do not match!', 'error'); return; }
 
   setLoading('vendorRegisterBtn', 'vendorBtnText', 'vendorSpinner', true);
   try {
+    const formData = new FormData();
+    formData.append('vendorName', vendorName);
+    formData.append('companyName', companyName);
+    formData.append('email', email);
+    formData.append('phoneNumber', phoneNumber);
+    formData.append('registrationNo', registrationNo);
+    formData.append('brandName', brandName);
+    formData.append('password', password);
+    formData.append('registrationDocument', registrationDocument);
+
     const res = await fetch('/api/auth/register-vendor', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vendorName, companyName, email, password, phoneNumber, registrationNo, brandName })
+      body: formData
     });
     const data = await res.text();
     if (res.ok || res.status === 201) {

@@ -13,6 +13,7 @@ public class VendorResponseDto {
     private String email;
     private String phoneNumber;
     private String registrationNo;
+    private String registrationDocument;
     private Integer brandId;
     private String brandName;
     private String status;
@@ -27,6 +28,7 @@ public class VendorResponseDto {
         dto.setEmail(v.getEmail());
         dto.setPhoneNumber(v.getPhoneNumber());
         dto.setRegistrationNo(v.getRegistrationNo());
+        dto.setRegistrationDocument(v.getRegistrationDocument());
         dto.setBrandId(v.getBrand() != null ? v.getBrand().getBrandId() : null);
         dto.setBrandName(v.getBrand() != null ? v.getBrand().getBrandName() : "—");
         dto.setStatus(v.getStatus().name());

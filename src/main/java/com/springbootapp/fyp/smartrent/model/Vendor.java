@@ -30,6 +30,9 @@ public class Vendor {
     @Column(name = "registration_no", unique = true, length = 100)
     private String registrationNo;
 
+    @Column(name = "registration_document", length = 255)
+    private String registrationDocument;
+
     @Column(name = "company_name", length = 150)
     private String companyName;
 
